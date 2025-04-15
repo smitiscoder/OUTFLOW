@@ -1,0 +1,153 @@
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* App background - ensure full coverage */
+html {
+  background-color: #000220;
+}
+
+body {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #ffffff;
+  font-family: 'Segoe UI', sans-serif;
+  color: rgb(0, 0, 0);
+}
+
+/* Main container */
+.category-container {
+  width: 100%;
+  min-height: 100vh;
+  padding: 20px 16px;
+  background-color: #000220;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Heading */
+.category-heading {
+  font-size: 22px;
+  font-weight: bold;
+  color: #ECD8A0; /* Updated color */
+  text-align: center;
+  margin-bottom: 24px;
+  letter-spacing: 0.5px;
+}
+
+/* Grid layout - 3x5 structure */
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 columns */
+  grid-auto-rows: 1fr; /* auto-size rows */
+  gap: 18px;
+  width: 100%;
+  max-width: 420px;
+}
+
+/* Category box */
+.category-item {
+  background-color: #ECD8A0;
+  border-radius: 8px;
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+}
+
+.category-item:hover {
+  transform: scale(1.05);
+}
+
+/* Icon inside each box */
+.category-icon {
+  width: 28px;
+  height: 28px;
+  margin-bottom: 6px;
+  object-fit: contain;
+  fill: #ECD8A0; /* Set the icon color */
+}
+
+/* Label below icon */
+.category-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: #000000; /* Updated color */
+  text-align: center;
+  line-height: 1.2;
+}
+
+/* Small screens */
+@media (max-width: 480px) {
+  .category-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  .category-icon {
+    width: 26px;
+    height: 26px;
+  }
+
+  .category-label {
+    font-size: 11px;
+  }
+
+  .category-heading {
+    font-size: 18px;
+  }
+}
+
+/* Small tablets */
+@media (min-width: 481px) and (max-width: 767px) {
+  .category-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    max-width: 450px;
+  }
+
+  .category-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .category-label {
+    font-size: 12px;
+  }
+
+  .category-heading {
+    font-size: 20px;
+  }
+}
+
+/* Tablets and up */
+@media (min-width: 768px) {
+  .category-grid {
+    grid-template-columns: repeat(3, 1fr); /* Maintain 3 columns */
+    gap: 20px;
+    max-width: 480px;
+  }
+
+  .category-icon {
+    width: 28px;
+    height: 28px;
+  }
+
+  .category-label {
+    font-size: 12px;
+  }
+
+  .category-heading {
+    font-size: 24px;
+    margin-bottom: 30px;
+  }
+}
+

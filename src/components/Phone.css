@@ -1,0 +1,161 @@
+/* phone.css */
+
+.phone-container {
+  background: #03071E;
+  width: 100%;
+  max-width: 500px;
+  min-width: 280px; /* Added minimum width */
+  height: 100vh;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center; /* Center content vertically */
+  color: #B6B1B3;
+  font-family: 'Inter', sans-serif;
+  box-sizing: border-box;
+}
+
+.input-wrapper {
+  display: flex;
+  gap: 1rem;
+  border: 1px solid #F2E9E4;
+  border-radius: 10px;
+  background: #03071E;
+  width: 90%; /* Changed to percentage for better responsiveness */
+  max-width: 313px;
+  min-width: 250px; /* Added minimum width */
+  height: 3.5rem;
+  align-items: center;
+  padding: 0 1rem;
+  margin-bottom: 1.5rem;
+  box-sizing: border-box;
+}
+
+.country-code {
+  width: 70px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-right: 1px solid #F2E9E4;
+  font-weight: 400;
+  font-size: clamp(1.25rem, 5vw, 1.5rem); /* Using clamp for responsive font size */
+  color: #B6B1B3;
+}
+
+.phone-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: clamp(1rem, 4vw, 1.25rem); /* Responsive font size */
+  font-weight: 400;
+  color: #B6B1B3;
+  outline: none;
+  min-width: 0; /* Allows the input to shrink properly */
+}
+
+.otp-boxes {
+  display: flex;
+  gap: 10px;
+  margin: 1rem 0;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 90%; /* Responsive width */
+  max-width: 313px;
+}
+
+.otp-input {
+  width: 3.5rem;
+  height: 3.5rem;
+  max-width: 15vw; /* Limits size on very large screens */
+  max-height: 15vw; /* Maintains aspect ratio */
+  min-width: 2.5rem; /* Minimum size */
+  min-height: 3rem; /* Minimum size */
+  border: 1px solid #F2E9E4;
+  border-radius: 10px;
+  background: #03071E;
+  text-align: center;
+  font-size: clamp(1.25rem, 6vw, 1.5rem); /* Responsive font size */
+  color: #F2E9E4;
+}
+
+.send-otp-btn {
+  width: 90%; /* Responsive width */
+  max-width: 313px;
+  min-width: 250px; /* Minimum width */
+  height: 2.5rem;
+  max-height: 15vw; /* Limits size on very large screens */
+  background: linear-gradient(90deg, #DEBF35 0%, #C91FD8 100%);
+  border-radius: 10px;
+  color: #03071E;
+  font-weight: 200;
+  font-size: clamp(1.25rem, 5vw, 1.75rem); /* Responsive font size */
+  border: none;
+  margin-top: 1.5rem;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+
+
+/* Media Queries for Responsiveness */
+@media (max-width: 500px) {
+  .phone-container {
+    padding: 1.5rem 0.75rem;
+    justify-content: flex-start; /* Better for smaller screens */
+  }
+
+  .input-wrapper {
+    height: 4rem;
+  }
+
+  .otp-input {
+    width: 1.5rem;
+    height: 2.5rem;
+  }
+
+  .send-otp-btn {
+    height: 2rem;
+  }
+}
+
+@media (max-width: 350px) {
+  .otp-boxes {
+    gap: 5px;
+  }
+  
+  .otp-input {
+    width: 1.5rem;
+    height: 2.5rem;
+    font-size: 1.1rem;
+  }
+
+  .country-code {
+    width: 50px;
+    font-size: 1.1rem;
+  }
+
+  .input-wrapper {
+    padding: 0 0.5rem;
+  }
+}
+
+/* For very small devices (like iPhone 5/SE) */
+@media (max-width: 320px) and (max-height: 570px) {
+  .phone-container {
+    padding: 1rem 0.5rem;
+  }
+  
+  .input-wrapper, 
+  .send-otp-btn {
+    height: 3.5rem;
+  }
+  
+  .otp-input {
+    width: 2.2rem;
+    height: 2.8rem;
+  }
+}
+
