@@ -1,5 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './ExpenseCategories.css';
+
+import Keyboard from '../pages/Keyboard';
+
+// Firebase imports
+import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
 
 // Import all icons
 import Shopping from './Categoriesicons/Shopping.svg';
@@ -38,20 +44,70 @@ const categoryData = [
 ];
 
 const ExpenseCategories = () => {
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [loading, setLoading] = useState(false); // Track submission state
+
+  const handleCategoryClick = (category) => {
+    setSelectedCategory(category);
+  };
+
+  const handleSubmit = async ({ amount, note }) => {
+    if (isNaN(amount) || amount <= 0) {
+      // Add some validation for the amount (should be a positive number)
+      alert('Please enter a valid amount.');
+      return;
+    }
+
+    setLoading(true); // Disable the button when submitting
+    const auth = getAuth();
+    const db = getFirestore();
+
+    try {
+      const record = {
+        userId: auth.currentUser.uid,
+        category: selectedCategory.name,
+        amount: parseFloat(amount),
+        note,
+        timestamp: new Date().toISOString(),
+      };
+
+      await addDoc(collection(db, 'expenses'), record);
+      console.log('Record saved to Firebase:', record);
+
+      // Optionally, show a success message or toast
+      setSelectedCategory(null); // Close keyboard
+      setLoading(false); // Reset loading state
+    } catch (error) {
+      console.error('Error saving record:', error);
+      setLoading(false); // Reset loading state
+      // Optionally, show an error toast or message
+    }
+  };
+
   return (
     <div className="category-container">
       <h2 className="category-heading">SELECT CATEGORY</h2>
+
       <div className="category-grid">
-        {categoryData.map(({ name, icon }) => (
-          <div className="category-item" key={name}>
-            <img src={icon} alt={name} className="category-icon" />
-            <span className="category-label">{name}</span>
+        {categoryData.map((cat) => (
+          <div
+            key={cat.name}
+            className={`category-item ${selectedCategory?.name === cat.name ? 'selected' : ''}`}
+            onClick={() => handleCategoryClick(cat)}
+          >
+            <img src={cat.icon} alt={cat.name} className="category-icon" />
+            <span className="category-label">{cat.name}</span>
           </div>
         ))}
       </div>
+
+      {selectedCategory && (
+        <Keyboard onSubmit={handleSubmit} loading={loading} /> // Pass loading state to Keyboard component
+      )}
     </div>
   );
 };
 
 export default ExpenseCategories;
+
 

@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Auth from "./components/Auth"; // fixed path
 import Home from "./pages/Home";
 import PieChart from "./pages/PieChart";
 import ExpenseCategories from "./pages/ExpenseCategories";
-import AddRecord from "./pages/AddRecordForm";
+import AddRecord from "./pages/AddRecord";
 import Search from "./pages/Search";
 import PhoneLogin from "./components/Phone"; // ✅ new component
 
@@ -46,10 +42,12 @@ function App() {
   const [user, setUser] = useState(null);
 
   useEffect(() => {
+    // Listen for changes in user authentication state
     const unsubscribe = auth.onAuthStateChanged((user) => {
-      setUser(user);
+      setUser(user); // Set user in state when authentication changes
     });
 
+    // Clean up subscription when the component unmounts
     return () => unsubscribe();
   }, []);
 
