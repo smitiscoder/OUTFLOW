@@ -4,6 +4,7 @@ import { getAuth } from 'firebase/auth';
 import MonthYearModal from '../components/MonthYearModal';
 import BottomNavbar from '../components/BottomNavbar';
 import './Home.css';
+import { useExpenses } from '../ExpenseContext'; // ✅ import context
 
 const Home = () => {
   const [showModal, setShowModal] = useState(false);
@@ -11,8 +12,9 @@ const Home = () => {
     year: 2025,
     month: 'APR',
   });
+  const [loading, setLoading] = useState(true); // Loading state
 
-  const [expenses, setExpenses] = useState([]);
+  const { expenses, setExpenses } = useExpenses(); // ✅ use context
   const db = getFirestore();
   const auth = getAuth();
 
@@ -35,14 +37,13 @@ const Home = () => {
     const q = query(collection(db, 'expenses'), where('userId', '==', userId));
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      setLoading(false);
       const monthIndex = monthMap[currentDate.month];
 
       const allExpenses = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
-
-      console.log('Fetched expenses:', allExpenses);
 
       const filteredExpenses = allExpenses.filter((exp) => {
         const rawTimestamp = exp.timestamp;
@@ -64,9 +65,17 @@ const Home = () => {
         );
       });
 
-      console.log('Filtered expenses:', filteredExpenses);
+      // ✅ Sort filtered expenses by timestamp DESC (newest first)
+      const sortedExpenses = filteredExpenses.sort((a, b) => {
+        const dateA = a.timestamp?.toDate ? a.timestamp.toDate() : new Date(a.timestamp);
+        const dateB = b.timestamp?.toDate ? b.timestamp.toDate() : new Date(b.timestamp);
+        return dateB - dateA;
+      });
 
-      setExpenses(filteredExpenses);
+      setExpenses(sortedExpenses); // ✅ Update context with sorted expenses
+    }, (error) => {
+      setLoading(false);
+      console.error("Error fetching expenses: ", error);
     });
 
     return unsubscribe;
@@ -96,7 +105,9 @@ const Home = () => {
         <div className="divider"></div>
 
         <div className="nav-section">
-          {expenses.length === 0 ? (
+          {loading ? (
+            <p style={{ textAlign: 'center' }}>Loading...</p>
+          ) : expenses.length === 0 ? (
             <p style={{ textAlign: 'center', marginTop: '20px' }}>
               No expenses added yet.
             </p>
@@ -122,20 +133,26 @@ const Home = () => {
       {/* Bottom Navigation */}
       <BottomNavbar />
 
-      {/* Date Modal */}
+      {/* Date Modal (Floating Calendar) */}
       {showModal && (
-        <MonthYearModal
-          currentYear={currentDate.year}
-          currentMonth={currentDate.month}
-          onSelect={handleDateSelect}
-          onClose={() => setShowModal(false)}
-        />
+        <>
+          <div className="backdrop" onClick={() => setShowModal(false)}></div>
+          <div className="modal-container">
+            <MonthYearModal
+              currentYear={currentDate.year}
+              currentMonth={currentDate.month}
+              onSelect={handleDateSelect}
+              onClose={() => setShowModal(false)}
+            />
+          </div>
+        </>
       )}
     </div>
   );
 };
 
 export default Home;
+
 
 
 
