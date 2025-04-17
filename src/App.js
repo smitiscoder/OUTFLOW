@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Auth from "./components/Auth";
 import Home from "./pages/Home";
-import PieChartPage from "./pages/PieChartPage"; // ✅ Renamed for clarity
+import PieChartPage from "./pages/PieChartPage";
 import ExpenseCategories from "./pages/ExpenseCategories";
 import AddRecord from "./pages/AddRecord";
 import Search from "./pages/Search";
@@ -18,7 +19,7 @@ import { auth } from "./components/firebase";
 
 function App() {
   const [user, setUser] = useState(null);
-  const [checkingAuth, setCheckingAuth] = useState(true); // optional loading state
+  const [checkingAuth, setCheckingAuth] = useState(true);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
@@ -28,35 +29,36 @@ function App() {
     return () => unsubscribe();
   }, []);
 
-  if (checkingAuth) return null; // or a loader
+  if (checkingAuth) return <div>Loading...</div>;
 
   return (
     <Router>
-      {user ? (
-        <>
-          <div className="auth-wrapper">
-            <div className="auth-inner">
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/auth" element={<Auth />} />
-                <Route path="/home" element={<Home />} />
-                <Route path="/piechart" element={<PieChartPage />} />
-                <Route path="/categories" element={<ExpenseCategories />} />
-                <Route path="/addrecord" element={<AddRecord />} />
-                <Route path="/search" element={<Search />} />
-              </Routes>
-              <ToastContainer />
-            </div>
-          </div>
-        </>
-      ) : (
-        <PhoneLogin />
-      )}
+      <ToastContainer />
+      <Routes>
+        {/* Public routes */}
+        <Route path="/auth" element={<Auth />} />
+        <Route path="/phone-login" element={<PhoneLogin />} />
+
+        {/* Protected routes */}
+        {user && (
+          <>
+            <Route path="/home" element={<Home />} />
+            <Route path="/piechart" element={<PieChartPage />} />
+            <Route path="/categories" element={<ExpenseCategories />} />
+            <Route path="/addrecord" element={<AddRecord />} />
+            <Route path="/search" element={<Search />} />
+          </>
+        )}
+
+        {/* If no route matches */}
+        <Route path="*" element={<div>404 - Page Not Found</div>} />
+      </Routes>
     </Router>
   );
 }
 
 export default App;
+
 
 
 

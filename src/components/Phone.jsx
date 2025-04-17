@@ -76,6 +76,13 @@ const Phone = () => {
   };
 
   const verifyOTP = async () => {
+    if (!confirmationResult) {
+      toast.error("Session expired. Please resend OTP.");
+      setOtpSent(false);
+      setOtp(new Array(6).fill(""));
+      return;
+    }
+
     const finalOtp = otp.join("");
     if (finalOtp.length !== 6) {
       toast.error("Please enter the 6-digit OTP.");
@@ -124,7 +131,11 @@ const Phone = () => {
               />
             ))}
           </div>
-          <button className="send-otp-btn" onClick={verifyOTP}>
+          <button
+            className="send-otp-btn"
+            onClick={verifyOTP}
+            disabled={otp.join("").length !== 6}
+          >
             VERIFY & LOGIN
           </button>
         </>
@@ -136,4 +147,5 @@ const Phone = () => {
 };
 
 export default Phone;
+
 
