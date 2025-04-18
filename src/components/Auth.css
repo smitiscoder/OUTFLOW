@@ -1,62 +1,77 @@
+/* Full height and center using flexbox */
 .auth-container {
-  position: relative;
-  width: 500px;
-  height: 1018px;
-  background: #03071E;
-  font-family: 'Inter', sans-serif;
-  padding: 50px 30px;
-  box-sizing: border-box;
   display: flex;
-  flex-direction: column;
   justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f2f5; /* Light background */
 }
 
-.welcome-text {
-  font-weight: 800;
-  font-size: 48px;
-  line-height: 58px;
-  color: #ECD8A0;
-  margin-bottom: 40px;
-  width: 345px;
-}
-
-.or-text {
-  font-weight: 600;
-  font-size: 32px;
-  text-align: center;
-  line-height: 39px;
-  color: #ECD8A0;
-  margin: 30px 0;
-}
-
-/* Unified button style for Phone & Google login */
-.phone-login-btn {
+.auth-box {
+  background-color: #fff;
+  padding: 40px 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   width: 100%;
-  height: 75px;
-  font-size: 24px;
-  font-weight: 700;
-  background-color: #03071E;
-  color: white;
-  border: 1px solid #F2E9E4;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+  max-width: 400px;
+  text-align: center;
+}
+
+
+
+/* Optional styling for visuals */
+.welcome-text {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+}
+
+.brand-name {
+  color: #007bff; /* Customize this to your brand color */
+}
+
+
+.phone-login-btn,
+.google-login-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 20px;
+  gap: 10px;
+  padding: 12px 20px;
+  font-size: 1rem;
+  background-color: #f2f2f2;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  width: 100%; /* Stretch to container width */
+  max-width: 300px; /* Limit width */
+  margin: 0 auto 1rem auto; /* Center horizontally */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s ease;
 }
 
-.phone-login-btn:hover {
-  background-color: #1a1a2e;
+.phone-login-btn .button-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.or-text {
+  margin: 1rem 0;
+  font-weight: bold;
+}
+
+
+
+
+
+.google-login-btn:hover {
+  background-color: #f5f5f5;
 }
 
 .button-icon {
-  width: 40px;
-  height: 40px;
-  margin-right: 12px;
-  fill: #273BCE; /* or any color you prefer */
+  width: 24px;
+  height: 24px;
 }
+
 
 
 

@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Auth.css';
 import { ReactComponent as PhoneIcon } from '../icons/phone.svg'; // Make sure this path is correct
-import ContinueWithGoogle from '../components/ContinuewithGoogle';
+import { FcGoogle } from 'react-icons/fc';
 
 const AuthPage = () => {
   const navigate = useNavigate();
@@ -13,9 +13,12 @@ const AuthPage = () => {
 
   return (
     <div className="auth-container">
-      <h1 className="welcome-text">
-        WELCOME TO <br /> <span className="brand-name">TRACKIT</span>
-      </h1>
+  <div className="auth-box">
+    <h1 className="welcome-text">
+      WELCOME TO <br /> <span className="brand-name">TRACKIT</span>
+    </h1>
+
+      
 
       {/* Login with Phone Number Button */}
       <button className="phone-login-btn" onClick={handlePhoneLogin}>
@@ -26,8 +29,15 @@ const AuthPage = () => {
       {/* OR separator */}
       <div className="or-text">OR</div>
 
-      {/* Google Sign-In Button */}
-      <ContinueWithGoogle />
+      
+      {/* Google Login Button */}
+      <button className="google-login-btn">
+        <FcGoogle className="button-icon" />
+        <span>Login with Google</span>
+      </button>
+
+      
+    </div>
     </div>
   );
 };
