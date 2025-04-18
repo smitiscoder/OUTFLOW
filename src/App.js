@@ -11,6 +11,7 @@ import ExpenseCategories from "./pages/ExpenseCategories";
 import AddRecord from "./pages/AddRecord";
 import Search from "./pages/Search";
 import PhoneLogin from "./components/Phone";
+import ProfilePage from "./pages/Profile"; // Corrected import ✅
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -40,14 +41,17 @@ function App() {
         <Route path="/phone-login" element={<PhoneLogin />} />
 
         {/* Protected routes */}
-        {user && (
+        {user ? (
           <>
             <Route path="/home" element={<Home />} />
             <Route path="/piechart" element={<PieChartPage />} />
             <Route path="/categories" element={<ExpenseCategories />} />
             <Route path="/addrecord" element={<AddRecord />} />
             <Route path="/search" element={<Search />} />
+            <Route path="/profile" element={<ProfilePage />} />
           </>
+        ) : (
+          <Route path="/" element={<Auth />} /> // Default to Auth if no user is logged in
         )}
 
         {/* If no route matches */}
