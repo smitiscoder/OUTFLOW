@@ -41,15 +41,17 @@ function App() {
         <Route path="/phone-login" element={<PhoneLogin />} />
 
         {/* Protected routes */}
-        {user && (
+        {user ? (
           <>
             <Route path="/home" element={<Home />} />
             <Route path="/piechart" element={<PieChartPage />} />
             <Route path="/categories" element={<ExpenseCategories />} />
             <Route path="/addrecord" element={<AddRecord />} />
             <Route path="/search" element={<Search />} />
-            <Route path="/profile" element={<ProfilePage />} /> {/* Corrected Route */}
+            <Route path="/profile" element={<ProfilePage />} />
           </>
+        ) : (
+          <Route path="/" element={<Auth />} /> // Default to Auth if no user is logged in
         )}
 
         {/* If no route matches */}
@@ -60,6 +62,7 @@ function App() {
 }
 
 export default App;
+
 
 
 
