@@ -1,33 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { getFirestore, collection, query, where, onSnapshot } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
-import MonthYearModal from '../components/MonthYearModal';
+import Calendar from '../components/Calendar'; // ✅ updated import
 import BottomNavbar from '../components/BottomNavbar';
 import './Home.css';
 import { useExpenses } from '../ExpenseContext'; // ✅ import context
 
 const Home = () => {
-  const [showModal, setShowModal] = useState(false);
   const [currentDate, setCurrentDate] = useState({
-    year: 2025,
-    month: 'APR',
+    year: new Date().getFullYear(),
+    month: new Date().getMonth(),
   });
-  const [loading, setLoading] = useState(true); // Loading state
+  const [loading, setLoading] = useState(true);
 
-  const { expenses, setExpenses } = useExpenses(); // ✅ use context
+  const { expenses, setExpenses } = useExpenses();
   const db = getFirestore();
   const auth = getAuth();
 
-  const handleDateClick = () => setShowModal(true);
-
-  const handleDateSelect = (year, month) => {
-    setCurrentDate({ year, month });
-    setShowModal(false);
-  };
-
   const monthMap = {
-    JAN: 0, FEB: 1, MAR: 2, APR: 3, MAY: 4, JUN: 5,
-    JUL: 6, AUG: 7, SEP: 8, OCT: 9, NOV: 10, DEC: 11,
+    0: 'JAN', 1: 'FEB', 2: 'MAR', 3: 'APR', 4: 'MAY', 5: 'JUN',
+    6: 'JUL', 7: 'AUG', 8: 'SEP', 9: 'OCT', 10: 'NOV', 11: 'DEC',
   };
 
   const fetchExpenses = () => {
@@ -38,8 +30,6 @@ const Home = () => {
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       setLoading(false);
-      const monthIndex = monthMap[currentDate.month];
-
       const allExpenses = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
@@ -61,18 +51,17 @@ const Home = () => {
 
         return (
           date.getFullYear() === parseInt(currentDate.year) &&
-          date.getMonth() === monthIndex
+          date.getMonth() === currentDate.month
         );
       });
 
-      // ✅ Sort filtered expenses by timestamp DESC (newest first)
       const sortedExpenses = filteredExpenses.sort((a, b) => {
         const dateA = a.timestamp?.toDate ? a.timestamp.toDate() : new Date(a.timestamp);
         const dateB = b.timestamp?.toDate ? b.timestamp.toDate() : new Date(b.timestamp);
         return dateB - dateA;
       });
 
-      setExpenses(sortedExpenses); // ✅ Update context with sorted expenses
+      setExpenses(sortedExpenses);
     }, (error) => {
       setLoading(false);
       console.error("Error fetching expenses: ", error);
@@ -86,18 +75,19 @@ const Home = () => {
     return () => unsubscribe && unsubscribe();
   }, [currentDate]);
 
+  const handleDateChange = (year, month) => {
+    setCurrentDate({ year, month });
+  };
+
   return (
     <div className="home-container">
-      {/* Top Navigation */}
-      <div className="top-nav">
-        <div className="date-and-tab">
-          <div className="date-display" onClick={handleDateClick}>
-            <span className="month">{currentDate.month}</span>
-            <span className="year">{currentDate.year}</span>
-            <span className="dropdown-icon">▼</span>
-          </div>
-          <div className="current-section">EXPENSES</div>
-        </div>
+      {/* ✅ Calendar Button on Top */}
+      <div className="calendar-button-container">
+        <Calendar
+          selectedYear={currentDate.year}
+          selectedMonth={currentDate.month}
+          onDateChange={handleDateChange}
+        />
       </div>
 
       {/* Main Content */}
@@ -130,28 +120,16 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Bottom Navigation */}
+      {/* ✅ Bottom Navigation */}
       <BottomNavbar />
-
-      {/* Date Modal (Floating Calendar) */}
-      {showModal && (
-        <>
-          <div className="backdrop" onClick={() => setShowModal(false)}></div>
-          <div className="modal-container">
-            <MonthYearModal
-              currentYear={currentDate.year}
-              currentMonth={currentDate.month}
-              onSelect={handleDateSelect}
-              onClose={() => setShowModal(false)}
-            />
-          </div>
-        </>
-      )}
     </div>
   );
 };
 
 export default Home;
+
+
+
 
 
 
