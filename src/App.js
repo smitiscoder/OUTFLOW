@@ -19,6 +19,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { auth } from "./components/firebase";
 import Onboarding from "./components/onboarding";
 import Login from "./components/login";
+import Phone from "./components/Phone";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -41,7 +42,7 @@ function App() {
         {/* Public routes */}
         <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/phone-login" element={<PhoneLogin/>} />
+        <Route path="/phone" element={<Phone/>} />
 
         {/* Protected routes */}
         {user ? (
