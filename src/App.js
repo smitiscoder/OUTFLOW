@@ -5,12 +5,12 @@ import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
 import Auth from "./components/login";
-import Home from "./pages/Home";
-import PieChartPage from "./pages/PieChartPage";
+import Home from "./components/Home";
+
 import ExpenseCategories from "./pages/ExpenseCategories";
 import AddRecord from "./pages/AddRecord";
 import Search from "./pages/Search";
-import PhoneLogin from "./components/Phone";
+
 import ProfilePage from "./pages/Profile"; // Corrected import ✅
 
 import { ToastContainer } from "react-toastify";
@@ -20,6 +20,7 @@ import { auth } from "./components/firebase";
 import Onboarding from "./components/onboarding";
 import Login from "./components/login";
 import Phone from "./components/Phone";
+import ContinueWithGoogle from "./components/ContinuewithGoogle";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -43,12 +44,13 @@ function App() {
         <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/login" element={<Login />} />
         <Route path="/phone" element={<Phone/>} />
+        <Route path="/continuewithgoogle" element={<ContinueWithGoogle/>} />
 
         {/* Protected routes */}
         {user ? (
           <>
             <Route path="/home" element={<Home />} />
-            <Route path="/piechart" element={<PieChartPage />} />
+            
             <Route path="/categories" element={<ExpenseCategories />} />
             <Route path="/addrecord" element={<AddRecord />} />
             <Route path="/search" element={<Search />} />

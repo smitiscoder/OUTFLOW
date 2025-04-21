@@ -1,7 +1,8 @@
 import React from 'react';
-import { FcGoogle } from 'react-icons/fc';
+
 import { FaPhoneAlt } from 'react-icons/fa';
 import { useNavigate } from "react-router-dom";
+import ContinueWithGoogle from './ContinuewithGoogle';
 
 export default function Login() {
   const navigate = useNavigate();
@@ -26,10 +27,9 @@ export default function Login() {
         </button>
 
         {/* Secondary: Google Login */}
-        <button className="flex items-center justify-center gap-3 w-full py-3 rounded-full bg-[#1f1f1f] border border-gray-600 text-white font-medium text-sm">
-          <FcGoogle size={20} />
-          Sign in with Google
-        </button>
+        {/* Secondary: Google Login */}
+        <ContinueWithGoogle />
+
       </div>
 
       {/* Divider */}

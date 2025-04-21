@@ -1,50 +1,28 @@
-import React from 'react';
-import './BottomNavbar.css';
-import { NavLink } from 'react-router-dom';
 
-import { ReactComponent as HomeIcon } from '../icons/Home.svg';
-import { ReactComponent as AddIcon } from '../icons/Add.svg';
-import { ReactComponent as SearchIcon } from '../icons/Search.svg';
-import { ReactComponent as ProfileIcon } from '../icons/Profile.svg';
-import { ReactComponent as PieChartIcon } from '../icons/PieChart.svg';
+import React from 'react';
+import { Home, PieChart, Search, User } from 'lucide-react';
+import { Button } from '../components/ui/button';
 
 const BottomNavbar = () => {
   return (
-    <div className="bottom-nav">
-      <NavLink 
-        to="/home" 
-        className={({ isActive }) => isActive ? "nav-icon active" : "nav-icon"}>
-        <HomeIcon width={24} height={24} />
-        <span>RECORDS</span>
-      </NavLink>
-
-      <NavLink 
-        to="/piechart" 
-        className={({ isActive }) => isActive ? "nav-icon active" : "nav-icon"}>
-        <PieChartIcon width={24} height={24} />
-        <span>CHARTS</span>
-      </NavLink>
-
-      <NavLink 
-      to="/categories" 
-      className="add-button">
-      <AddIcon width={36} height={36} />
-      </NavLink>
-
-
-      <NavLink 
-        to="/search" 
-        className={({ isActive }) => isActive ? "nav-icon active" : "nav-icon"}>
-        <SearchIcon width={24} height={24} />
-        <span>SEARCH</span>
-      </NavLink>
-
-      <NavLink 
-        to="/profile" 
-        className={({ isActive }) => isActive ? "nav-icon active" : "nav-icon"}>
-        <ProfileIcon width={24} height={24} />
-        <span>ME</span>
-      </NavLink>
+    <div className="fixed bottom-0 left-0 right-0 bg-background/80 backdrop-blur-lg border-t border-white/10 py-2">
+      <div className="flex items-center justify-around max-w-md mx-auto">
+        <Button variant="ghost" size="icon" className="text-white">
+          <Home className="w-6 h-6" />
+        </Button>
+        <Button variant="ghost" size="icon" className="text-white">
+          <PieChart className="w-6 h-6" />
+        </Button>
+        <Button variant="ghost" size="icon" className="text-white relative -top-8 p-2 rounded-full bg-accent-orange hover:bg-accent-orange/90">
+          <span className="text-3xl font-bold text-white">+</span>
+        </Button>
+        <Button variant="ghost" size="icon" className="text-white">
+          <Search className="w-6 h-6" />
+        </Button>
+        <Button variant="ghost" size="icon" className="text-white">
+          <User className="w-6 h-6" />
+        </Button>
+      </div>
     </div>
   );
 };
