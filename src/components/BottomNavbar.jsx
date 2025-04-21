@@ -24,7 +24,9 @@ const BottomNavbar = () => {
 
 
         <Button variant="ghost" size="icon" className="text-white relative -top-8 p-2 rounded-full bg-accent-orange hover:bg-accent-orange/90">
+          <Link to="/keyboard" className="flex items-center justify-center w-full h-full">
           <span className="text-3xl font-bold text-white">+</span>
+          </Link>
         </Button>
 
 
