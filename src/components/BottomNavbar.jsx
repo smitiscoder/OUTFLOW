@@ -2,6 +2,8 @@
 import React from 'react';
 import { Home, PieChart, Search, User } from 'lucide-react';
 import { Button } from '../components/ui/button';
+import { Link } from 'react-router-dom';
+
 
 const BottomNavbar = () => {
   return (
@@ -10,18 +12,34 @@ const BottomNavbar = () => {
         <Button variant="ghost" size="icon" className="text-white">
           <Home className="w-6 h-6" />
         </Button>
+
+
         <Button variant="ghost" size="icon" className="text-white">
-          <PieChart className="w-6 h-6" />
+             <Link to="/Reports" className="flex items-center justify-center w-full h-full">
+               <PieChart className="w-6 h-6" />
+            </Link>
         </Button>
+
+
+
+
         <Button variant="ghost" size="icon" className="text-white relative -top-8 p-2 rounded-full bg-accent-orange hover:bg-accent-orange/90">
           <span className="text-3xl font-bold text-white">+</span>
         </Button>
+
+
+
         <Button variant="ghost" size="icon" className="text-white">
           <Search className="w-6 h-6" />
         </Button>
+
+
         <Button variant="ghost" size="icon" className="text-white">
           <User className="w-6 h-6" />
         </Button>
+
+
+
       </div>
     </div>
   );

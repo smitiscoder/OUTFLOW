@@ -10,6 +10,7 @@ import Home from "./components/Home";
 import ExpenseCategories from "./pages/ExpenseCategories";
 import AddRecord from "./pages/AddRecord";
 import Search from "./pages/Search";
+import ReportsScreen from "./components/ReportsScreen";
 
 import ProfilePage from "./pages/Profile"; // Corrected import ✅
 
@@ -50,6 +51,7 @@ function App() {
         {user ? (
           <>
             <Route path="/home" element={<Home />} />
+            <Route path="/reports" element={<ReportsScreen />} />
             
             <Route path="/categories" element={<ExpenseCategories />} />
             <Route path="/addrecord" element={<AddRecord />} />

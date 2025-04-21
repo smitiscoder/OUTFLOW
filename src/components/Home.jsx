@@ -1,10 +1,13 @@
 
 import React from 'react';
-import { Calendar } from 'lucide-react';
+import { Calendar as CalendarIcon } from 'lucide-react';
 import BudgetGauge from '../components/BudgetGauge';
 import BudgetCategory from '../components/BudgetCategory';
 import BottomNav from '../components/BottomNavbar';
 import { Button } from '../components/ui/button';
+import { Popover, PopoverTrigger, PopoverContent } from '../components/ui/popover';
+import { Calendar } from '../components/ui/calendar';
+import { format } from 'date-fns';
 
 const Home = () => {
   const budgetData = {
@@ -32,18 +35,29 @@ const Home = () => {
     ],
   };
 
+  const [date, setDate] = React.useState();
+
   return (
     <div className="min-h-screen bg-gray-900 text-white pb-24">
-
       <div className="max-w-md mx-auto px-4">
         <header className="py-4 flex items-center justify-between">
-        <div className="bg-gradient-to-r from-purple-500 to-pink-500 w-12 h-12 rounded-full ">
-      {/* You can add an icon or some content inside the circle */}
-    </div>
-    <h1 className="text-2xl font-bold tracking-wide text-center ">OutFlow</h1>
-          <Button variant="ghost" size="icon">
-            <Calendar className="w-6 h-6" />
-          </Button>
+          <h1 className="text-xl font-semibold">Spending & Budgets</h1>
+          <Popover>
+            <PopoverTrigger asChild>
+              <button className="p-2 bg-gray-800 rounded hover:bg-gray-700">
+                <CalendarIcon className="w-6 h-6" />
+              </button> 
+            </PopoverTrigger>
+            <PopoverContent className="z-50 bg-white rounded-lg p-3 text-black shadow-xl w-auto" align="end">
+              <Calendar
+                mode="single"
+                selected={date}
+                onSelect={setDate}
+                initialFocus
+                className="p-1"
+              />
+            </PopoverContent>
+          </Popover>
         </header>
 
         <BudgetGauge spent={budgetData.spent} total={budgetData.total} />
@@ -69,6 +83,7 @@ const Home = () => {
 };
 
 export default Home;
+
 
 
 
