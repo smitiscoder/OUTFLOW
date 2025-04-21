@@ -1,3 +1,24 @@
+
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.react-datepicker {
+    border-radius: 0.75rem !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+    padding: 1rem !important;
+    border: 1px solid #e5e7eb !important; /* light gray */
+  }
+  
+  .react-datepicker__day--selected {
+    background-color: #a855f7 !important; /* purple-500 */
+    color: white !important;
+  }
+  
+  .react-datepicker__day:hover {
+    background-color: #f3e8ff !important; /* purple-100 */
+    color: #000 !important;
+  }
+  
+  
