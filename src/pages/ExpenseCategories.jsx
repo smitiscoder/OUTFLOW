@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './ExpenseCategories.css';
 
-import Keyboard from '../pages/Keyboard';
+import Keyboard from '../components/Keyboard';
 
 // Firebase imports
 import { getFirestore, collection, addDoc } from 'firebase/firestore';

@@ -11,8 +11,9 @@ import ExpenseCategories from "./pages/ExpenseCategories";
 import AddRecord from "./pages/AddRecord";
 import Search from "./pages/Search";
 import ReportsScreen from "./components/ReportsScreen";
+import Keyboard from "./components/Keyboard"; // Corrected import ✅
 
-import ProfilePage from "./pages/Profile"; // Corrected import ✅
+import ProfilePage from "./components/ProfilePage"; // Corrected import ✅
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -52,6 +53,8 @@ function App() {
           <>
             <Route path="/home" element={<Home />} />
             <Route path="/reports" element={<ReportsScreen />} />
+            <Route path="/keyboard" element={<Keyboard/>} />
+
             
             <Route path="/categories" element={<ExpenseCategories />} />
             <Route path="/addrecord" element={<AddRecord />} />

@@ -35,7 +35,9 @@ const BottomNavbar = () => {
 
 
         <Button variant="ghost" size="icon" className="text-white">
+          <Link to="/Profile" className="flex items-center justify-center w-full h-full">
           <User className="w-6 h-6" />
+          </Link>
         </Button>
 
 

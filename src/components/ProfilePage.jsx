@@ -11,7 +11,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 
-export default function SettingsPage() {
+export default function ProfilePage() {
   const [darkMode, setDarkMode] = useState(true);
   const [notifications, setNotifications] = useState(true);
 
