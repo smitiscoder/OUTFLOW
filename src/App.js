@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
-import Auth from "./components/Auth";
+import Auth from "./components/login";
 import Home from "./pages/Home";
 import PieChartPage from "./pages/PieChartPage";
 import ExpenseCategories from "./pages/ExpenseCategories";
@@ -17,6 +17,8 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 import { auth } from "./components/firebase";
+import Onboarding from "./components/onboarding";
+import Login from "./components/login";
 
 function App() {
   const [user, setUser] = useState(null);
@@ -37,8 +39,9 @@ function App() {
       <ToastContainer />
       <Routes>
         {/* Public routes */}
-        <Route path="/auth" element={<Auth />} />
-        <Route path="/phone-login" element={<PhoneLogin />} />
+        <Route path="/onboarding" element={<Onboarding />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/phone-login" element={<PhoneLogin/>} />
 
         {/* Protected routes */}
         {user ? (
