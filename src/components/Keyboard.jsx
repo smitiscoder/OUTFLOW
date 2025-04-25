@@ -1,129 +1,98 @@
-import { useState } from "react";
-import { Card, CardContent } from "../components/ui/card";
-import { RoundButton } from "../components/ui/roundbutton";
-import { Input } from "../components/ui/input";
-import { Button } from "../components/ui/button";
-import { CalendarDays, Check, Delete, Plus, Minus, ShoppingCart, Utensils, Smartphone, Music, BookOpen, Heart, Dumbbell, Users, Bus, Shirt, Car, Wine, Activity, Monitor, Plane, HeartPulse, Dog, Wrench, Home, Sofa, Gift, HandHeart, BadgeDollarSign, CupSoda, Baby, Salad, Grape } from "lucide-react";
 
-const categories = [
-  { name: "Shopping", icon: <ShoppingCart size={16} /> },
-  { name: "Food", icon: <Utensils size={16} /> },
-  { name: "Phone", icon: <Smartphone size={16} /> },
-  { name: "Entertainment", icon: <Music size={16} /> },
-  { name: "Education", icon: <BookOpen size={16} /> },
-  { name: "Beauty", icon: <Heart size={16} /> },
-  { name: "Sports", icon: <Dumbbell size={16} /> },
-  { name: "Social", icon: <Users size={16} /> },
-  { name: "Transportation", icon: <Bus size={16} /> },
-  { name: "Clothing", icon: <Shirt size={16} /> },
-  { name: "Car", icon: <Car size={16} /> },
-  { name: "Alcohol", icon: <Wine size={16} /> },
-  { name: "Cigarettes", icon: <Activity size={16} /> },
-  { name: "Electronics", icon: <Monitor size={16} /> },
-  { name: "Travel", icon: <Plane size={16} /> },
-  { name: "Health", icon: <HeartPulse size={16} /> },
-  { name: "Pets", icon: <Dog size={16} /> },
-  { name: "Repairs", icon: <Wrench size={16} /> },
-  { name: "Housing", icon: <Home size={16} /> },
-  { name: "Home", icon: <Sofa size={16} /> },
-  { name: "Gifts", icon: <Gift size={16} /> },
-  { name: "Donations", icon: <HandHeart size={16} /> },
-  { name: "Lottery", icon: <BadgeDollarSign size={16} /> },
-  { name: "Snacks", icon: <CupSoda size={16} /> },
-  { name: "Kids", icon: <Baby size={16} /> },
-  { name: "Vegetables", icon: <Salad size={16} /> },
-  { name: "Fruits", icon: <Grape size={16} /> },
+import React from 'react';
+import { RoundButton } from '../components/ui/roundbutton';
+import { X, ShoppingCart, Utensils, Phone, Mic, BookOpen, Scissors, Dumbbell, Users, Bus, Shirt, Car, Wine, Cigarette, Smartphone, Plane, Stethoscope, Dog, Wrench, Home, Gift, Heart, Ticket, Cookie, Baby, Salad, Apple, Settings } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { BadgeDollarSign, Briefcase, Banknote, TrendingUp, RotateCcw, MoreHorizontal } from 'lucide-react';
+
+const expensecategories = [
+  { id: 'shopping', icon: ShoppingCart, label: 'Shopping' },
+  { id: 'food', icon: Utensils, label: 'Food' },
+  { id: 'phone', icon: Phone, label: 'Phone' },
+  { id: 'entertainment', icon: Mic, label: 'Entertainment' },
+  { id: 'education', icon: BookOpen, label: 'Education' },
+  { id: 'beauty', icon: Scissors, label: 'Beauty' },
+  { id: 'sports', icon: Dumbbell, label: 'Sports' },
+  { id: 'social', icon: Users, label: 'Social' },
+  { id: 'transportation', icon: Bus, label: 'Transportation' },
+  { id: 'clothing', icon: Shirt, label: 'Clothing' },
+  { id: 'car', icon: Car, label: 'Car' },
+  { id: 'alcohol', icon: Wine, label: 'Alcohol' },
+  { id: 'cigarettes', icon: Cigarette, label: 'Cigarettes' },
+  { id: 'electronics', icon: Smartphone, label: 'Electronics' },
+  { id: 'travel', icon: Plane, label: 'Travel' },
+  { id: 'health', icon: Stethoscope, label: 'Health' },
+  { id: 'pets', icon: Dog, label: 'Pets' },
+  { id: 'repairs', icon: Wrench, label: 'Repairs' },
+  { id: 'housing', icon: Home, label: 'Housing' },
+  { id: 'gifts', icon: Gift, label: 'Gifts' },
+  { id: 'donations', icon: Heart, label: 'Donations' },
+  { id: 'lottery', icon: Ticket, label: 'Lottery' },
+  { id: 'snacks', icon: Cookie, label: 'Snacks' },
+  { id: 'kids', icon: Baby, label: 'Kids' },
+  { id: 'vegetables', icon: Salad, label: 'Vegetables' },
+  { id: 'fruits', icon: Apple, label: 'Fruits' },
+  
 ];
 
-export default function ExpenseKeyboardPage() {
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [amount, setAmount] = useState(0);
-  const [note, setNote] = useState("");
-  const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
-  const [type, setType] = useState("expense");
 
-  const handleCategoryClick = (category) => {
-    setSelectedCategory(category);
-  };
+const incomecategories = [
+  { id: 'salary', icon: BadgeDollarSign, label: 'Salary' },
+  { id: 'business', icon: Briefcase, label: 'Business' },
+  { id: 'investments', icon: Banknote, label: 'Investments' },
+  { id: 'interest', icon: TrendingUp, label: 'Interest' },
+  { id: 'refund', icon: RotateCcw, label: 'Refund' },
+  { id: 'other', icon: MoreHorizontal, label: 'Other' },
+];
 
-  const handleNumberClick = (num) => {
-    setAmount((prev) => parseFloat(prev.toString() + num.toString()));
-  };
-
-  const handleClear = () => {
-    setAmount(0);
-  };
+const Categories = () => {
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = React.useState('expense');
+  const visibleCategories = activeTab === 'expense' ? expensecategories : incomecategories;
+ 
 
   return (
-    <div className="p-4 space-y-4 max-w-sm mx-auto bg-gray-900 text-white min-h-screen">
-      <h1 className="text-xl font-bold text-center">Select Type</h1>
-      <div className="flex justify-center gap-4">
-        <RoundButton
-          onClick={() => setType("income")}
-          className={`px-4 py-2 rounded-full ${
-            type === "income" ? "bg-green-600 text-white" : "bg-gray-700 text-gray-300"
-          }`}
-        >
-          <Plus size={16} className="mr-1" /> Income
-        </RoundButton>
-        <RoundButton
-          onClick={() => setType("expense")}
-          className={`px-4 py-2 rounded-full ${
-            type === "expense" ? "bg-red-600 text-white" : "bg-gray-700 text-gray-300"
-          }`}
-        >
-          <Minus size={16} className="mr-1" /> Expense
-        </RoundButton>
-      </div>
+    <div className="min-h-screen bg-gray-800 text-white pb-24">
+      <div className="max-w-md mx-auto px-4">
+        {/* Header */}
+        <header className="py-4 flex items-center justify-between">
+          <RoundButton variant="ghost" size="icon" onClick={() => navigate(-1)}>
+            <X className="w-6 h-6" />
+          </RoundButton>
+          <h1 className="text-xl font-semibold">Add</h1>
+          <div className="w-10" /> {/* Spacer to center the title */}
+        </header>
 
-      <div className="grid grid-cols-4 gap-3">
-        {categories.map((cat) => (
-          <button
-           
-            key={cat.name}
-            onClick={() => handleCategoryClick(cat.name)}
-            className={`flex flex-col items-center justify-center w-16 h-16 rounded-full border-2 p-2 text-xs font-semibold ${
-              selectedCategory === cat.name ? "border-yellow-500 bg-yellow-800" : "border-gray-700 bg-gray-800"
-            }`}
-          >
-            {cat.icon}
-            <span className="bg-gradient-to-r from-yellow-400 via-pink-500 to-purple-500 bg-clip-text text-transparent text-[10px] text-center leading-tight">
-              {cat.name}
-            </span>
-          </button>
-        ))}
-      </div>
-
-      <div className="space-y-2">
-        <Input
-          placeholder="Enter a note..."
-          value={note}
-          onChange={(e) => setNote(e.target.value)}
-          className="bg-gray-800 text-white placeholder-gray-400 border-gray-700"
-        />
-        <div className="flex items-center gap-2">
-          <input
-            type="date"
-            value={date}
-            onChange={(e) => setDate(e.target.value)}
-            className="border border-gray-700 bg-gray-800 text-white p-2 rounded w-full"
-          />
-          <CalendarDays />
+        {/* Tabs */}
+        <div className="flex rounded-lg bg-white/10 p-1 mb-8">
+          {['expense', 'income', ].map((tab) => (
+            <RoundButton
+              key={tab}
+              className="flex-1 py-2 text-sm font-medium rounded-md bg-gray-700 text-white "
+                onClick={() => setActiveTab(tab)}
+            >
+              {tab.charAt(0).toUpperCase() + tab.slice(1)}
+            </RoundButton>
+          ))}
         </div>
-      </div>
 
-      <div className="grid grid-cols-3 gap-2">
-        {[7, 8, 9, 4, 5, 6, 1, 2, 3].map((num) => (
-          <RoundButton key={num} onClick={() => handleNumberClick(num)} className="bg-gray-700 hover:bg-gray-600 text-white">{num}</RoundButton>
-        ))}
-        <RoundButton onClick={() => handleNumberClick('.')} className="bg-gray-700 hover:bg-gray-600 text-white">.</RoundButton>
-        < RoundButton onClick={() => handleNumberClick(0)} className="bg-gray-700 hover:bg-gray-600 text-white">0</RoundButton>
-        <RoundButton onClick={handleClear} className="bg-red-600 hover:bg-red-700 text-white"><Delete size={18} /></RoundButton>
-      </div>
-
-      <div className="flex justify-end">
-        <Button className="bg-yellow-500 hover:bg-yellow-600 text-black"><Check /> Save</Button>
+        {/* Categories Grid */}
+        <div className="grid grid-cols-4 gap-6">
+          {visibleCategories.map(({ id, icon: Icon, label }) => (
+            <RoundButton
+              key={id}
+              className="flex flex-col items-center gap-2 text-white/70 hover:text-white transition-colors"
+            >
+              <div className="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center">
+                <Icon className="w-6 h-6" />
+              </div>
+              <span className="text-xs text-center">{label}</span>
+            </RoundButton>
+          ))}
+        </div>
       </div>
     </div>
   );
-}
+};
+
+export default Categories;
