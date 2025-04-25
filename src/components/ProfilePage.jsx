@@ -2,10 +2,10 @@ import React, { useState } from "react";
 import {
   Mail,
   Phone,
-  CreditCard,
+ 
   Moon,
   Bell,
-  CircleHelp,
+  
   LogOut,
   Camera,
   ChevronRight,
@@ -57,12 +57,7 @@ export default function ProfilePage() {
           <SettingsSection title="Account">
             <SettingItem icon={<Mail size={20} />} label="Email" value={user.email} />
             <SettingItem icon={<Phone size={20} />} label="Phone" value={user.phone} />
-            <SettingItem
-              icon={<CreditCard size={20} />}
-              label="Payment Methods"
-              type="link"
-              onClick={() => console.log("Payment Methods")}
-            />
+            
           </SettingsSection>
 
           {/* Preferences */}
@@ -85,12 +80,7 @@ export default function ProfilePage() {
 
           {/* Support */}
           <SettingsSection title="Support">
-            <SettingItem
-              icon={<CircleHelp size={20} />}
-              label="Help & FAQ"
-              type="link"
-              onClick={() => console.log("Help pressed")}
-            />
+            
             <SettingItem
               icon={<LogOut size={20} color="red" />}
               label="Log Out"

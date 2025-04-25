@@ -21,7 +21,7 @@ export const Button = ({
   return (
     <button
       className={clsx(
-        "rounded-md font-medium transition duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500",
+        " font-medium transition duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500",
         variants[variant],
         sizes[size],
         className

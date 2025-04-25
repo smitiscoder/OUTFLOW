@@ -37,13 +37,13 @@ const Search = () => {
                   {expense.category} • {expense.date}
                 </p>
               </div>
-              <p className="font-semibold text-black-400">
+              <p className="font-semibold text-orange-400">
                 ${expense.amount.toFixed(2)}
               </p>
             </div>
           ))
         ) : (
-          <p className="text-white-400 text-sm text-center mt-10">
+          <p className="text-gray-400 text-sm text-center mt-10">
             No expenses yet. Start tracking your spending!
           </p>
         )}

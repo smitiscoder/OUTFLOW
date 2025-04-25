@@ -6,14 +6,14 @@ import "./App.css";
 
 import Auth from "./components/login";
 import Home from "./components/Home";
+import MainLayout from "./components/layout/MainLayout";
 
 import ExpenseCategories from "./pages/ExpenseCategories";
 import AddRecord from "./pages/AddRecord";
 import Search from "./components/Search";
 import ReportsScreen from "./components/ReportsScreen";
-import Keyboard from "./components/Keyboard"; // Corrected import ✅
-
-import ProfilePage from "./components/ProfilePage"; // Corrected import ✅
+import Keyboard from "./components/Keyboard";
+import ProfilePage from "./components/ProfilePage";
 
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -45,27 +45,25 @@ function App() {
         {/* Public routes */}
         <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/phone" element={<Phone/>} />
-        <Route path="/continuewithgoogle" element={<ContinueWithGoogle/>} />
+        <Route path="/phone" element={<Phone />} />
+        <Route path="/continuewithgoogle" element={<ContinueWithGoogle />} />
 
         {/* Protected routes */}
         {user ? (
-          <>
+          <Route element={<MainLayout />}>
             <Route path="/home" element={<Home />} />
             <Route path="/reports" element={<ReportsScreen />} />
-            <Route path="/keyboard" element={<Keyboard/>} />
-
-            
+            <Route path="/keyboard" element={<Keyboard />} />
             <Route path="/categories" element={<ExpenseCategories />} />
             <Route path="/addrecord" element={<AddRecord />} />
             <Route path="/search" element={<Search />} />
             <Route path="/profile" element={<ProfilePage />} />
-          </>
+          </Route>
         ) : (
-          <Route path="/" element={<Auth />} /> // Default to Auth if no user is logged in
+          <Route path="*" element={<Auth />} />
         )}
 
-        {/* If no route matches */}
+        {/* Fallback */}
         <Route path="*" element={<div>404 - Page Not Found</div>} />
       </Routes>
     </Router>
@@ -73,7 +71,3 @@ function App() {
 }
 
 export default App;
-
-
-
-

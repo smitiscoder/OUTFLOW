@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Header from './Header';
-import { categories } from './Data/mockData'; 
+import { categories } from './data/mockData'; 
 
 export default function ReportsScreen() {
   const [timeframe, setTimeframe] = useState('month');
@@ -44,7 +44,7 @@ export default function ReportsScreen() {
           <div className="relative h-52 flex items-center justify-center mb-6">
             <div className="w-40 h-40 rounded-full bg-gray-700 relative flex items-center justify-center">
               <div className="absolute w-24 h-24 bg-gray-800 rounded-full flex flex-col items-center justify-center">
-                <span className="text-lg font-semibold">${totalSpent.toFixed(2)}</span>
+                <span className="text-lg font-semibold">{totalSpent.toFixed(2)}</span>
                 <span className="text-xs text-gray-400">Total Spent</span>
               </div>
             </div>
@@ -55,7 +55,7 @@ export default function ReportsScreen() {
               <div key={item.id} className="flex items-center">
                 <div className="w-3 h-3 rounded-full mr-3" style={{ backgroundColor: item.color }}></div>
                 <div className="flex-1 text-sm">{item.name}</div>
-                <div className="text-sm font-medium text-white mr-3">${item.spent.toFixed(2)}</div>
+                <div className="text-sm font-medium text-white mr-3">{item.spent.toFixed(2)}</div>
                 <div className="text-xs text-gray-400 w-12 text-right">{item.percentage.toFixed(1)}%</div>
               </div>
             ))}
@@ -67,7 +67,7 @@ export default function ReportsScreen() {
 
           <div className="flex justify-between border-b border-gray-700 pb-3 mb-3">
             <span className="text-sm text-gray-400">Total Spent</span>
-            <span className="text-sm font-medium">${totalSpent.toFixed(2)}</span>
+            <span className="text-sm font-medium">{totalSpent.toFixed(2)}</span>
           </div>
 
           <div className="flex justify-between border-b border-gray-700 pb-3 mb-3">
@@ -80,7 +80,7 @@ export default function ReportsScreen() {
           <div className="flex justify-between">
             <span className="text-sm text-gray-400">Average per Day</span>
             <span className="text-sm font-medium">
-              ${(totalSpent / 30).toFixed(2)}
+              {(totalSpent / 30).toFixed(2)}
             </span>
           </div>
         </div>

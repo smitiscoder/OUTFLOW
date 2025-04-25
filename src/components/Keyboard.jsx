@@ -1,9 +1,9 @@
 
 import React from 'react';
 import { RoundButton } from '../components/ui/roundbutton';
-import { X, ShoppingCart, Utensils, Phone, Mic, BookOpen, Scissors, Dumbbell, Users, Bus, Shirt, Car, Wine, Cigarette, Smartphone, Plane, Stethoscope, Dog, Wrench, Home, Gift, Heart, Ticket, Cookie, Baby, Salad, Apple, Settings } from 'lucide-react';
+import { X, ShoppingCart, Utensils, Phone, Mic, BookOpen, Scissors, Dumbbell, Users, Bus, Shirt, Car, Smartphone, Plane, Stethoscope, Dog, Wrench, Home, Gift, Heart, Ticket, Cookie, Baby, Salad, Apple, Settings } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { BadgeDollarSign, Briefcase, Banknote, TrendingUp, RotateCcw, MoreHorizontal } from 'lucide-react';
+import { BadgeDollarSign, Briefcase, Banknote, TrendingUp, RotateCcw, } from 'lucide-react';
 
 const expensecategories = [
   { id: 'shopping', icon: ShoppingCart, label: 'Shopping' },
@@ -17,8 +17,7 @@ const expensecategories = [
   { id: 'transportation', icon: Bus, label: 'Transportation' },
   { id: 'clothing', icon: Shirt, label: 'Clothing' },
   { id: 'car', icon: Car, label: 'Car' },
-  { id: 'alcohol', icon: Wine, label: 'Alcohol' },
-  { id: 'cigarettes', icon: Cigarette, label: 'Cigarettes' },
+ 
   { id: 'electronics', icon: Smartphone, label: 'Electronics' },
   { id: 'travel', icon: Plane, label: 'Travel' },
   { id: 'health', icon: Stethoscope, label: 'Health' },
@@ -42,7 +41,7 @@ const incomecategories = [
   { id: 'investments', icon: Banknote, label: 'Investments' },
   { id: 'interest', icon: TrendingUp, label: 'Interest' },
   { id: 'refund', icon: RotateCcw, label: 'Refund' },
-  { id: 'other', icon: MoreHorizontal, label: 'Other' },
+  
 ];
 
 const Categories = () => {
