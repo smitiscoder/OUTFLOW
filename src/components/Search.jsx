@@ -12,7 +12,7 @@ const Search = () => {
   );
 
   return (
-    <div className="min-h-screen bg-gray-800 text-white px-4 pt-6 pb-28 max-w-md mx-auto">
+    <div className="min-h-screen bg-gray-900 text-white px-4 pt-6 pb-28 max-w-md mx-auto">
       <div className="relative mb-4">
         <input
           type="text"

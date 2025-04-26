@@ -51,7 +51,7 @@ const Categories = () => {
  
 
   return (
-    <div className="min-h-screen bg-gray-800 text-white pb-24">
+    <div className="min-h-screen bg-gray-900 text-white pb-24">
       <div className="max-w-md mx-auto px-4">
         {/* Header */}
         <header className="py-4 flex items-center justify-between">

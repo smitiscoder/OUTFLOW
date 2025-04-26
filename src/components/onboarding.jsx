@@ -44,12 +44,7 @@ export default function Onboarding() {
         >
           Get started
         </button>
-        <button
-          className="bg-white/10 text-gray-300 font-medium py-3 rounded-full backdrop-blur-sm hover:text-white transition"
-          onClick={() => navigate("/register")}
-        >
-          I have an account
-        </button>
+
       </div>
 
       {/* Background Orbs */}
