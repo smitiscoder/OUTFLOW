@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import './ExpenseCategories.css';
 
-import Keyboard from '../components/Keyboard';
+import Keyboard from './Keyboard';
 
 // Firebase imports
 import { getFirestore, collection, addDoc } from 'firebase/firestore';
@@ -24,7 +24,8 @@ import HousingAndRepair from './Categoriesicons/Housing & Repair.svg';
 import GiftsAndDonations from './Categoriesicons/Gifts & Donations.svg';
 import Others from './Categoriesicons/Others.svg';
 
-// Category data
+// Category dat\172693+
+
 const categoryData = [
   { name: 'Shopping', icon: Shopping },
   { name: 'Food', icon: Food },

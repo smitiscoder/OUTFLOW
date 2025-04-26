@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
-import Header from './Header';
-import { categories } from './Data/mockData'; 
+// src/pages/ReportsScreen.jsx
+import React, { useState, useEffect } from 'react';
+import { useExpenses } from '../ExpenseContext'; // Importing the custom hook
+import Header from '../components/Header';
 
 export default function ReportsScreen() {
+  const { expenses } = useExpenses(); // Accessing expenses from context
   const [timeframe, setTimeframe] = useState('month');
 
   const timeframes = [
@@ -12,9 +14,11 @@ export default function ReportsScreen() {
     { id: 'year', label: 'Year' },
   ];
 
-  const totalSpent = categories.reduce((sum, category) => sum + category.spent, 0);
+  // Calculate total spent
+  const totalSpent = expenses.reduce((sum, category) => sum + category.spent, 0);
 
-  const chartData = categories.map(category => ({
+  // Calculate chart data with percentages
+  const chartData = expenses.map(category => ({
     ...category,
     percentage: (category.spent / totalSpent) * 100,
   }));
@@ -73,7 +77,7 @@ export default function ReportsScreen() {
           <div className="flex justify-between border-b border-gray-700 pb-3 mb-3">
             <span className="text-sm text-gray-400">Highest Category</span>
             <span className="text-sm font-medium">
-              {chartData.sort((a, b) => b.spent - a.spent)[0].name}
+              {chartData.sort((a, b) => b.spent - a.spent)[0]?.name}
             </span>
           </div>
 
@@ -87,4 +91,5 @@ export default function ReportsScreen() {
       </div>
     </div>
   );
-} 
+}
+ 

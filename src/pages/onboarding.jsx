@@ -10,7 +10,7 @@ export default function Onboarding() {
       {/* Logo */}
       <div className="flex justify-center items-center mt-6">
         <div className="w-10 h-10 bg-gradient-to-tr from-purple-500 to-pink-500 rounded-full mr-2"></div>
-        <h1 className="text-2xl font-bold">OutFlow</h1>
+        <h1 className="text-2xl font-bold">OOTFLOW</h1>
       </div>
 
       {/* App icons */}
