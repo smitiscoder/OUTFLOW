@@ -8,7 +8,6 @@ import Auth from "./components/login";
 import Home from "./components/Home";
 import MainLayout from "./components/layout/MainLayout";
 
-import AddRecord from "./pages/AddRecord";
 import Search from "./components/Search";
 import ReportsScreen from "./components/ReportsScreen";
 import Keyboard from "./components/Keyboard";
@@ -54,7 +53,7 @@ function App() {
             <Route path="/reports" element={<ReportsScreen />} />
             <Route path="/keyboard" element={<Keyboard />} />
 
-            <Route path="/addrecord" element={<AddRecord />} />
+            
             <Route path="/search" element={<Search />} />
             <Route path="/profile" element={<ProfilePage />} />
           </Route>
