@@ -11,28 +11,9 @@ import { format } from 'date-fns';
 
 const Home = () => {
   const budgetData = {
-    spent: 82.97,
-    total: 2000,
-    categories: [
-      {
-        type: 'auto',
-        spent: 25.99,
-        total: 400,
-        remaining: 375,
-      },
-      {
-        type: 'entertainment',
-        spent: 50.99,
-        total: 500,
-        remaining: 375,
-      },
-      {
-        type: 'security',
-        spent: 5.99,
-        total: 900,
-        remaining: 375,
-      },
-    ],
+    spent: 0,
+    total: 0,
+    categories: [],
   };
 
   const [date, setDate] = React.useState();
@@ -41,7 +22,10 @@ const Home = () => {
     <div className="min-h-screen bg-gray-900 text-white pb-24">
       <div className="max-w-md mx-auto px-4">
         <header className="py-4 flex items-center justify-between">
-          <h1 className="text-xl font-semibold">Spending & Budgets</h1>
+        <div className="flex justify-center items-center mt-6">
+        <div className="w-10 h-10 bg-gradient-to-tr from-purple-500 to-pink-500 rounded-full mr-2"></div>
+        <h1 className="text-2xl font-bold">OutFlow</h1>
+      </div>
           <Popover>
             <PopoverTrigger asChild>
               <button className="p-2 bg-gray-800 rounded hover:bg-gray-700">
@@ -62,8 +46,8 @@ const Home = () => {
 
         <BudgetGauge spent={budgetData.spent} total={budgetData.total} />
 
-        <div className="mt-4 p-3 rounded-lg bg-white/5 backdrop-blur-sm text-center">
-          <p className="text-white">Your budgets are on track 👍</p>
+        <div className="mt-5 p-3 rounded-lg bg-white/5 backdrop-blur-sm text-center">
+          <p className="text-white">Start tracking your budget 🎯</p>
         </div>
 
         <div className="mt-6 space-y-4">

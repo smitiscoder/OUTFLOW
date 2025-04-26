@@ -9,6 +9,7 @@ const Phone = () => {
   const [otpSent, setOtpSent] = useState(false);
   const [otp, setOtp] = useState(new Array(6).fill(""));
   const [confirmationResult, setConfirmationResult] = useState(null);
+  const [verifying, setVerifying] = useState(false);
 
   const navigate = useNavigate();
 
@@ -46,23 +47,30 @@ const Phone = () => {
 
   const handleOTPChange = (value, index) => {
     if (isNaN(value)) return;
+
     const newOtp = [...otp];
     newOtp[index] = value;
     setOtp(newOtp);
+
     if (value && index < 5) {
       document.getElementById(`otp-${index + 1}`).focus();
+    }
+
+    const finalOtp = newOtp.join("");
+    if (finalOtp.length === 6) {
+      verifyOTP(finalOtp);
     }
   };
 
   const handleKeyDown = (e, index) => {
     if (e.key === "Backspace") {
+      e.preventDefault();
+      const newOtp = [...otp];
       if (otp[index]) {
-        const newOtp = [...otp];
         newOtp[index] = "";
         setOtp(newOtp);
       } else if (index > 0) {
         document.getElementById(`otp-${index - 1}`).focus();
-        const newOtp = [...otp];
         newOtp[index - 1] = "";
         setOtp(newOtp);
       }
@@ -73,7 +81,28 @@ const Phone = () => {
     }
   };
 
-  const verifyOTP = async () => {
+  const handlePaste = (e) => {
+    e.preventDefault();
+    const pasteData = e.clipboardData.getData("text").slice(0, 6).split("");
+    const newOtp = [...otp];
+    pasteData.forEach((char, i) => {
+      if (i < 6 && !isNaN(char)) {
+        newOtp[i] = char;
+      }
+    });
+    setOtp(newOtp);
+
+    const filledLength = pasteData.length;
+    setTimeout(() => {
+      if (filledLength < 6) {
+        document.getElementById(`otp-${filledLength}`).focus();
+      } else {
+        verifyOTP(newOtp.join(""));
+      }
+    }, 10);
+  };
+
+  const verifyOTP = async (enteredOtp = otp.join("")) => {
     if (!confirmationResult) {
       toast.error("Session expired. Please resend OTP.");
       setOtpSent(false);
@@ -81,18 +110,20 @@ const Phone = () => {
       return;
     }
 
-    const finalOtp = otp.join("");
-    if (finalOtp.length !== 6) {
+    if (enteredOtp.length !== 6) {
       toast.error("Please enter the 6-digit OTP.");
       return;
     }
 
     try {
-      await confirmationResult.confirm(finalOtp);
+      setVerifying(true);
+      await confirmationResult.confirm(enteredOtp);
       toast.success("Login successful!");
       navigate("/home");
     } catch (error) {
       toast.error("Invalid OTP");
+    } finally {
+      setVerifying(false);
     }
   };
 
@@ -121,7 +152,7 @@ const Phone = () => {
       ) : (
         <>
           {/* OTP Inputs */}
-          <div className="flex justify-between space-x-2 mt-4 mb-6 w-full max-w-xs">
+          <div className="flex justify-between tracking-widest space-x-2 mt-4 mb-6 w-full max-w-xs">
             {otp.map((digit, index) => (
               <input
                 key={index}
@@ -132,15 +163,16 @@ const Phone = () => {
                 value={digit}
                 onChange={(e) => handleOTPChange(e.target.value, index)}
                 onKeyDown={(e) => handleKeyDown(e, index)}
+                onPaste={handlePaste}
               />
             ))}
           </div>
           <button
-            className="w-full max-w-xs bg-gradient-to-r from-green-500 to-green-400 text-white font-semibold py-3 rounded-full hover:opacity-90 transition"
-            onClick={verifyOTP}
-            disabled={otp.join("").length !== 6}
+            className={`w-full max-w-xs bg-gradient-to-r from-green-500 to-green-400 text-white font-semibold py-3 rounded-full hover:opacity-90 transition ${verifying ? "opacity-60 cursor-not-allowed" : ""}`}
+            onClick={() => verifyOTP()}
+            disabled={verifying || otp.join("").length !== 6}
           >
-            VERIFY & LOGIN
+            {verifying ? "Verifying..." : "VERIFY & LOGIN"}
           </button>
         </>
       )}
