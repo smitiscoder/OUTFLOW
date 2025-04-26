@@ -1,9 +1,8 @@
-
 import React from 'react';
 import { RoundButton } from '../components/ui/roundbutton';
-import { X, ShoppingCart, Utensils, Phone, Mic, BookOpen, Scissors, Dumbbell, Users, Bus, Shirt, Car, Smartphone, Plane, Stethoscope, Dog, Wrench, Home, Gift, Heart, Ticket, Cookie, Baby, Salad, Apple, Settings } from 'lucide-react';
+import { X, ShoppingCart, Utensils, Phone, Mic, BookOpen, Scissors, Dumbbell, Users, Bus, Shirt, Car, Smartphone, Plane, Stethoscope, Dog, Wrench, Home, Gift, Heart, Ticket, Cookie, Baby, Salad, Apple } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { BadgeDollarSign, Briefcase, Banknote, TrendingUp, RotateCcw, } from 'lucide-react';
+import { BadgeDollarSign, Briefcase, Banknote, TrendingUp, RotateCcw } from 'lucide-react';
 
 const expensecategories = [
   { id: 'shopping', icon: ShoppingCart, label: 'Shopping' },
@@ -17,7 +16,6 @@ const expensecategories = [
   { id: 'transportation', icon: Bus, label: 'Transportation' },
   { id: 'clothing', icon: Shirt, label: 'Clothing' },
   { id: 'car', icon: Car, label: 'Car' },
- 
   { id: 'electronics', icon: Smartphone, label: 'Electronics' },
   { id: 'travel', icon: Plane, label: 'Travel' },
   { id: 'health', icon: Stethoscope, label: 'Health' },
@@ -31,9 +29,7 @@ const expensecategories = [
   { id: 'kids', icon: Baby, label: 'Kids' },
   { id: 'vegetables', icon: Salad, label: 'Vegetables' },
   { id: 'fruits', icon: Apple, label: 'Fruits' },
-  
 ];
-
 
 const incomecategories = [
   { id: 'salary', icon: BadgeDollarSign, label: 'Salary' },
@@ -41,17 +37,24 @@ const incomecategories = [
   { id: 'investments', icon: Banknote, label: 'Investments' },
   { id: 'interest', icon: TrendingUp, label: 'Interest' },
   { id: 'refund', icon: RotateCcw, label: 'Refund' },
-  
 ];
 
 const Categories = () => {
+  const [showTransactionPage, setShowTransactionPage] = React.useState(false);
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = React.useState('expense');
   const visibleCategories = activeTab === 'expense' ? expensecategories : incomecategories;
- 
+
+  const [selectedCategory, setSelectedCategory] = React.useState(null);
+  const [showTransactionForm, setShowTransactionForm] = React.useState(false);
+
+  const handleCategoryClick = (id, label) => {
+    setSelectedCategory({ id, label });
+    setShowTransactionPage(true);
+  };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white pb-24">
+    <div className="min-h-screen bg-gray-900 text-white pb-24 relative">
       <div className="max-w-md mx-auto px-4">
         {/* Header */}
         <header className="py-4 flex items-center justify-between">
@@ -64,11 +67,13 @@ const Categories = () => {
 
         {/* Tabs */}
         <div className="flex rounded-lg bg-white/10 p-1 mb-8">
-          {['expense', 'income', ].map((tab) => (
+          {['expense', 'income'].map((tab) => (
             <RoundButton
               key={tab}
-              className="flex-1 py-2 text-sm font-medium rounded-md bg-gray-700 text-white "
-                onClick={() => setActiveTab(tab)}
+              className={`flex-1 py-2 text-sm font-medium rounded-md ${
+                activeTab === tab ? 'bg-gray-700 text-white' : 'text-white/70'
+              }`}
+              onClick={() => setActiveTab(tab)}
             >
               {tab.charAt(0).toUpperCase() + tab.slice(1)}
             </RoundButton>
@@ -81,6 +86,7 @@ const Categories = () => {
             <RoundButton
               key={id}
               className="flex flex-col items-center gap-2 text-white/70 hover:text-white transition-colors"
+              onClick={() => handleCategoryClick(id, label)}
             >
               <div className="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center">
                 <Icon className="w-6 h-6" />
@@ -90,6 +96,63 @@ const Categories = () => {
           ))}
         </div>
       </div>
+
+      {/* Transaction Form Popup */}
+      {showTransactionPage && selectedCategory && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-gray-800 rounded-lg p-6 w-80 text-white relative">
+            <button
+              onClick={() => setShowTransactionPage(false)}
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            <h2 className="text-lg font-semibold mb-4 text-center">Add Transaction</h2>
+
+            <form className="flex flex-col gap-4">
+              <div>
+                <label className="text-sm font-medium">Category</label>
+                <input
+                  type="text"
+                  value={selectedCategory.label}
+                  readOnly
+                  className="w-full border rounded p-2 mt-1 bg-gray-800 text-white"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Amount</label>
+                <input
+                  type="number"
+                  placeholder="Enter amount"
+                  className="w-full border rounded p-2 mt-1 bg-gray-800 text-white"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Description</label>
+                <input
+                  type="text"
+                  placeholder="Enter description"
+                  className="w-full border rounded p-2 mt-1 bg-gray-800 text-white"
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium">Date</label>
+                <input
+                  type="date"
+                  className="w-full border rounded p-2 mt-1 bg-gray-800 text-white"
+                />
+              </div>
+              <button
+                type="submit"
+                className="bg-blue-600 text-white py-2 rounded mt-4 hover:bg-blue-700 transition"
+              >
+                Save
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
