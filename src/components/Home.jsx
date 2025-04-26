@@ -4,12 +4,14 @@ import { Calendar as CalendarIcon } from 'lucide-react';
 import BudgetGauge from '../components/BudgetGauge';
 import BudgetCategory from '../components/BudgetCategory';
 import BottomNav from '../components/BottomNavbar';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '../components/ui/button';
 import { Popover, PopoverTrigger, PopoverContent } from '../components/ui/popover';
 import { Calendar } from '../components/ui/calendar';
 import { format } from 'date-fns';
 
 const Home = () => {
+  const navigate = useNavigate();
   const budgetData = {
     spent: 0,
     total: 0,
@@ -24,7 +26,7 @@ const Home = () => {
         <header className="py-4 flex items-center justify-between">
         <div className="flex justify-center items-center mt-6">
         <div className="w-10 h-10 bg-gradient-to-tr from-purple-500 to-pink-500 rounded-full mr-2"></div>
-        <h1 className="text-2xl font-bold">OutFlow</h1>
+        <h1 className="text-2xl font-bold">TrackIt</h1>
       </div>
           <Popover>
             <PopoverTrigger asChild>
@@ -56,9 +58,12 @@ const Home = () => {
           ))}
         </div>
 
-        <button className="w-full mt-4 p-4 rounded-xl text-gray-400 border border-dashed border-gray-700 hover:border-gray-600 transition-colors">
-          Add new category
-        </button>
+        <button
+        onClick={() => navigate('/add-transaction')} 
+        className="w-full mt-4 p-4 rounded-xl text-gray-400 border border-dashed border-gray-700 hover:border-gray-600 transition-colors"
+      >
+        Add new category
+      </button>
       </div>
 
       <BottomNav />

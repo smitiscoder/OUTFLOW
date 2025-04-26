@@ -6,6 +6,7 @@ import "./App.css";
 
 import Auth from "./components/login";
 import Home from "./components/Home";
+import TransactionForm from "./components/TransactionForm";
 import MainLayout from "./components/layout/MainLayout";
 
 import Search from "./components/Search";
@@ -48,15 +49,15 @@ function App() {
 
         {/* Protected routes */}
         {user ? (
-          <Route element={<MainLayout />}>
-            <Route path="/home" element={<Home />} />
-            <Route path="/reports" element={<ReportsScreen />} />
-            <Route path="/keyboard" element={<Keyboard />} />
-
-            
-            <Route path="/search" element={<Search />} />
-            <Route path="/profile" element={<ProfilePage />} />
-          </Route>
+          <Route path="/" element={<MainLayout />}>
+          <Route index element={<Home />} />
+          <Route path="add-transaction" element={<TransactionForm />} />
+          <Route path="reports" element={<ReportsScreen />} />
+          <Route path="keyboard" element={<Keyboard />} />
+          <Route path="search" element={<Search />} />
+          <Route path="profile" element={<ProfilePage />} />
+        </Route>
+        
         ) : (
           <Route path="*" element={<Auth />} />
         )}
