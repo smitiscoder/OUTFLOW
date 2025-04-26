@@ -8,7 +8,6 @@ import Auth from "./components/login";
 import Home from "./components/Home";
 import MainLayout from "./components/layout/MainLayout";
 
-import ExpenseCategories from "./pages/ExpenseCategories";
 import AddRecord from "./pages/AddRecord";
 import Search from "./components/Search";
 import ReportsScreen from "./components/ReportsScreen";
@@ -54,7 +53,7 @@ function App() {
             <Route path="/home" element={<Home />} />
             <Route path="/reports" element={<ReportsScreen />} />
             <Route path="/keyboard" element={<Keyboard />} />
-            <Route path="/categories" element={<ExpenseCategories />} />
+
             <Route path="/addrecord" element={<AddRecord />} />
             <Route path="/search" element={<Search />} />
             <Route path="/profile" element={<ProfilePage />} />

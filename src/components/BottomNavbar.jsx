@@ -15,7 +15,7 @@ const BottomNavbar = () => {
 
     {/* Home */}
     <Button variant="ghost" size="icon" className="text-white z-10">
-      <Link to="/" className="flex items-center justify-center w-full h-full">
+      <Link to="/Home" className="flex items-center justify-center w-full h-full">
         <Home className="w-6 h-6" />
       </Link>
     </Button>
