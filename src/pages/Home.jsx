@@ -1,18 +1,33 @@
 import React, { useState, useEffect } from 'react';
 import { useExpenses } from '../Context/ExpenseContext';
-import { PieChart, Pie, Cell } from 'recharts';
 import { useNavigate } from 'react-router-dom';
-import BottomNav from '../components/BottomNavbar';
-import { Calendar as CalendarIcon } from 'lucide-react';
-import { Popover, PopoverTrigger, PopoverContent } from '../components/ui/popover';
-import { Calendar } from '../components/ui/calendar';
 import { getAuth } from 'firebase/auth';
 import { getFirestore, collection, query, where, onSnapshot } from 'firebase/firestore';
+import { PieChart, Pie, Cell } from 'recharts';
+import BottomNav from '../components/BottomNavbar';
+import { Calendar as CalendarIcon, ShoppingCart, Utensils, Bus, Shirt, Gift } from 'lucide-react';
+import { Popover, PopoverTrigger, PopoverContent } from '../components/ui/popover';
+import { Calendar } from '../components/ui/calendar';
+import { format } from 'date-fns';
 
 const COLORS = [
   "#D4AF37", "#20B2AA", "#FF6B6B", "#00FA9A",
   "#66BB6A", "#9C27B0", "#03A9F4", "#F4A261",
 ];
+
+// Map categories to icons
+const categoryIcons = {
+  transport: <Bus className="w-5 h-5" />,
+  groceries: <ShoppingCart className="w-5 h-5" />,
+  food: <Utensils className="w-5 h-5" />,
+  clothing: <Shirt className="w-5 h-5" />,
+  // Add more mappings as needed
+};
+
+const getIconForCategory = (category) => {
+  const key = category?.toLowerCase();
+  return categoryIcons[key] || <Gift className="w-5 h-5" />;
+};
 
 const Home = () => {
   const { expenses, setExpenses } = useExpenses();
@@ -54,7 +69,7 @@ const Home = () => {
         });
       });
 
-      const sortedExpenses = expensesData.sort((a, b) => b.amount - a.amount);
+      const sortedExpenses = expensesData.sort((a, b) => b.timestamp - a.timestamp);
       setExpenses(sortedExpenses);
       setLoading(false);
     }, (error) => {
@@ -74,7 +89,7 @@ const Home = () => {
 
   const totalSpent = expenses.reduce((sum, expense) => sum + expense.amount, 0);
 
-  // Group expenses by category and aggregate amounts
+  // Category-wise pie data
   const categoryData = expenses.reduce((acc, expense) => {
     const existingCategory = acc.find(item => item.category === expense.category);
     if (existingCategory) {
@@ -85,19 +100,27 @@ const Home = () => {
     return acc;
   }, []);
 
-  // Sort and separate top 4 categories
   const sortedCategories = categoryData.sort((a, b) => b.amount - a.amount);
   const topCategories = sortedCategories.slice(0, 4);
   const othersTotal = sortedCategories.slice(4).reduce((sum, category) => sum + category.amount, 0);
-
-  // Add 'Others' category if there are smaller categories
   const finalCategoryData = [...topCategories];
   if (othersTotal > 0) {
     finalCategoryData.push({ category: 'Others', amount: othersTotal });
   }
 
+  // Group expenses by date
+  const groupedByDate = expenses.reduce((acc, expense) => {
+    const dateStr = format(expense.timestamp, 'dd MMM EEEE');
+    if (!acc[dateStr]) {
+      acc[dateStr] = { total: 0, items: [] };
+    }
+    acc[dateStr].items.push(expense);
+    acc[dateStr].total += expense.amount;
+    return acc;
+  }, {});
+
   return (
-    <div className="min-h-screen bg-gray-900 text-white pb-16">
+    <div className="min-h-screen bg-gray-900 text-white pb-20">
       <div className="max-w-md mx-auto px-4">
         <header className="py-4 flex items-center justify-between">
           <div className="flex justify-center items-center mt-6">
@@ -122,7 +145,7 @@ const Home = () => {
           </Popover>
         </header>
 
-        {/* Pie Chart with reduced margin */}
+        {/* Pie Chart */}
         <div 
           className="flex justify-center items-center my-4 cursor-pointer"
           onClick={() => navigate('/reports')}
@@ -161,52 +184,40 @@ const Home = () => {
           </div>
         </div>
 
-        <div className="mt-4 text-center text-gray-400">
+        {/* Expense List */}
+        <div className="mt-4">
           {loading ? (
-            <p>Loading expenses...</p>
-          ) : expenses.length === 0 ? (
-            <p>No expenses added yet. Start tracking your expenses!</p>
-          ) : (
-            <div className="mt-4 space-y-2">
-              {expenses.map((expense) => (
-                <div key={expense.id} className="bg-gray-800 p-3 rounded-lg min-h-[100px] flex flex-col justify-between">
-                  <div className="flex justify-between items-start">
-                    <h2 className="text-lg font-semibold capitalize line-clamp-1">
-                      {expense.category.toLowerCase()}
-                    </h2>
-                    <p className="text-sm whitespace-nowrap ml-2">
-                      ₹{Math.round(expense.amount).toLocaleString('en-IN')}
-                    </p>
+            <p className="text-center text-gray-400">Loading expenses...</p>
+          ) : Object.entries(groupedByDate).map(([dateStr, { total, items }]) => (
+            <div key={dateStr} className="mb-6">
+              <div className="flex justify-between items-center text-gray-400 text-sm mb-2">
+                <span>{dateStr}</span>
+                <span>Expenses: ₹{total}</span>
+              </div>
+              {items.map((expense) => (
+                <div key={expense.id} className="flex items-center justify-between bg-gray-800 px-4 py-3 rounded-lg shadow mb-2">
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 rounded-full bg-teal-600 flex items-center justify-center">
+                      {getIconForCategory(expense.category)}
+                    </div>
+                    <div>
+                      <p className="text-white font-medium capitalize">{expense.category}</p>
+                    </div>
                   </div>
-                  
-                  {expense.note ? (
-                    <p className="text-gray-400 mt-2 text-left line-clamp-2">
-                      {expense.note}
-                    </p>
-                  ) : (
-                    <div className="mt-2" />
-                  )}
-                  
-                  <div className="text-gray-500 text-sm mt-2 text-left">
-                    {expense.timestamp.toLocaleDateString('en-IN', {
-                      day: 'numeric',
-                      month: 'short',
-                      year: 'numeric'
-                    })}
-                  </div>
+                  <p className="text-white font-semibold whitespace-nowrap">₹{Math.round(expense.amount)}</p>
                 </div>
               ))}
             </div>
-          )}
+          ))}
         </div>
       </div>
-
       <BottomNav />
     </div>
   );
 };
 
 export default Home;
+
 
 
 

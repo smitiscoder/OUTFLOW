@@ -8,7 +8,7 @@ import Login from "./components/login";
 
 import Home from "./pages/Home";
 import Search from "./pages/Search";
-import ReportsScreen from "./pages/ReportsScreen";
+import Reports from "./pages/Reports";
 import ExpenseCategory from "./pages/ExpenseCategory";
 import ProfilePage from "./pages/ProfilePage";
 import Onboarding from "./pages/Onboarding";
@@ -26,7 +26,7 @@ function AppRoutes({ user }) {
       {user ? (
         <Route path="/" element={<MainLayout />}>  {/* MainLayout wraps all protected routes */}
           <Route index element={<Home />} />  {/* This is the default route */}
-          <Route path="reports" element={<ReportsScreen />} />
+          <Route path="reports" element={<Reports />} />
           <Route path="ExpenseCategory" element={<ExpenseCategory />} />
           <Route path="search" element={<Search />} />
           <Route path="profile" element={<ProfilePage />} />
