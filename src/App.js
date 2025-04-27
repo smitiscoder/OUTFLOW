@@ -1,25 +1,15 @@
+// App.js
 import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router } from "react-router-dom";
 
-import "bootstrap/dist/css/bootstrap.min.css";
-import "react-toastify/dist/ReactToastify.css";
+import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
-import Auth from "./components/login";
-import Home from "./pages/Home";
-import ExpenseCategories from "./pages/ExpenseCategories";
-import AddRecord from "./pages/AddRecord";
-import Search from "./pages/Search";
-import ReportsScreen from "./pages/ReportsScreen";
-import Keyboard from "./pages/Keyboard";
-import ProfilePage from "./pages/ProfilePage";
-import Onboarding from "./pages/onboarding";
-import Login from "./components/login";
-import Phone from "./components/Phone";
-import ContinueWithGoogle from "./components/ContinuewithGoogle";
-
-import { ToastContainer } from "react-toastify";
 import { auth } from "./components/firebase";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+import AppRoutes from "./AppRoutes"; // import the new routing file
 
 function App() {
   const [user, setUser] = useState(null);
@@ -36,40 +26,14 @@ function App() {
   if (checkingAuth) return <div>Loading...</div>;
 
   return (
-    <Router>
+    <Router> {/* Router wraps entire App */}
       <ToastContainer />
-      <Routes>
-        {/* Public Routes */}
-        <Route path="/onboarding" element={<Onboarding />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/phone" element={<Phone />} />
-        <Route path="/continuewithgoogle" element={<ContinueWithGoogle />} />
-
-        {/* Protected Routes */}
-        {user ? (
-          <>
-            <Route path="/home" element={<Home />} />
-            <Route path="/reports" element={<ReportsScreen />} />
-            <Route path="/keyboard" element={<Keyboard />} />
-            <Route path="/categories" element={<ExpenseCategories />} />
-            <Route path="/addrecord" element={<AddRecord />} />
-            <Route path="/search" element={<Search />} />
-            <Route path="/profile" element={<ProfilePage />} />
-          </>
-        ) : (
-          <Route path="*" element={<Auth />} />
-        )}
-
-        {/* Fallback route if no path matches */}
-        {!user && <Route path="/" element={<Auth />} />}
-        <Route path="*" element={<div>404 - Page Not Found</div>} />
-      </Routes>
+      <AppRoutes user={user} /> {/* Routes separated */}
     </Router>
   );
 }
 
 export default App;
-
 
 
 

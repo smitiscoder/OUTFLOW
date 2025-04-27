@@ -1,48 +1,53 @@
 import React from 'react';
-
 import { FaPhoneAlt } from 'react-icons/fa';
 import { useNavigate } from "react-router-dom";
 import ContinueWithGoogle from './ContinuewithGoogle';
-
-
 
 export default function Login() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen bg-[#0f0f0f] text-white flex flex-col justify-center items-center px-6 space-y-8">
-      {/* Logo */}
-      <div className="text-center space-y-2">
-        <div className="bg-gradient-to-r from-purple-500 to-pink-500 w-12 h-12 rounded-full mx-auto" />
-        <h1 className="text-2xl font-bold tracking-wide">OutFlow</h1>
-      </div>
+    <div className="relative min-h-screen bg-[#0f0f0f] text-white flex flex-col justify-center items-center px-6 space-y-8 overflow-hidden">
 
-      {/* Sign-in Buttons */}
-      <div className="w-full max-w-sm space-y-4">
-        {/* Primary: Phone Login */}
-        <button
-          className="flex items-center justify-center gap-3 w-full py-3 rounded-full bg-white text-black font-medium text-sm shadow-md"
-          onClick={() => navigate("/phone")}
-        >
-          <FaPhoneAlt size={18} />
-          Sign in with Phone Number
-        </button>
+      {/* 💡 Top Gradient Glow */}
+      <div className="absolute top-[-200px] left-1/2 transform -translate-x-1/2 w-[800px] h-[800px] bg-gradient-to-b from-purple-600 via-purple-800 to-transparent opacity-40 blur-[120px] z-0" />
 
-        {/* Secondary: Google Login */}
-        {/* Secondary: Google Login */}
-        <ContinueWithGoogle />
+      {/* 🔒 Main Content */}
+      <div className="relative z-10 w-full max-w-sm space-y-8">
+        
+        {/* Logo */}
+        <div className="text-center space-y-2">
+          <div className="bg-gradient-to-r from-purple-500 to-pink-500 w-12 h-12 rounded-full mx-auto" />
+          <h1 className="text-2xl font-bold tracking-wide">OutFlow</h1>
+        </div>
 
-      </div>
+        {/* Sign-in Buttons */}
+        <div className="space-y-4">
+          {/* Phone Login */}
+          <button
+            className="flex items-center justify-center gap-3 w-full py-3 rounded-full bg-white text-black font-medium text-sm shadow-md"
+            onClick={() => navigate("/phone")}
+          >
+            <FaPhoneAlt size={18} />
+            Sign in with Phone Number
+          </button>
 
-      {/* Divider */}
-      <div className="text-gray-500 text-xs mt-8 text-center max-w-xs">
-        By signing in, you agree to our{" "}
-        <span className="underline">Terms</span> and{" "}
-        <span className="underline">Privacy Policy</span>.
+          {/* Google Login */}
+          <ContinueWithGoogle />
+        </div>
+
+        {/* Terms and Privacy */}
+        <div className="text-gray-500 text-xs mt-8 text-center max-w-xs">
+          By signing in, you agree to our{" "}
+          <span className="underline">Terms</span> and{" "}
+          <span className="underline">Privacy Policy</span>.
+        </div>
       </div>
     </div>
   );
 }
+
+
 
 
 

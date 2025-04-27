@@ -1,19 +1,12 @@
 import React, { useState } from "react";
-import {
-  Mail,
-  Phone,
-  CreditCard,
-  Moon,
-  Bell,
-  CircleHelp,
-  LogOut,
-  Camera,
-  ChevronRight,
-} from "lucide-react";
+import { Mail, Phone, Moon, Bell, LogOut, Camera, ChevronRight } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { auth } from "../components/firebase";
 
 export default function ProfilePage() {
   const [darkMode, setDarkMode] = useState(true);
   const [notifications, setNotifications] = useState(true);
+  const navigate = useNavigate();
 
   const user = {
     name: "Alex Johnson",
@@ -22,6 +15,16 @@ export default function ProfilePage() {
     avatar:
       "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1600",
     memberSince: "March 2024",
+  };
+
+  const handleLogout = () => {
+    auth.signOut()
+      .then(() => {
+        navigate("/login");
+      })
+      .catch((error) => {
+        console.error("Error signing out: ", error);
+      });
   };
 
   return (
@@ -57,12 +60,6 @@ export default function ProfilePage() {
           <SettingsSection title="Account">
             <SettingItem icon={<Mail size={20} />} label="Email" value={user.email} />
             <SettingItem icon={<Phone size={20} />} label="Phone" value={user.phone} />
-            <SettingItem
-              icon={<CreditCard size={20} />}
-              label="Payment Methods"
-              type="link"
-              onClick={() => console.log("Payment Methods")}
-            />
           </SettingsSection>
 
           {/* Preferences */}
@@ -86,17 +83,11 @@ export default function ProfilePage() {
           {/* Support */}
           <SettingsSection title="Support">
             <SettingItem
-              icon={<CircleHelp size={20} />}
-              label="Help & FAQ"
-              type="link"
-              onClick={() => console.log("Help pressed")}
-            />
-            <SettingItem
               icon={<LogOut size={20} color="red" />}
               label="Log Out"
               labelColor="text-red-500"
               type="link"
-              onClick={() => console.log("Log Out pressed")}
+              onClick={handleLogout}
             />
           </SettingsSection>
         </div>
@@ -120,8 +111,15 @@ function SettingsSection({ title, children }) {
 }
 
 function SettingItem({ icon, label, value, type, onClick, onToggle, labelColor = "text-white" }) {
+  const clickable = type === "link";
+
   return (
-    <div className="flex justify-between items-center px-4 py-4">
+    <div
+      className={`flex justify-between items-center px-4 py-4 ${
+        clickable ? "cursor-pointer hover:bg-gray-700 transition" : ""
+      }`}
+      onClick={clickable ? onClick : undefined}
+    >
       <div className="flex items-start space-x-3">
         <div className="mt-1">{icon}</div>
         <div>
@@ -141,9 +139,7 @@ function SettingItem({ icon, label, value, type, onClick, onToggle, labelColor =
           <div className="w-11 h-6 bg-gray-600 rounded-full peer peer-checked:bg-blue-500"></div>
         </label>
       ) : type === "link" ? (
-        <button onClick={onClick}>
-          <ChevronRight size={20} className="text-gray-400" />
-        </button>
+        <ChevronRight size={20} className="text-gray-400" />
       ) : null}
     </div>
   );

@@ -10,7 +10,7 @@ export default function Onboarding() {
       {/* Logo */}
       <div className="flex justify-center items-center mt-6">
         <div className="w-10 h-10 bg-gradient-to-tr from-purple-500 to-pink-500 rounded-full mr-2"></div>
-        <h1 className="text-2xl font-bold">OOTFLOW</h1>
+        <h1 className="text-2xl font-bold">TrackIt</h1>
       </div>
 
       {/* App icons */}
@@ -44,12 +44,7 @@ export default function Onboarding() {
         >
           Get started
         </button>
-        <button
-          className="bg-white/10 text-gray-300 font-medium py-3 rounded-full backdrop-blur-sm hover:text-white transition"
-          onClick={() => navigate("/register")}
-        >
-          I have an account
-        </button>
+
       </div>
 
       {/* Background Orbs */}

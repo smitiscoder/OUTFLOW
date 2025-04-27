@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { ExpenseProvider } from './ExpenseContext'; // ✅ import the provider
+import { ExpenseProvider } from './Context/ExpenseContext'; // Correct path if it's in src/Context folder
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
