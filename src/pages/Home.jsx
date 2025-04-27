@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useExpenses } from '../Context/ExpenseContext';
 import { useNavigate } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
-import { getFirestore, collection, query, where, onSnapshot } from 'firebase/firestore';
+import { getFirestore, collection, query, where, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
 import { PieChart, Pie, Cell } from 'recharts';
 import BottomNav from '../components/BottomNavbar';
-import { Calendar as CalendarIcon, ShoppingCart, Utensils, Bus, Shirt, Gift } from 'lucide-react';
+import { Calendar as CalendarIcon, ShoppingCart, Utensils, Phone, Mic, BookOpen, Scissors, Dumbbell, Users, Bus, Shirt, Car, Smartphone, Plane, Stethoscope, Dog, Wrench, House, Gift, Heart, Ticket, Cookie, Baby, Salad, Apple } from 'lucide-react';
 import { Popover, PopoverTrigger, PopoverContent } from '../components/ui/popover';
 import { Calendar } from '../components/ui/calendar';
 import { format } from 'date-fns';
+import { useSwipeable } from 'react-swipeable';
 
 const COLORS = [
   "#D4AF37", "#20B2AA", "#FF6B6B", "#00FA9A",
@@ -17,11 +18,30 @@ const COLORS = [
 
 // Map categories to icons
 const categoryIcons = {
-  transport: <Bus className="w-5 h-5" />,
-  groceries: <ShoppingCart className="w-5 h-5" />,
+  shopping: <ShoppingCart className="w-5 h-5" />,
   food: <Utensils className="w-5 h-5" />,
+  phone: <Phone className="w-5 h-5" />,
+  entertainment: <Mic className="w-5 h-5" />,
+  education: <BookOpen className="w-5 h-5" />,
+  beauty: <Scissors className="w-5 h-5" />,
+  sports: <Dumbbell className="w-5 h-5" />,
+  social: <Users className="w-5 h-5" />,
+  transportation: <Bus className="w-5 h-5" />,
   clothing: <Shirt className="w-5 h-5" />,
-  // Add more mappings as needed
+  car: <Car className="w-5 h-5" />,
+  electronics: <Smartphone className="w-5 h-5" />,
+  travel: <Plane className="w-5 h-5" />,
+  health: <Stethoscope className="w-5 h-5" />,
+  pets: <Dog className="w-5 h-5" />,
+  repairs: <Wrench className="w-5 h-5" />,
+  housing: <House className="w-5 h-5" />,
+  gifts: <Gift className="w-5 h-5" />,
+  donations: <Heart className="w-5 h-5" />,
+  lottery: <Ticket className="w-5 h-5" />,
+  snacks: <Cookie className="w-5 h-5" />,
+  kids: <Baby className="w-5 h-5" />,
+  vegetables: <Salad className="w-5 h-5" />,
+  fruits: <Apple className="w-5 h-5" />,
 };
 
 const getIconForCategory = (category) => {
@@ -119,6 +139,27 @@ const Home = () => {
     return acc;
   }, {});
 
+  // Handle delete
+  const handleDelete = async (expenseId) => {
+    try {
+      const expenseDoc = doc(db, 'expenses', expenseId);
+      await deleteDoc(expenseDoc);
+      setExpenses(prevExpenses => prevExpenses.filter(expense => expense.id !== expenseId));
+    } catch (error) {
+      console.error("Error deleting expense: ", error);
+    }
+  };
+
+  // Swipeable configuration
+  const swipeHandlers = useSwipeable({
+    onSwipedLeft: (e) => {
+      const expenseId = e.event.target.dataset.id;
+      if (expenseId) {
+        handleDelete(expenseId);
+      }
+    },
+  });
+
   return (
     <div className="min-h-screen bg-gray-900 text-white pb-20">
       <div className="max-w-md mx-auto px-4">
@@ -195,13 +236,21 @@ const Home = () => {
                 <span>Expenses: ₹{total}</span>
               </div>
               {items.map((expense) => (
-                <div key={expense.id} className="flex items-center justify-between bg-gray-800 px-4 py-3 rounded-lg shadow mb-2">
+                <div 
+                  key={expense.id} 
+                  className="flex items-center justify-between bg-gray-800 px-4 py-3 rounded-lg shadow mb-2"
+                  data-id={expense.id}
+                  {...swipeHandlers}
+                >
                   <div className="flex items-center space-x-3">
                     <div className="w-10 h-10 rounded-full bg-teal-600 flex items-center justify-center">
                       {getIconForCategory(expense.category)}
                     </div>
                     <div>
-                      <p className="text-white font-medium capitalize">{expense.category}</p>
+                      {/* Show category name if no note is provided */}
+                      <p className="text-white font-medium capitalize">
+                        {expense.note || expense.category}
+                      </p>
                     </div>
                   </div>
                   <p className="text-white font-semibold whitespace-nowrap">₹{Math.round(expense.amount)}</p>
@@ -217,6 +266,10 @@ const Home = () => {
 };
 
 export default Home;
+
+
+
+
 
 
 

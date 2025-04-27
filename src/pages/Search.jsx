@@ -1,5 +1,38 @@
 import React, { useState } from "react";
-import { useExpenses } from '../Context/ExpenseContext';
+import { useExpenses } from "../Context/ExpenseContext";
+import { ShoppingCart, Utensils, Bus, Shirt, Gift, Heart, Ticket, Search as SearchIcon, Phone, Mic, BookOpen, Scissors, Dumbbell, Users, Car, Smartphone, Plane, Stethoscope, Dog, Wrench, Home, Cookie, Baby, Salad, Apple } from "lucide-react"; // Add missing icons here
+import { format } from "date-fns";
+
+const getIconForCategory = (category) => {
+  const key = category?.toLowerCase();
+  const categoryIcons = {
+    shopping: <ShoppingCart className="w-5 h-5" />,
+    food: <Utensils className="w-5 h-5" />,
+    phone: <Phone className="w-5 h-5" />,
+    entertainment: <Mic className="w-5 h-5" />,
+    education: <BookOpen className="w-5 h-5" />,
+    beauty: <Scissors className="w-5 h-5" />,
+    sports: <Dumbbell className="w-5 h-5" />,
+    social: <Users className="w-5 h-5" />,
+    transportation: <Bus className="w-5 h-5" />,
+    clothing: <Shirt className="w-5 h-5" />,
+    car: <Car className="w-5 h-5" />,
+    electronics: <Smartphone className="w-5 h-5" />,
+    travel: <Plane className="w-5 h-5" />,
+    health: <Stethoscope className="w-5 h-5" />,
+    pets: <Dog className="w-5 h-5" />,
+    repairs: <Wrench className="w-5 h-5" />,
+    housing: <Home className="w-5 h-5" />,
+    gifts: <Gift className="w-5 h-5" />,
+    donations: <Heart className="w-5 h-5" />,
+    lottery: <Ticket className="w-5 h-5" />,
+    snacks: <Cookie className="w-5 h-5" />,
+    kids: <Baby className="w-5 h-5" />,
+    vegetables: <Salad className="w-5 h-5" />,
+    fruits: <Apple className="w-5 h-5" />,
+  };
+  return categoryIcons[key] || <Gift className="w-5 h-5" />;
+};
 
 const Search = () => {
   const { expenses } = useExpenses();
@@ -7,10 +40,11 @@ const Search = () => {
 
   const filteredExpenses = expenses.filter((expense) => {
     const query = searchTerm.trim().toLowerCase();
-    
     if (!query) return false;
 
-    // Exact amount match - convert both to numbers and compare
+    const timestamp = expense.timestamp?.toDate ? expense.timestamp.toDate() : expense.timestamp;
+
+    // Amount match
     const amountAsNumber = parseFloat(query);
     if (!isNaN(amountAsNumber)) {
       if (expense.amount === amountAsNumber) {
@@ -18,7 +52,21 @@ const Search = () => {
       }
     }
 
-    // For non-number searches, check note and category
+    // Date matching (short month, full month, different formats)
+    const dateFormats = [
+      format(timestamp, 'MMM d'),      // Jan 12
+      format(timestamp, 'MMMM d'),     // January 12
+      format(timestamp, 'd MMM'),      // 12 Jan
+      format(timestamp, 'd MMMM'),     // 12 January
+      format(timestamp, 'MM/dd'),      // 01/12
+      format(timestamp, 'yyyy-MM-dd')  // 2023-01-12
+    ];
+
+    if (dateFormats.some(dateStr => dateStr.toLowerCase().includes(query))) {
+      return true;
+    }
+
+    // Note or Category match
     const noteMatch = expense.note?.toLowerCase().includes(query);
     const categoryMatch = expense.category?.toLowerCase().includes(query);
 
@@ -26,52 +74,70 @@ const Search = () => {
   });
 
   return (
-    <div className="search-container bg-gray-900 text-white min-h-screen px-4 py-6 max-w-md mx-auto">
-      <div className="top-nav mb-6">
-        <h2 className="text-xl font-semibold">Search Expenses</h2>
-        <input
-          type="text"
-          className="search-input w-full rounded-full bg-white/10 border border-white/10 px-4 py-3 text-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500 mt-4"
-          placeholder="Search by amount, note, or category..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
-      </div>
+    <div className="min-h-screen bg-gray-900 text-white pb-20">
+      <div className="max-w-md mx-auto px-4">
+        <header className="py-4">
+          <h2 className="text-2xl font-bold">Search Expenses</h2>
 
-      <div className="search-results space-y-3">
-        {searchTerm && filteredExpenses.length === 0 && (
-          <p className="no-results text-gray-400 text-sm text-center mt-10">
-            No matching expenses found.
-          </p>
-        )}
-
-        {filteredExpenses.map((expense) => (
-          <div
-            key={expense.id}
-            className="expense-card p-4 rounded-lg bg-white/5 border border-white/10 backdrop-blur-sm"
-          >
-            <div className="expense-header flex justify-between">
-              <strong className="font-medium">{expense.category}</strong>
-              <span className="font-semibold text-orange-400">₹{Math.round(expense.amount)}</span>
-            </div>
-            {expense.note && (
-              <div className="expense-note text-xs text-gray-400 mt-2">
-                {expense.note}
-              </div>
-            )}
-            <div className="expense-date text-xs text-gray-500 mt-2">
-              {new Date(
-                expense.timestamp?.toDate ? expense.timestamp.toDate() : expense.timestamp
-              ).toLocaleDateString()}
-            </div>
+          {/* Search Input with Icon */}
+          <div className="relative mt-4">
+            <SearchIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <input
+              type="text"
+              className="w-full rounded-full bg-gray-800 pl-12 pr-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500"
+              placeholder="Search by amount, note, category, or date"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
           </div>
-        ))}
+        </header>
+
+        <div className="mt-4">
+          {searchTerm && filteredExpenses.length === 0 && (
+            <p className="text-center text-gray-400 mt-10">
+              No matching expenses found.
+            </p>
+          )}
+
+          {filteredExpenses.map((expense) => {
+            const timestamp = expense.timestamp?.toDate ? expense.timestamp.toDate() : expense.timestamp;
+
+            return (
+              <div
+                key={expense.id}
+                className="flex items-center justify-between bg-gray-800 px-4 py-3 rounded-lg shadow mb-2"
+              >
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 rounded-full bg-teal-600 flex items-center justify-center">
+                    {getIconForCategory(expense.category)}
+                  </div>
+                  <div>
+                    <p className="text-white font-medium capitalize">{expense.category}</p>
+                    {expense.note && (
+                      <p className="text-gray-400 text-sm">{expense.note}</p>
+                    )}
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-white font-semibold whitespace-nowrap">
+                    ₹{Math.round(expense.amount)}
+                  </p>
+                  <p className="text-gray-400 text-xs">
+                    {format(timestamp, "MMM d, yyyy")}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
     </div>
   );
 };
 
 export default Search;
+
+
 
 
 

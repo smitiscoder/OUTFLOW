@@ -106,7 +106,7 @@ const Phone = () => {
     if (!confirmationResult) {
       toast.error("Session expired. Please resend OTP.");
       setOtpSent(false);
-      setOtp(new Array(6).fill(""));
+      setOtp(new Array(6).fill("")); // Reset OTP if session expired
       return;
     }
 
@@ -164,6 +164,7 @@ const Phone = () => {
                 onChange={(e) => handleOTPChange(e.target.value, index)}
                 onKeyDown={(e) => handleKeyDown(e, index)}
                 onPaste={handlePaste}
+                inputMode="numeric"  // Added inputMode to show numeric keyboard
               />
             ))}
           </div>
@@ -184,6 +185,7 @@ const Phone = () => {
 };
 
 export default Phone;
+
 
 
 

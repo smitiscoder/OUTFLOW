@@ -35,6 +35,8 @@ export default function ProfilePage() {
 
         {/* Profile Section */}
         <div className="flex flex-col items-center space-y-4">
+          {/* Profile Picture */}
+          {/* 
           <div className="relative">
             <img
               src={user.avatar}
@@ -45,22 +47,33 @@ export default function ProfilePage() {
               <Camera size={16} />
             </button>
           </div>
+          */}
+
+          {/* Profile Info */}
+          {/* 
           <div className="text-center">
             <h2 className="text-xl font-bold">{user.name}</h2>
             <p className="text-sm text-gray-400">Member since {user.memberSince}</p>
           </div>
+          */}
+
+          {/* Edit Profile Button */}
+          {/*
           <button className="bg-gray-700 px-4 py-2 rounded-full text-sm font-medium">
             Edit Profile
           </button>
+          */}
         </div>
 
         {/* Sections */}
         <div className="space-y-8">
           {/* Account */}
+          {/*
           <SettingsSection title="Account">
             <SettingItem icon={<Mail size={20} />} label="Email" value={user.email} />
             <SettingItem icon={<Phone size={20} />} label="Phone" value={user.phone} />
           </SettingsSection>
+          */}
 
           {/* Preferences */}
           <SettingsSection title="Preferences">
@@ -71,6 +84,8 @@ export default function ProfilePage() {
               value={darkMode}
               onToggle={() => setDarkMode(!darkMode)}
             />
+            {/* Notifications */}
+            {/*
             <SettingItem
               icon={<Bell size={20} />}
               label="Notifications"
@@ -78,6 +93,7 @@ export default function ProfilePage() {
               value={notifications}
               onToggle={() => setNotifications(!notifications)}
             />
+            */}
           </SettingsSection>
 
           {/* Support */}
@@ -144,3 +160,4 @@ function SettingItem({ icon, label, value, type, onClick, onToggle, labelColor =
     </div>
   );
 }
+
