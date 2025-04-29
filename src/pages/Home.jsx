@@ -221,7 +221,6 @@ const Home = () => {
                     </div>
                     <div>
                       <p className="text-white font-medium capitalize">{expense.note || expense.category}</p>
-                      
                     </div>
                   </div>
                   

@@ -103,21 +103,21 @@ const Search = () => {
   return (
     <div className="min-h-screen bg-gray-900 text-white pb-20">
       <div className="max-w-md mx-auto px-4">
-        <header className="py-4">
-          <h2 className="text-2xl font-bold">Search Expenses</h2>
+      <header className="py-4">
+        <h2 className="text-2xl font-bold">Search Expenses</h2>
 
-          {/* Search Input with Icon */}
-          <div className="relative mt-4">
-            <SearchIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-            <input
-              type="text"
-              className="w-full rounded-full bg-gray-800 pl-12 pr-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-orange-500"
-              placeholder="Search by amount, note, category, or date"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-        </header>
+        {/* Search Input with Icon */}
+        <div className="relative mt-4">
+          <SearchIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <input
+            type="text"
+            className="w-full rounded-full bg-gray-800 pl-12 pr-4 py-3 text-white placeholder-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+            placeholder="Search by amount, note, category, or date"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+      </header>
 
         <div className="mt-4">
           {searchTerm && filteredExpenses.length === 0 && (
