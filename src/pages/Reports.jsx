@@ -4,8 +4,8 @@ import Header from '../components/Header';
 import { PieChart, Pie, Cell } from 'recharts';
 
 const COLORS = [
-  '#FF5733', '#33FF57', '#3357FF', '#FF33A1', 
-  '#A133FF', '#FFC300', '#DAF7A6', '#C70039'
+  "#D4AF37", "#20B2AA", "#FF6B6B", "#00FA9A",
+  "#66BB6A", "#9C27B0", "#03A9F4", "#F4A261",
 ];
 
 export default function ReportsScreen() {
@@ -140,7 +140,7 @@ export default function ReportsScreen() {
                 </Pie>
               </PieChart>
               <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
-                <span className="text-lg font-semibold">₹{totalSpent}</span>
+                <span className="text-lg font-semibold">{totalSpent}</span>
                 <span className="block text-xs text-gray-400">Total Spent</span>
               </div>
             </div>

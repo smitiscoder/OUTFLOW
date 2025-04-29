@@ -3,15 +3,15 @@ import { db } from '../components/firebase';
 import { collection, addDoc } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Keyboard from './Keyboard'; // Make sure path is correct
+import Keyboard from './Keyboard';
 
 const AddRecord = () => {
   const auth = getAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const selectedCategory = location.state?.category || 'Misc'; // Fallback if category not passed
+  const selectedCategory = location.state?.category || 'Misc';
 
-  const handleSubmitExpense = async ({ amount, note }) => {
+  const handleSubmitExpense = async ({ amount, note, date }) => {
     const user = auth.currentUser;
 
     if (!user) {
@@ -25,7 +25,8 @@ const AddRecord = () => {
         category: selectedCategory,
         amount: parseFloat(amount),
         note,
-        timestamp: new Date(),
+        timestamp: date ? new Date(date) : new Date(), // Use selected date or current date
+        createdAt: new Date() // Always record when it was added to DB
       };
 
       await addDoc(collection(db, 'expenses'), expense);

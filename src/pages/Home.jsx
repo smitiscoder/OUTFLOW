@@ -1,47 +1,44 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useExpenses } from '../Context/ExpenseContext';
 import { useNavigate } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
 import { getFirestore, collection, query, where, onSnapshot, doc, deleteDoc } from 'firebase/firestore';
 import { PieChart, Pie, Cell } from 'recharts';
 import BottomNav from '../components/BottomNavbar';
-import { Calendar as CalendarIcon, ShoppingCart, Utensils, Phone, Mic, BookOpen, Scissors, Dumbbell, Users, Bus, Shirt, Car, Smartphone, Plane, Stethoscope, Dog, Wrench, House, Gift, Heart, Ticket, Cookie, Baby, Salad, Apple } from 'lucide-react';
-import { Popover, PopoverTrigger, PopoverContent } from '../components/ui/popover';
-import { Calendar } from '../components/ui/calendar';
+import { ShoppingCart, Utensils, FileText, Mic, Stethoscope, Users, Bus, Scissors, Car, BookOpen, TrendingUp, Gift, Plane, Shield, Dog, CreditCard, Pen, Wrench, Smartphone, Baby, Cookie, Apple, Salad, Banknote, Trash2 } from 'lucide-react';
+import MonthYearCalendar from '../components/MonthYearCalendar';
 import { format } from 'date-fns';
-import { useSwipeable } from 'react-swipeable';
 
 const COLORS = [
   "#D4AF37", "#20B2AA", "#FF6B6B", "#00FA9A",
   "#66BB6A", "#9C27B0", "#03A9F4", "#F4A261",
 ];
 
-// Map categories to icons
 const categoryIcons = {
   shopping: <ShoppingCart className="w-5 h-5" />,
   food: <Utensils className="w-5 h-5" />,
-  phone: <Phone className="w-5 h-5" />,
+  grocery: <Salad className="w-5 h-5" />,
+  bills: <FileText className="w-5 h-5" />,
   entertainment: <Mic className="w-5 h-5" />,
-  education: <BookOpen className="w-5 h-5" />,
-  beauty: <Scissors className="w-5 h-5" />,
-  sports: <Dumbbell className="w-5 h-5" />,
+  health: <Stethoscope className="w-5 h-5" />,
   social: <Users className="w-5 h-5" />,
   transportation: <Bus className="w-5 h-5" />,
-  clothing: <Shirt className="w-5 h-5" />,
-  car: <Car className="w-5 h-5" />,
-  electronics: <Smartphone className="w-5 h-5" />,
+  beauty: <Scissors className="w-5 h-5" />,
+  vehicle: <Car className="w-5 h-5" />,
+  education: <BookOpen className="w-5 h-5" />,
+  investment: <TrendingUp className="w-5 h-5" />,
+  housing_repair: <Wrench className="w-5 h-5" />,
+  gifts_donations: <Gift className="w-5 h-5" />,
   travel: <Plane className="w-5 h-5" />,
-  health: <Stethoscope className="w-5 h-5" />,
+  insurance: <Shield className="w-5 h-5" />,
+  subscriptions: <CreditCard className="w-5 h-5" />,
   pets: <Dog className="w-5 h-5" />,
-  repairs: <Wrench className="w-5 h-5" />,
-  housing: <House className="w-5 h-5" />,
-  gifts: <Gift className="w-5 h-5" />,
-  donations: <Heart className="w-5 h-5" />,
-  lottery: <Ticket className="w-5 h-5" />,
-  snacks: <Cookie className="w-5 h-5" />,
+  emi_loans: <Banknote className="w-5 h-5" />,
+  electronics: <Smartphone className="w-5 h-5" />,
   kids: <Baby className="w-5 h-5" />,
-  vegetables: <Salad className="w-5 h-5" />,
+  snacks: <Cookie className="w-5 h-5" />,
   fruits: <Apple className="w-5 h-5" />,
+  others: <Pen className="w-5 h-5" />,
 };
 
 const getIconForCategory = (category) => {
@@ -53,6 +50,7 @@ const Home = () => {
   const { expenses, setExpenses } = useExpenses();
   const [date, setDate] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [selectedExpense, setSelectedExpense] = useState(null);
   const navigate = useNavigate();
   const db = getFirestore();
   const auth = getAuth();
@@ -61,25 +59,33 @@ const Home = () => {
     const userId = auth.currentUser?.uid;
     if (!userId) return;
 
-    const q = query(collection(db, 'expenses'), where('userId', '==', userId));
+    let q = query(collection(db, 'expenses'), where('userId', '==', userId));
+
+    if (date) {
+      const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
+      const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0, 23, 59, 59);
+
+      q = query(
+        collection(db, 'expenses'),
+        where('userId', '==', userId),
+        where('timestamp', '>=', startOfMonth),
+        where('timestamp', '<=', endOfMonth)
+      );
+    }
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
       const expensesData = [];
 
       querySnapshot.forEach((doc) => {
         const expense = doc.data();
-        const amount = expense.amount && !isNaN(expense.amount)
-          ? Number(expense.amount)
-          : 0;
+        const amount = !isNaN(expense.amount) ? Number(expense.amount) : 0;
 
         let timestamp;
-        if (expense.timestamp && typeof expense.timestamp.toDate === 'function') {
-          timestamp = expense.timestamp.toDate();
-        } else if (expense.timestamp instanceof Date) {
-          timestamp = expense.timestamp;
-        } else {
-          timestamp = new Date();
-        }
+        if (expense.timestamp?.toDate) timestamp = expense.timestamp.toDate();
+        else if (expense.timestamp instanceof Date) timestamp = expense.timestamp;
+        else if (typeof expense.timestamp === 'string') timestamp = new Date(expense.timestamp);
+        else if (typeof expense.timestamp === 'number') timestamp = new Date(expense.timestamp);
+        else timestamp = new Date(0); // fallback
 
         expensesData.push({
           id: doc.id,
@@ -102,95 +108,66 @@ const Home = () => {
 
   useEffect(() => {
     const unsubscribe = fetchExpenses();
-    return () => {
-      if (unsubscribe) unsubscribe();
-    };
-  }, []);
+    return () => unsubscribe?.();
+  }, [date]);
 
   const totalSpent = expenses.reduce((sum, expense) => sum + expense.amount, 0);
 
-  // Category-wise pie data
   const categoryData = expenses.reduce((acc, expense) => {
-    const existingCategory = acc.find(item => item.category === expense.category);
-    if (existingCategory) {
-      existingCategory.amount += expense.amount;
-    } else {
-      acc.push({ category: expense.category, amount: expense.amount });
-    }
+    const existing = acc.find(item => item.category === expense.category);
+    if (existing) existing.amount += expense.amount;
+    else acc.push({ category: expense.category, amount: expense.amount });
     return acc;
   }, []);
 
   const sortedCategories = categoryData.sort((a, b) => b.amount - a.amount);
   const topCategories = sortedCategories.slice(0, 4);
-  const othersTotal = sortedCategories.slice(4).reduce((sum, category) => sum + category.amount, 0);
+  const othersTotal = sortedCategories.slice(4).reduce((sum, item) => sum + item.amount, 0);
   const finalCategoryData = [...topCategories];
-  if (othersTotal > 0) {
-    finalCategoryData.push({ category: 'Others', amount: othersTotal });
-  }
+  if (othersTotal > 0) finalCategoryData.push({ category: 'Others', amount: othersTotal });
 
-  // Group expenses by date
   const groupedByDate = expenses.reduce((acc, expense) => {
     const dateStr = format(expense.timestamp, 'dd MMM EEEE');
-    if (!acc[dateStr]) {
-      acc[dateStr] = { total: 0, items: [] };
-    }
+    if (!acc[dateStr]) acc[dateStr] = { total: 0, items: [] };
     acc[dateStr].items.push(expense);
     acc[dateStr].total += expense.amount;
     return acc;
   }, {});
 
-  // Handle delete
   const handleDelete = async (expenseId) => {
     try {
-      const expenseDoc = doc(db, 'expenses', expenseId);
-      await deleteDoc(expenseDoc);
-      setExpenses(prevExpenses => prevExpenses.filter(expense => expense.id !== expenseId));
-    } catch (error) {
-      console.error("Error deleting expense: ", error);
+      await deleteDoc(doc(db, 'expenses', expenseId));
+      setExpenses(prev => prev.filter(e => e.id !== expenseId));
+      setSelectedExpense(null); // Reset selection after deletion
+    } catch (err) {
+      console.error("Delete failed:", err);
     }
   };
 
-  // Swipeable configuration
-  const swipeHandlers = useSwipeable({
-    onSwipedLeft: (e) => {
-      const expenseId = e.event.target.dataset.id;
-      if (expenseId) {
-        handleDelete(expenseId);
-      }
-    },
-  });
+  const handleExpenseSelect = (expenseId) => {
+    setSelectedExpense(selectedExpense === expenseId ? null : expenseId);
+  };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white pb-20">
+    <div className="min-h-screen bg-gray-900 text-white pb-20 relative">
+      {/* Overlay for blur effect when an expense is selected */}
+      {selectedExpense && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-50 z-10 backdrop-blur-sm"
+          onClick={() => setSelectedExpense(null)}
+        />
+      )}
+
       <div className="max-w-md mx-auto px-4">
         <header className="py-4 flex items-center justify-between">
           <div className="flex justify-center items-center mt-6">
             <div className="w-10 h-10 bg-gradient-to-tr from-purple-500 to-pink-500 rounded-full mr-2"></div>
             <h1 className="text-2xl font-bold">OUTFLOW</h1>
           </div>
-          <Popover>
-            <PopoverTrigger asChild>
-              <button className="p-2 bg-gray-800 rounded hover:bg-gray-700">
-                <CalendarIcon className="w-6 h-6" />
-              </button>
-            </PopoverTrigger>
-            <PopoverContent className="z-50 bg-white rounded-lg p-3 text-black shadow-xl w-auto" align="end">
-              <Calendar 
-                mode="single" 
-                selected={date} 
-                onSelect={setDate} 
-                initialFocus 
-                className="p-1" 
-              />
-            </PopoverContent>
-          </Popover>
+          <MonthYearCalendar selectedDate={date} onDateChange={setDate} />
         </header>
 
-        {/* Pie Chart */}
-        <div 
-          className="flex justify-center items-center my-4 cursor-pointer"
-          onClick={() => navigate('/reports')}
-        >
+        <div className="flex justify-center items-center my-4 cursor-pointer" onClick={() => navigate('/reports')}>
           <div className="relative w-64 h-64">
             {expenses.length > 0 ? (
               <>
@@ -206,26 +183,23 @@ const Home = () => {
                     stroke="none"
                   >
                     {finalCategoryData.map((entry, index) => (
-                      <Cell
-                        key={`cell-${index}`}
-                        fill={COLORS[index % COLORS.length]}
-                      />
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
                 </PieChart>
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <p className="text-xl font-bold">₹{Math.round(totalSpent)}</p>
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
+                  <p className="text-2xl font-bold">{Math.round(totalSpent)}</p>
                 </div>
               </>
             ) : (
-              <div className="w-full h-full flex items-center justify-center bg-gray-800 rounded-full">
-                <p className="text-gray-400">No expenses</p>
+              <div className="w-full h-full flex flex-col items-center justify-center bg-gray-800 rounded-full">
+                <p className="text-gray-400 text-sm">No expenses</p>
+                <p className="text-gray-500 text-xs mt-1">Add some to begin</p>
               </div>
             )}
           </div>
         </div>
 
-        {/* Expense List */}
         <div className="mt-4">
           {loading ? (
             <p className="text-center text-gray-400">Loading expenses...</p>
@@ -236,24 +210,35 @@ const Home = () => {
                 <span>Expenses: ₹{total}</span>
               </div>
               {items.map((expense) => (
-                <div 
-                  key={expense.id} 
-                  className="flex items-center justify-between bg-gray-800 px-4 py-3 rounded-lg shadow mb-2"
-                  data-id={expense.id}
-                  {...swipeHandlers}
+                <div
+                  key={expense.id}
+                  className={`flex items-center justify-between bg-gray-800 px-4 py-3 rounded-lg shadow mb-2 relative transition-all duration-200 ${selectedExpense === expense.id ? 'z-20 transform scale-105' : ''}`}
+                  onClick={() => handleExpenseSelect(expense.id)}
                 >
                   <div className="flex items-center space-x-3">
                     <div className="w-10 h-10 rounded-full bg-teal-600 flex items-center justify-center">
                       {getIconForCategory(expense.category)}
                     </div>
                     <div>
-                      {/* Show category name if no note is provided */}
-                      <p className="text-white font-medium capitalize">
-                        {expense.note || expense.category}
-                      </p>
+                      <p className="text-white font-medium capitalize">{expense.note || expense.category}</p>
+                      
                     </div>
                   </div>
-                  <p className="text-white font-semibold whitespace-nowrap">₹{Math.round(expense.amount)}</p>
+                  
+                  <div className="flex items-center">
+                    <p className="text-white font-semibold whitespace-nowrap mr-3">₹{Math.round(expense.amount)}</p>
+                    {selectedExpense === expense.id && (
+                      <button 
+                        className="p-2 text-red-500 hover:bg-red-500 hover:bg-opacity-20 rounded-full transition-colors"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete(expense.id);
+                        }}
+                      >
+                        <Trash2 className="w-5 h-5" />
+                      </button>
+                    )}
+                  </div>
                 </div>
               ))}
             </div>
@@ -266,6 +251,7 @@ const Home = () => {
 };
 
 export default Home;
+
 
 
 

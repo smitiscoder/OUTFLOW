@@ -1,91 +1,79 @@
 import React, { useState } from 'react';
+import { Popover, PopoverTrigger, PopoverContent } from '../components/ui/popover';
+import { Calendar as CalendarIcon } from 'lucide-react';
+import { format } from 'date-fns';
 
-const months = [
-  'JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN',
-  'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'
-];
+const MonthYearModal = ({ selectedDate, onDateChange }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  
+  // Default to current date if none selected
+  const currentDate = selectedDate || new Date();
+  
+  // Generate months
+  const months = Array.from({ length: 12 }, (_, i) => ({
+    value: i,
+    label: format(new Date(0, i), 'MMMM')
+  }));
+  
+  // Generate years (10 years range)
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: 10 }, (_, i) => currentYear - 5 + i);
 
-const years = Array.from({length: 10}, (_, i) => new Date().getFullYear() - 5 + i);
-
-const MonthYearModal = ({ currentYear, currentMonth, onSelect, onClose }) => {
-  const [selectedYear, setSelectedYear] = useState(currentYear);
-  const [selectedMonth, setSelectedMonth] = useState(currentMonth);
-  const [view, setView] = useState('months'); // 'months' or 'years'
-
-  const handleSelectMonth = (month) => {
-    setSelectedMonth(month);
-    setView('years');
+  const handleMonthChange = (e) => {
+    const newDate = new Date(currentDate);
+    newDate.setMonth(parseInt(e.target.value));
+    onDateChange(newDate);
   };
 
-  const handleSelectYear = (year) => {
-    setSelectedYear(year);
-    onSelect(year, selectedMonth);
+  const handleYearChange = (e) => {
+    const newDate = new Date(currentDate);
+    newDate.setFullYear(parseInt(e.target.value));
+    onDateChange(newDate);
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-lg w-80">
-        <h2 className="text-xl font-bold mb-4">
-          {view === 'months' ? 'Select Month' : 'Select Year'}
-        </h2>
-
-        {view === 'months' ? (
-          <>
-            <div className="grid grid-cols-3 gap-2 mb-4">
-              {months.map(month => (
-                <button
-                  key={month}
-                  onClick={() => handleSelectMonth(month)}
-                  className={`py-3 rounded-full ${
-                    selectedMonth === month 
-                      ? 'bg-[#ECD8A0] font-bold' 
-                      : 'bg-gray-100 hover:bg-gray-200'
-                  }`}
-                >
-                  {month}
-                </button>
-              ))}
-            </div>
-            <div className="text-center text-sm text-gray-500">
-              Selected: {selectedMonth} {selectedYear}
-            </div>
-          </>
-        ) : (
-          <>
-            <div className="grid grid-cols-3 gap-2 mb-4">
-              {years.map(year => (
-                <button
-                  key={year}
-                  onClick={() => handleSelectYear(year)}
-                  className={`py-3 rounded-full ${
-                    selectedYear === year 
-                      ? 'bg-[#ECD8A0] font-bold' 
-                      : 'bg-gray-100 hover:bg-gray-200'
-                  }`}
-                >
-                  {year}
-                </button>
-              ))}
-            </div>
-            <button 
-              onClick={() => setView('months')}
-              className="w-full py-2 text-gray-600 hover:text-gray-800"
+    <Popover open={isOpen} onOpenChange={setIsOpen}>
+      <PopoverTrigger asChild>
+        <button className="p-2 bg-gray-800 rounded hover:bg-gray-700">
+          <CalendarIcon className="w-6 h-6" />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent className="z-50 bg-white rounded-lg p-3 text-black shadow-xl w-auto" align="end">
+        <div className="flex flex-col space-y-3">
+          <div className="flex items-center justify-between">
+            <label htmlFor="month-select" className="mr-2">Month:</label>
+            <select
+              id="month-select"
+              className="p-2 border rounded"
+              value={currentDate.getMonth()}
+              onChange={handleMonthChange}
             >
-              ← Back to months
-            </button>
-          </>
-        )}
-
-        <div className="flex justify-end mt-4">
-          <button 
-            onClick={onClose}
-            className="px-4 py-2 text-gray-600 hover:text-gray-800"
-          >
-            Cancel
-          </button>
+              {months.map((month) => (
+                <option key={month.value} value={month.value}>
+                  {month.label}
+                </option>
+              ))}
+            </select>
+          </div>
+          
+          <div className="flex items-center justify-between">
+            <label htmlFor="year-select" className="mr-2">Year:</label>
+            <select
+              id="year-select"
+              className="p-2 border rounded"
+              value={currentDate.getFullYear()}
+              onChange={handleYearChange}
+            >
+              {years.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
-      </div>
-    </div>
+      </PopoverContent>
+    </Popover>
   );
 };
 

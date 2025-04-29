@@ -1,20 +1,18 @@
 import React, { useState } from "react";
-import { Mail, Phone, Moon, Bell, LogOut, Camera, ChevronRight } from "lucide-react";
+import { Moon, LogOut, ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../components/firebase";
 
 export default function ProfilePage() {
   const [darkMode, setDarkMode] = useState(true);
-  const [notifications, setNotifications] = useState(true);
   const navigate = useNavigate();
 
   const user = {
-    name: "Alex Johnson",
+    name: "WINter",
     email: "alex.johnson@example.com",
     phone: "+1 (555) 123-4567",
     avatar:
-      "https://images.pexels.com/photos/220453/pexels-photo-220453.jpeg?auto=compress&cs=tinysrgb&w=1600",
-    memberSince: "March 2024",
+      "https://i.pinimg.com/736x/23/4f/d4/234fd4285d600aaa90ae6af22512c7f5.jpg",
   };
 
   const handleLogout = () => {
@@ -36,45 +34,22 @@ export default function ProfilePage() {
         {/* Profile Section */}
         <div className="flex flex-col items-center space-y-4">
           {/* Profile Picture */}
-          {/* 
-          <div className="relative">
+          <div>
             <img
               src={user.avatar}
               alt="Avatar"
-              className="w-24 h-24 rounded-full border-4 border-blue-500"
+              className="w-40 h-40 rounded-full border-3 border-blue-500"
             />
-            <button className="absolute bottom-0 right-0 bg-blue-500 p-2 rounded-full border-4 border-gray-900">
-              <Camera size={16} />
-            </button>
           </div>
-          */}
 
           {/* Profile Info */}
-          {/* 
           <div className="text-center">
             <h2 className="text-xl font-bold">{user.name}</h2>
-            <p className="text-sm text-gray-400">Member since {user.memberSince}</p>
           </div>
-          */}
-
-          {/* Edit Profile Button */}
-          {/*
-          <button className="bg-gray-700 px-4 py-2 rounded-full text-sm font-medium">
-            Edit Profile
-          </button>
-          */}
         </div>
 
         {/* Sections */}
         <div className="space-y-8">
-          {/* Account */}
-          {/*
-          <SettingsSection title="Account">
-            <SettingItem icon={<Mail size={20} />} label="Email" value={user.email} />
-            <SettingItem icon={<Phone size={20} />} label="Phone" value={user.phone} />
-          </SettingsSection>
-          */}
-
           {/* Preferences */}
           <SettingsSection title="Preferences">
             <SettingItem
@@ -84,16 +59,6 @@ export default function ProfilePage() {
               value={darkMode}
               onToggle={() => setDarkMode(!darkMode)}
             />
-            {/* Notifications */}
-            {/*
-            <SettingItem
-              icon={<Bell size={20} />}
-              label="Notifications"
-              type="toggle"
-              value={notifications}
-              onToggle={() => setNotifications(!notifications)}
-            />
-            */}
           </SettingsSection>
 
           {/* Support */}
@@ -140,7 +105,6 @@ function SettingItem({ icon, label, value, type, onClick, onToggle, labelColor =
         <div className="mt-1">{icon}</div>
         <div>
           <div className={`font-medium ${labelColor}`}>{label}</div>
-          {type === "info" && <div className="text-sm text-gray-400">{value}</div>}
         </div>
       </div>
 
@@ -160,4 +124,5 @@ function SettingItem({ icon, label, value, type, onClick, onToggle, labelColor =
     </div>
   );
 }
+
 

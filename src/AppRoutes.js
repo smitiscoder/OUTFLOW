@@ -18,21 +18,24 @@ function AppRoutes({ user }) {
     <Routes>
       {/* Public Routes */}
       <Route path="/onboarding" element={<Onboarding />} />
-      <Route path="/login" element={user ? <Navigate to="/" /> : <Login />} />
-      <Route path="/phone" element={user ? <Navigate to="/" /> : <Phone />} />
-      <Route path="/continuewithgoogle" element={user ? <Navigate to="/" /> : <ContinueWithGoogle />} />
+      <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
+      <Route path="/phone" element={user ? <Navigate to="/" replace /> : <Phone />} />
+      <Route path="/continuewithgoogle" element={user ? <Navigate to="/" replace /> : <ContinueWithGoogle />} />
+
+      {/* Redirect /home to root */}
+      <Route path="/home" element={<Navigate to="/" replace />} />
 
       {/* Protected Routes */}
       {user ? (
-        <Route path="/" element={<MainLayout />}>  {/* MainLayout wraps all protected routes */}
-          <Route index element={<Home />} />  {/* This is the default route */}
+        <Route path="/" element={<MainLayout />}>
+          <Route index element={<Home />} />
           <Route path="reports" element={<Reports />} />
-          <Route path="ExpenseCategory" element={<ExpenseCategory />} />
+          <Route path="expensecategory" element={<ExpenseCategory />} />
           <Route path="search" element={<Search />} />
           <Route path="profile" element={<ProfilePage />} />
         </Route>
       ) : (
-        <Route path="*" element={<Navigate to="/login" />} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
       )}
 
       {/* Fallback for wrong URLs */}

@@ -1,6 +1,32 @@
 import React, { useState } from "react";
 import { useExpenses } from "../Context/ExpenseContext";
-import { ShoppingCart, Utensils, Bus, Shirt, Gift, Heart, Ticket, Search as SearchIcon, Phone, Mic, BookOpen, Scissors, Dumbbell, Users, Car, Smartphone, Plane, Stethoscope, Dog, Wrench, Home, Cookie, Baby, Salad, Apple } from "lucide-react"; // Add missing icons here
+import { 
+  ShoppingCart, 
+  Utensils, 
+  FileText, 
+  Mic, 
+  Stethoscope, 
+  Users, 
+  Bus, 
+  Scissors, 
+  Car, 
+  BookOpen, 
+  TrendingUp, 
+  Wrench, 
+  Gift, 
+  Plane, 
+  Shield, 
+  CreditCard,
+  Dog, 
+  Pen, 
+  Smartphone, 
+  Baby, 
+  Cookie, 
+  Apple, 
+  Salad, 
+  Banknote,
+  Search as SearchIcon 
+} from "lucide-react";
 import { format } from "date-fns";
 
 const getIconForCategory = (category) => {
@@ -8,30 +34,31 @@ const getIconForCategory = (category) => {
   const categoryIcons = {
     shopping: <ShoppingCart className="w-5 h-5" />,
     food: <Utensils className="w-5 h-5" />,
-    phone: <Phone className="w-5 h-5" />,
+    grocery: <Salad className="w-5 h-5" />,
+    bills: <FileText className="w-5 h-5" />,
     entertainment: <Mic className="w-5 h-5" />,
-    education: <BookOpen className="w-5 h-5" />,
-    beauty: <Scissors className="w-5 h-5" />,
-    sports: <Dumbbell className="w-5 h-5" />,
+    health: <Stethoscope className="w-5 h-5" />,
     social: <Users className="w-5 h-5" />,
     transportation: <Bus className="w-5 h-5" />,
-    clothing: <Shirt className="w-5 h-5" />,
-    car: <Car className="w-5 h-5" />,
-    electronics: <Smartphone className="w-5 h-5" />,
+    beauty: <Scissors className="w-5 h-5" />,
+    vehicle: <Car className="w-5 h-5" />,
+    education: <BookOpen className="w-5 h-5" />,
+    investment: <TrendingUp className="w-5 h-5" />,
+    housing_repair: <Wrench className="w-5 h-5" />,
+    gifts_donations: <Gift className="w-5 h-5" />,
     travel: <Plane className="w-5 h-5" />,
-    health: <Stethoscope className="w-5 h-5" />,
+    insurance: <Shield className="w-5 h-5" />,
+    subscriptions: <CreditCard className="w-5 h-5" />,
     pets: <Dog className="w-5 h-5" />,
-    repairs: <Wrench className="w-5 h-5" />,
-    housing: <Home className="w-5 h-5" />,
-    gifts: <Gift className="w-5 h-5" />,
-    donations: <Heart className="w-5 h-5" />,
-    lottery: <Ticket className="w-5 h-5" />,
-    snacks: <Cookie className="w-5 h-5" />,
+    emi_loans: <Banknote className="w-5 h-5" />,
+    electronics: <Smartphone className="w-5 h-5" />,
     kids: <Baby className="w-5 h-5" />,
-    vegetables: <Salad className="w-5 h-5" />,
+    snacks: <Cookie className="w-5 h-5" />,
     fruits: <Apple className="w-5 h-5" />,
+    others: <Pen className="w-5 h-5" />,
   };
-  return categoryIcons[key] || <Gift className="w-5 h-5" />;
+  
+  return categoryIcons[key] || <Pen className="w-5 h-5" />;
 };
 
 const Search = () => {

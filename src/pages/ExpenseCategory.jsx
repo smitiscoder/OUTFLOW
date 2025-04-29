@@ -1,44 +1,45 @@
 import React, { useState } from 'react';
-import { ShoppingCart, Utensils, Phone, Mic, BookOpen, Scissors, Dumbbell, Users, Bus, Shirt, Car, Smartphone, Plane, Stethoscope, Dog, Wrench, Home, Gift, Heart, Ticket, Cookie, Baby, Salad, Apple } from 'lucide-react';
+import { 
+  ShoppingCart, Utensils, FileText, Mic, 
+  Stethoscope, Users, Bus, Scissors, Car, BookOpen, 
+  TrendingUp, Home, Gift, Plane, Shield, CreditCard,
+  Dog, Wrench, Pen, Smartphone, Baby, Cookie, Apple,
+  MoreHorizontal, Banknote, Salad
+} from 'lucide-react';
+import { getAuth } from 'firebase/auth';
+import { getFirestore, collection, addDoc } from 'firebase/firestore';
+import Keyboard from '../pages/Keyboard';
 
-// Firebase imports
-import { getAuth } from 'firebase/auth'; // Import getAuth
-import { getFirestore, collection, addDoc } from 'firebase/firestore'; // Import Firestore functions
-
-// Keyboard component import
-import Keyboard from '../pages/Keyboard'; // Make sure the path is correct for Keyboard component
-
-// New Category Data with updated icons
 const expensecategories = [
   { id: 'shopping', icon: ShoppingCart, label: 'Shopping' },
   { id: 'food', icon: Utensils, label: 'Food' },
-  { id: 'phone', icon: Phone, label: 'Phone' },
+  { id: 'grocery', icon: Salad, label: 'Grocery' },
+  { id: 'bills', icon: FileText, label: 'Bills' },
   { id: 'entertainment', icon: Mic, label: 'Entertainment' },
-  { id: 'education', icon: BookOpen, label: 'Education' },
-  { id: 'beauty', icon: Scissors, label: 'Beauty' },
-  { id: 'sports', icon: Dumbbell, label: 'Sports' },
+  { id: 'health', icon: Stethoscope, label: 'Health' },
   { id: 'social', icon: Users, label: 'Social' },
   { id: 'transportation', icon: Bus, label: 'Transportation' },
-  { id: 'clothing', icon: Shirt, label: 'Clothing' },
-  { id: 'car', icon: Car, label: 'Car' },
-  { id: 'electronics', icon: Smartphone, label: 'Electronics' },
+  { id: 'beauty', icon: Scissors, label: 'Beauty' },
+  { id: 'vehicle', icon: Car, label: 'Vehicle' },
+  { id: 'education', icon: BookOpen, label: 'Education' },
+  { id: 'investment', icon: TrendingUp, label: 'Investment' },
+  { id: 'housing_repair', icon: Wrench, label: 'Housing & Repair' },
+  { id: 'gifts_donations', icon: Gift, label: 'Gifts & Donations' },
   { id: 'travel', icon: Plane, label: 'Travel' },
-  { id: 'health', icon: Stethoscope, label: 'Health' },
+  { id: 'insurance', icon: Shield, label: 'Insurance' },
+  { id: 'subscriptions', icon: CreditCard, label: 'Subscriptions' },
   { id: 'pets', icon: Dog, label: 'Pets' },
-  { id: 'repairs', icon: Wrench, label: 'Repairs' },
-  { id: 'housing', icon: Home, label: 'Housing' },
-  { id: 'gifts', icon: Gift, label: 'Gifts' },
-  { id: 'donations', icon: Heart, label: 'Donations' },
-  { id: 'lottery', icon: Ticket, label: 'Lottery' },
-  { id: 'snacks', icon: Cookie, label: 'Snacks' },
+  { id: 'emi_loans', icon: Banknote, label: 'EMIs & Loans' },
+  { id: 'electronics', icon: Smartphone, label: 'Electronics' },
   { id: 'kids', icon: Baby, label: 'Kids' },
-  { id: 'vegetables', icon: Salad, label: 'Vegetables' },
+  { id: 'snacks', icon: Cookie, label: 'Snacks' },
   { id: 'fruits', icon: Apple, label: 'Fruits' },
+  { id: 'others', icon: Pen, label: 'Others' },
 ];
 
 const ExpenseCategories = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
-  const [loading, setLoading] = useState(false); // Track submission state
+  const [loading, setLoading] = useState(false);
 
   const handleCategoryClick = (id, label) => {
     setSelectedCategory({ id, label });
@@ -46,12 +47,11 @@ const ExpenseCategories = () => {
 
   const handleSubmit = async ({ amount, note }) => {
     if (isNaN(amount) || amount <= 0) {
-      // Add some validation for the amount (should be a positive number)
       alert('Please enter a valid amount.');
       return;
     }
 
-    setLoading(true); // Disable the button when submitting
+    setLoading(true);
     const auth = getAuth();
     const db = getFirestore();
 
@@ -65,50 +65,50 @@ const ExpenseCategories = () => {
       };
 
       await addDoc(collection(db, 'expenses'), record);
-      console.log('Record saved to Firebase:', record);
-
-      // Optionally, show a success message or toast
-      setSelectedCategory(null); // Close keyboard
-      setLoading(false); // Reset loading state
+      setSelectedCategory(null);
     } catch (error) {
       console.error('Error saving record:', error);
-      setLoading(false); // Reset loading state
-      // Optionally, show an error toast or message
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="category-container px-4 py-4">
-    <h2 className="category-heading text-center text-2xl font-semibold mb-4 text-white">SELECT CATEGORY</h2>
+    <div className="min-h-screen bg-gray-900 text-white pb-20">
+      <div className="max-w-md mx-auto px-4">
+        <h2 className="text-center text-2xl font-semibold mb-6 pt-6">SELECT CATEGORY</h2>
+        
+        {/* Improved Category Grid */}
+        <div className="grid grid-cols-4 gap-3 mb-8">
+          {expensecategories.map(({ id, icon: Icon, label }) => (
+            <button
+              key={id}
+              className={`flex flex-col items-center p-3 rounded-lg transition-colors ${
+                selectedCategory?.id === id 
+                  ? 'bg-gray-600' 
+                  : ''
+              }`}
+              onClick={() => handleCategoryClick(id, label)}
+            >
+              <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center mb-2">
+                <Icon className="w-5 h-5 text-white" />
+              </div>
+              <span className="text-xs text-center">{label}</span>
+            </button>
+          ))}
+        </div>
 
-  
-      {/* Category Grid with Fixed 4x6 Layout */}
-      <div className="category-grid grid grid-cols-4 gap-2 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-4">
-        {expensecategories.map(({ id, icon: Icon, label }) => (
-          <div
-            key={id}
-            className={`category-item flex flex-col items-center justify-center p-2 rounded-md hover:bg-gray-800 cursor-pointer transition-all ${
-              selectedCategory?.id === id ? 'bg-gray-600' : ''
-            }`}
-            onClick={() => handleCategoryClick(id, label)}
-          >
-            <div className="category-icon-container w-10 h-10 rounded-full bg-gray-600 flex items-center justify-center mb-1">
-              <Icon className="category-icon w-6 h-6 text-white" />
-            </div>
-            <span className="category-label text-sm text-white">{label}</span>
+        {selectedCategory && (
+          <div className="fixed bottom-0 left-0 right-0 bg-gray-800 p-4 rounded-t-2xl shadow-lg">
+            <Keyboard onSubmit={handleSubmit} loading={loading} />
           </div>
-        ))}
+        )}
       </div>
-
-      {selectedCategory && (
-        <Keyboard onSubmit={handleSubmit} loading={loading} /> // Pass loading state to Keyboard component
-      )}
     </div>
   );
 };
 
 export default ExpenseCategories;
-
 
 
 
