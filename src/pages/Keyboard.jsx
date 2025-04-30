@@ -9,14 +9,15 @@ const Keyboard = ({ onSubmit }) => {
   const [note, setNote] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showCalendar, setShowCalendar] = useState(false);
+  const [dateSelected, setDateSelected] = useState(false);
   const navigate = useNavigate();
   const { selectedCategory } = state || {};
 
   const handleKeyPress = (key) => {
     if (key === "Delete") {
-      setAmount(prev => prev.slice(0, -1));
+      setAmount((prev) => prev.slice(0, -1));
     } else if (!(key === "." && amount.includes("."))) {
-      setAmount(prev => prev + key);
+      setAmount((prev) => prev + key);
     }
   };
 
@@ -25,39 +26,33 @@ const Keyboard = ({ onSubmit }) => {
       alert("Please enter a valid amount.");
       return;
     }
-    
-    // Create a date-only string without timezone offset issues
+
     const dateStr = format(selectedDate, "yyyy-MM-dd");
     const dateObj = new Date(dateStr);
-    
-    onSubmit({ 
-      amount, 
+
+    onSubmit({
+      amount,
       note,
-      date: dateObj.toISOString() // Send ISO string of the date-only object
+      date: dateObj.toISOString(),
     });
-    
+
     setAmount("");
     setNote("");
-    navigate("/home"); // Changed to match your AddRecord navigation
+    navigate("/home");
   };
 
   const handleDateChange = (e) => {
-    // Create a new date from the input value (already in local time)
     const newDate = new Date(e.target.value);
     setSelectedDate(newDate);
     setShowCalendar(false);
+    setDateSelected(true);
   };
 
-  const handleMonthChange = (months) => {
-    const newDate = new Date(selectedDate);
-    newDate.setMonth(newDate.getMonth() + months);
-    setSelectedDate(newDate);
-  };
-
-  const handleYearChange = (years) => {
-    const newDate = new Date(selectedDate);
-    newDate.setFullYear(newDate.getFullYear() + years);
-    setSelectedDate(newDate);
+  const toggleCalendar = () => {
+    setShowCalendar(!showCalendar);
+    if (!showCalendar) {
+      setDateSelected(true);
+    }
   };
 
   return (
@@ -74,59 +69,24 @@ const Keyboard = ({ onSubmit }) => {
         </div>
       )}
 
-      {/* Date Display */}
-      <div className="text-sm mb-2 px-2 text-gray-300 flex justify-between items-center">
-        <span>Date: {format(selectedDate, "MMM dd, yyyy")}</span>
-        <button 
-          onClick={() => setShowCalendar(!showCalendar)}
-          className="text-blue-400 text-xs"
-        >
-          {showCalendar ? "Hide" : "Change"}
-        </button>
-      </div>
+      {/* Date Display - Only shown after selection */}
+      {dateSelected && (
+        <div className="text-sm mb-2 px-2 text-gray-300 flex justify-between items-center">
+          <span>Date: {format(selectedDate, "MMM dd, yyyy")}</span>
+          <button onClick={toggleCalendar} className="text-blue-400 text-xs">
+            Change
+          </button>
+        </div>
+      )}
 
-      {/* Calendar Popup */}
+      {/* Minimal Calendar Popup */}
       {showCalendar && (
         <div className="bg-gray-800 p-3 rounded-lg mb-3">
-          <div className="flex justify-between items-center mb-2">
-            <button 
-              onClick={() => handleMonthChange(-1)}
-              className="p-1 text-sm"
-            >
-              &lt;
-            </button>
-            <div className="text-center">
-              {format(selectedDate, "MMMM yyyy")}
-            </div>
-            <button 
-              onClick={() => handleMonthChange(1)}
-              className="p-1 text-sm"
-            >
-              &gt;
-            </button>
-          </div>
-          <div className="flex justify-between items-center mb-2">
-            <button 
-              onClick={() => handleYearChange(-1)}
-              className="p-1 text-sm"
-            >
-              &lt;&lt;
-            </button>
-            <div className="text-center">
-              {format(selectedDate, "yyyy")}
-            </div>
-            <button 
-              onClick={() => handleYearChange(1)}
-              className="p-1 text-sm"
-            >
-              &gt;&gt;
-            </button>
-          </div>
           <input
             type="date"
             value={format(selectedDate, "yyyy-MM-dd")}
             onChange={handleDateChange}
-            className="w-full bg-gray-700 p-2 rounded"
+            className="w-full bg-gray-700 p-2 rounded text-white"
           />
         </div>
       )}
@@ -142,7 +102,9 @@ const Keyboard = ({ onSubmit }) => {
         />
         <button
           onClick={handleSubmit}
-          className={`p-1.5 rounded-md ${amount ? 'bg-green-500' : 'bg-gray-600'}`}
+          className={`p-1.5 rounded-md ${
+            amount ? "bg-green-500" : "bg-gray-600"
+          }`}
           disabled={!amount}
         >
           <Check className="w-4 h-4" />
@@ -160,23 +122,23 @@ const Keyboard = ({ onSubmit }) => {
             {key}
           </button>
         ))}
-        
-        {/* Bottom row with custom layout */}
+
+        {/* Bottom row with calendar, 0, delete */}
         <div className="col-span-3 grid grid-cols-3 gap-2">
           <button
-            onClick={() => setShowCalendar(!showCalendar)}
+            onClick={toggleCalendar}
             className="py-2 rounded-md bg-gray-800 hover:bg-gray-700 active:bg-gray-600 transition-colors flex justify-center items-center"
           >
             <Calendar className="w-5 h-5 text-white" />
           </button>
-          
+
           <button
             onClick={() => handleKeyPress("0")}
             className="py-2 rounded-md text-lg bg-gray-800 hover:bg-gray-700 active:bg-gray-600 transition-colors"
           >
             0
           </button>
-          
+
           <button
             onClick={() => handleKeyPress("Delete")}
             className="py-2 rounded-md bg-gray-800 hover:bg-gray-700 active:bg-gray-600 transition-colors flex justify-center items-center"
@@ -186,12 +148,13 @@ const Keyboard = ({ onSubmit }) => {
         </div>
       </div>
 
-      <div className="h-16"></div>
+      <div className="h-14"></div>
     </div>
   );
 };
 
 export default Keyboard;
+
 
 
 

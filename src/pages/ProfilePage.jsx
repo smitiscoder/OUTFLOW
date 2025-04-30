@@ -1,16 +1,16 @@
 import React, { useState } from "react";
-import { Moon, LogOut, ChevronRight } from "lucide-react";
+import { Moon, LogOut, ChevronRight, Edit, Check, X, Mail, Phone } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../components/firebase";
 
 export default function ProfilePage() {
   const [darkMode, setDarkMode] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedName, setEditedName] = useState("WINter");
   const navigate = useNavigate();
 
   const user = {
-    name: "WINter",
-    email: "alex.johnson@example.com",
-    phone: "+1 (555) 123-4567",
+    name: editedName,
     avatar:
       "https://i.pinimg.com/736x/23/4f/d4/234fd4285d600aaa90ae6af22512c7f5.jpg",
   };
@@ -23,6 +23,20 @@ export default function ProfilePage() {
       .catch((error) => {
         console.error("Error signing out: ", error);
       });
+  };
+
+  const handleNameEdit = () => {
+    setIsEditing(true);
+  };
+
+  const handleNameSave = () => {
+    setIsEditing(false);
+    // Here you would typically also save the name to your backend/database
+  };
+
+  const handleNameCancel = () => {
+    setIsEditing(false);
+    setEditedName("WINter"); // Reset to original name
   };
 
   return (
@@ -43,13 +57,63 @@ export default function ProfilePage() {
           </div>
 
           {/* Profile Info */}
-          <div className="text-center">
-            <h2 className="text-xl font-bold">{user.name}</h2>
+          <div className="text-center flex items-center gap-2">
+            {isEditing ? (
+              <>
+                <input
+                  type="text"
+                  value={editedName}
+                  onChange={(e) => setEditedName(e.target.value)}
+                  className="bg-gray-800 text-white border border-gray-700 rounded px-2 py-1"
+                  autoFocus
+                />
+                <button 
+                  onClick={handleNameSave}
+                  className="text-green-500 hover:text-green-400"
+                >
+                  <Check size={20} />
+                </button>
+                <button 
+                  onClick={handleNameCancel}
+                  className="text-red-500 hover:text-red-400"
+                >
+                  <X size={20} />
+                </button>
+              </>
+            ) : (
+              <>
+                <h2 className="text-xl font-bold">{user.name}</h2>
+                <button 
+                  onClick={handleNameEdit}
+                  className="text-blue-500 hover:text-blue-400"
+                >
+                  <Edit size={18} />
+                </button>
+              </>
+            )}
           </div>
         </div>
 
         {/* Sections */}
         <div className="space-y-8">
+          {/* Account Section */}
+          <SettingsSection title="Account">
+            <SettingItem
+              icon={<Mail size={20} />}
+              label="Email"
+              value={user.email}
+              type="link"
+              onClick={() => navigate("/update-email")}
+            />
+            <SettingItem
+              icon={<Phone size={20} />}
+              label="Phone Number"
+              value={user.phone}
+              type="link"
+              onClick={() => navigate("/update-phone")}
+            />
+          </SettingsSection>
+
           {/* Preferences */}
           <SettingsSection title="Preferences">
             <SettingItem
@@ -105,6 +169,7 @@ function SettingItem({ icon, label, value, type, onClick, onToggle, labelColor =
         <div className="mt-1">{icon}</div>
         <div>
           <div className={`font-medium ${labelColor}`}>{label}</div>
+          {value && <div className="text-sm text-gray-400">{value}</div>}
         </div>
       </div>
 

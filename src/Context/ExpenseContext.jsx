@@ -68,7 +68,8 @@ export const ExpenseProvider = ({ children }) => {
       setExpenses(fetchedExpenses);
     });
 
-    return () => unsubscribe();
+    
+    
   }, []);
 
   useEffect(() => {

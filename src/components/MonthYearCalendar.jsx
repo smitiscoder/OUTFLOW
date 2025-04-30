@@ -40,7 +40,7 @@ const MonthYearCalendar = ({ selectedYear, selectedMonth, onDateChange }) => {
             </div>
 
             <select
-              className="w-full p-2 mb-4 border border-gray-300 rounded-lg text-sm"
+              className="w-full p-2 mb-4 border border-gray-300 rounded-lg text-sm bg-black"
               value={tempYear}
               onChange={(e) => setTempYear(parseInt(e.target.value))}
             >

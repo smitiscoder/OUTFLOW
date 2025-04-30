@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useExpenses } from '../Context/ExpenseContext';
 import { useNavigate } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
@@ -47,60 +47,66 @@ const getIconForCategory = (category) => {
 };
 
 const Home = () => {
-  const { expenses, setExpenses } = useExpenses();
-  const [date, setDate] = useState(null);
+  const [currentDate, setCurrentDate] = useState({
+    year: new Date().getFullYear(),
+    month: new Date().getMonth(),
+  });
   const [loading, setLoading] = useState(true);
   const [selectedExpense, setSelectedExpense] = useState(null);
-  const navigate = useNavigate();
+  
+  const { expenses, setExpenses } = useExpenses();
   const db = getFirestore();
   const auth = getAuth();
+  const navigate = useNavigate();
+
+  const monthMap = {
+    0: 'JAN', 1: 'FEB', 2: 'MAR', 3: 'APR', 4: 'MAY', 5: 'JUN',
+    6: 'JUL', 7: 'AUG', 8: 'SEP', 9: 'OCT', 10: 'NOV', 11: 'DEC',
+  };
 
   const fetchExpenses = () => {
     const userId = auth.currentUser?.uid;
     if (!userId) return;
 
-    let q = query(collection(db, 'expenses'), where('userId', '==', userId));
-
-    if (date) {
-      const startOfMonth = new Date(date.getFullYear(), date.getMonth(), 1);
-      const endOfMonth = new Date(date.getFullYear(), date.getMonth() + 1, 0, 23, 59, 59);
-
-      q = query(
-        collection(db, 'expenses'),
-        where('userId', '==', userId),
-        where('timestamp', '>=', startOfMonth),
-        where('timestamp', '<=', endOfMonth)
-      );
-    }
+    const q = query(collection(db, 'expenses'), where('userId', '==', userId));
 
     const unsubscribe = onSnapshot(q, (querySnapshot) => {
-      const expensesData = [];
+      setLoading(false);
+      const allExpenses = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
 
-      querySnapshot.forEach((doc) => {
-        const expense = doc.data();
-        const amount = !isNaN(expense.amount) ? Number(expense.amount) : 0;
+      const filteredExpenses = allExpenses.filter((exp) => {
+        const rawTimestamp = exp.timestamp;
 
-        let timestamp;
-        if (expense.timestamp?.toDate) timestamp = expense.timestamp.toDate();
-        else if (expense.timestamp instanceof Date) timestamp = expense.timestamp;
-        else if (typeof expense.timestamp === 'string') timestamp = new Date(expense.timestamp);
-        else if (typeof expense.timestamp === 'number') timestamp = new Date(expense.timestamp);
-        else timestamp = new Date(0); // fallback
+        let date;
+        if (rawTimestamp instanceof Date) {
+          date = rawTimestamp;
+        } else if (rawTimestamp?.toDate) {
+          date = rawTimestamp.toDate();
+        } else if (typeof rawTimestamp === 'string') {
+          date = new Date(rawTimestamp);
+        } else {
+          return false;
+        }
 
-        expensesData.push({
-          id: doc.id,
-          ...expense,
-          amount,
-          timestamp
-        });
+        return (
+          date.getFullYear() === parseInt(currentDate.year) &&
+          date.getMonth() === currentDate.month
+        );
       });
 
-      const sortedExpenses = expensesData.sort((a, b) => b.timestamp - a.timestamp);
+      const sortedExpenses = filteredExpenses.sort((a, b) => {
+        const dateA = a.timestamp?.toDate ? a.timestamp.toDate() : new Date(a.timestamp);
+        const dateB = b.timestamp?.toDate ? b.timestamp.toDate() : new Date(b.timestamp);
+        return dateB - dateA;
+      });
+
       setExpenses(sortedExpenses);
-      setLoading(false);
     }, (error) => {
-      console.error("Error fetching expenses: ", error);
       setLoading(false);
+      console.error("Error fetching expenses: ", error);
     });
 
     return unsubscribe;
@@ -108,8 +114,12 @@ const Home = () => {
 
   useEffect(() => {
     const unsubscribe = fetchExpenses();
-    return () => unsubscribe?.();
-  }, [date]);
+    return () => unsubscribe && unsubscribe();
+  }, [currentDate]);
+
+  const handleDateChange = (year, month) => {
+    setCurrentDate({ year, month });
+  };
 
   const totalSpent = expenses.reduce((sum, expense) => sum + expense.amount, 0);
 
@@ -127,7 +137,20 @@ const Home = () => {
   if (othersTotal > 0) finalCategoryData.push({ category: 'Others', amount: othersTotal });
 
   const groupedByDate = expenses.reduce((acc, expense) => {
-    const dateStr = format(expense.timestamp, 'dd MMM EEEE');
+    let date;
+    const rawTimestamp = expense.timestamp;
+    
+    if (rawTimestamp instanceof Date) {
+      date = rawTimestamp;
+    } else if (rawTimestamp?.toDate) {
+      date = rawTimestamp.toDate();
+    } else if (typeof rawTimestamp === 'string') {
+      date = new Date(rawTimestamp);
+    } else {
+      return acc;
+    }
+    
+    const dateStr = format(date, 'dd MMM EEEE');
     if (!acc[dateStr]) acc[dateStr] = { total: 0, items: [] };
     acc[dateStr].items.push(expense);
     acc[dateStr].total += expense.amount;
@@ -138,7 +161,7 @@ const Home = () => {
     try {
       await deleteDoc(doc(db, 'expenses', expenseId));
       setExpenses(prev => prev.filter(e => e.id !== expenseId));
-      setSelectedExpense(null); // Reset selection after deletion
+      setSelectedExpense(null);
     } catch (err) {
       console.error("Delete failed:", err);
     }
@@ -150,7 +173,6 @@ const Home = () => {
 
   return (
     <div className="min-h-screen bg-gray-900 text-white pb-20 relative">
-      {/* Overlay for blur effect when an expense is selected */}
       {selectedExpense && (
         <div 
           className="fixed inset-0 bg-black bg-opacity-50 z-10 backdrop-blur-sm"
@@ -164,7 +186,7 @@ const Home = () => {
             <div className="w-10 h-10 bg-gradient-to-tr from-purple-500 to-pink-500 rounded-full mr-2"></div>
             <h1 className="text-2xl font-bold">OUTFLOW</h1>
           </div>
-          <MonthYearCalendar selectedDate={date} onDateChange={setDate} />
+          <MonthYearCalendar selectedDate={currentDate} onDateChange={handleDateChange} />
         </header>
 
         <div className="flex justify-center items-center my-4 cursor-pointer" onClick={() => navigate('/reports')}>
@@ -192,7 +214,7 @@ const Home = () => {
                 </div>
               </>
             ) : (
-              <div className="w-full h-full flex flex-col items-center justify-center bg-gray-800 rounded-full">
+              <div className="w-full h-full flex flex-col items-center justify-center">
                 <p className="text-gray-400 text-sm">No expenses</p>
                 <p className="text-gray-500 text-xs mt-1">Add some to begin</p>
               </div>
