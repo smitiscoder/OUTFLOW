@@ -7,7 +7,12 @@ const Keyboard = ({ onSubmit }) => {
   const { state } = useLocation();
   const [amount, setAmount] = useState("");
   const [note, setNote] = useState("");
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(() => {
+    // Start with today's date in local timezone
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+    return now;
+  });
   const [showCalendar, setShowCalendar] = useState(false);
   const [dateSelected, setDateSelected] = useState(false);
   const navigate = useNavigate();
@@ -26,23 +31,27 @@ const Keyboard = ({ onSubmit }) => {
       alert("Please enter a valid amount.");
       return;
     }
-
-    const dateStr = format(selectedDate, "yyyy-MM-dd");
-    const dateObj = new Date(dateStr);
-
+  
+    // Use formatted date string (no time component)
+    const localDate = new Date(selectedDate);
+    localDate.setHours(0, 0, 0, 0);
+    const dateString = format(localDate, "yyyy-MM-dd");
+  
     onSubmit({
       amount,
       note,
-      date: dateObj.toISOString(),
+      date: dateString, // <-- only the date part, as a string
     });
-
+  
     setAmount("");
     setNote("");
     navigate("/home");
   };
+  
 
   const handleDateChange = (e) => {
     const newDate = new Date(e.target.value);
+    newDate.setHours(0, 0, 0, 0); // Reset time to avoid timezone shifts
     setSelectedDate(newDate);
     setShowCalendar(false);
     setDateSelected(true);

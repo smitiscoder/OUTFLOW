@@ -1,6 +1,6 @@
 import React from 'react';
 import { db } from '../components/firebase';
-import { collection, addDoc } from 'firebase/firestore';
+import { collection, addDoc, Timestamp } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Keyboard from './Keyboard';
@@ -20,13 +20,14 @@ const AddRecord = () => {
     }
 
     try {
+      // Use Timestamp.fromDate() to store the exact date from the user
       const expense = {
         userId: user.uid,
         category: selectedCategory,
         amount: parseFloat(amount),
         note,
-        timestamp: date ? new Date(date) : new Date(), // Use selected date or current date
-        createdAt: new Date() // Always record when it was added to DB
+        timestamp: date ? Timestamp.fromDate(new Date(date)) : Timestamp.now(), // Use the user-specified date
+        createdAt: Timestamp.now() // optional for tracking insert time
       };
 
       await addDoc(collection(db, 'expenses'), expense);
@@ -49,4 +50,3 @@ const AddRecord = () => {
 };
 
 export default AddRecord;
-

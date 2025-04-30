@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ReactComponent as CalendarIcon } from '../icons/Calendar.svg';
+import { Calendar } from "lucide-react";
 
 const MonthYearCalendar = ({ selectedYear, selectedMonth, onDateChange }) => {
   const [showCalendar, setShowCalendar] = useState(false);
@@ -22,7 +22,7 @@ const MonthYearCalendar = ({ selectedYear, selectedMonth, onDateChange }) => {
         onClick={() => setShowCalendar(!showCalendar)}
         aria-label="Open calendar"
       >
-        <CalendarIcon className="w-8 h-8" />
+        <Calendar className="w-8 h-8" />
         <span className="text-sm font-medium">{months[selectedMonth]} {selectedYear}</span>
       </button>
 
