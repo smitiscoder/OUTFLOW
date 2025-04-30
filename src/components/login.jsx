@@ -18,7 +18,7 @@ export default function Login() {
         {/* Logo */}
         <div className="text-center space-y-2">
           <div className="bg-gradient-to-r from-purple-500 to-pink-500 w-12 h-12 rounded-full mx-auto" />
-          <h1 className="text-2xl font-bold tracking-wide">OutFlow</h1>
+          <h1 className="text-2xl font-bold tracking-wide">OUTFLOW</h1>
         </div>
 
         {/* Sign-in Buttons */}
