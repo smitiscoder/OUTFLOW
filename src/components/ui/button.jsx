@@ -2,8 +2,8 @@ import React from "react";
 import clsx from "clsx";
 
 const variants = {
-  default: "bg-orange-500 text-white hover:bg-orange-600",
-  ghost: "bg-transparent hover:bg-white/10",
+  default: "bg-gradient-to-br from-purple-500 to-pink-500 text-[#DFDFDF] hover:from-purple-600 hover:to-pink-600",
+  ghost: "bg-transparent hover:bg-[#DFDFDF]/10 text-[#DFDFDF]",
 };
 
 const sizes = {
@@ -21,7 +21,7 @@ export const Button = ({
   return (
     <button
       className={clsx(
-        " font-medium transition duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500",
+        "font-medium transition duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500",
         variants[variant],
         sizes[size],
         className
