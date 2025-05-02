@@ -40,7 +40,7 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-6 flex justify-center">
+<div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF] p-6 flex justify-center">
       <div className="w-full max-w-2xl space-y-10">
         {/* Header */}
         <div className="text-2xl font-semibold">Settings</div>
@@ -52,7 +52,7 @@ export default function ProfilePage() {
             <img
               src={user.avatar}
               alt="Avatar"
-              className="w-40 h-40 rounded-full border-3 border-blue-500"
+              className="w-40 h-40 rounded-full border-3 border-purple-500"
             />
           </div>
 
@@ -64,7 +64,7 @@ export default function ProfilePage() {
                   type="text"
                   value={editedName}
                   onChange={(e) => setEditedName(e.target.value)}
-                  className="bg-gray-800 text-white border border-gray-700 rounded px-2 py-1"
+                  className="bg-[#1A1A1A] text-[#DFDFDF] border border-[#333333] rounded px-2 py-1"
                   autoFocus
                 />
                 <button 
@@ -85,7 +85,7 @@ export default function ProfilePage() {
                 <h2 className="text-xl font-bold">{user.name}</h2>
                 <button 
                   onClick={handleNameEdit}
-                  className="text-blue-500 hover:text-blue-400"
+                  className="text-purple-500 hover:text-purple-400"
                 >
                   <Edit size={18} />
                 </button>
@@ -138,7 +138,7 @@ export default function ProfilePage() {
         </div>
 
         {/* App Info */}
-        <div className="text-center text-sm text-gray-500 pt-10">Version 1.0.0</div>
+        <div className="text-center text-sm text-[#DFDFDF] text-opacity-60 pt-10">Version 1.0.0</div>
       </div>
     </div>
   );
@@ -148,20 +148,20 @@ function SettingsSection({ title, children }) {
   return (
     <div>
       <h3 className="text-lg font-semibold mb-3">{title}</h3>
-      <div className="bg-gray-800 rounded-xl divide-y divide-gray-700">
+      <div className="bg-[#1A1A1A] rounded-xl divide-y divide-[#333333]">
         {children}
       </div>
     </div>
   );
 }
 
-function SettingItem({ icon, label, value, type, onClick, onToggle, labelColor = "text-white" }) {
+function SettingItem({ icon, label, value, type, onClick, onToggle, labelColor = "text-[#DFDFDF]" }) {
   const clickable = type === "link";
 
   return (
     <div
       className={`flex justify-between items-center px-4 py-4 ${
-        clickable ? "cursor-pointer hover:bg-gray-700 transition" : ""
+        clickable ? "cursor-pointer hover:bg-[#252525] transition" : ""
       }`}
       onClick={clickable ? onClick : undefined}
     >
@@ -169,7 +169,7 @@ function SettingItem({ icon, label, value, type, onClick, onToggle, labelColor =
         <div className="mt-1">{icon}</div>
         <div>
           <div className={`font-medium ${labelColor}`}>{label}</div>
-          {value && <div className="text-sm text-gray-400">{value}</div>}
+          {value && <div className="text-sm text-[#DFDFDF] text-opacity-60">{value}</div>}
         </div>
       </div>
 
@@ -181,13 +181,14 @@ function SettingItem({ icon, label, value, type, onClick, onToggle, labelColor =
             onChange={onToggle}
             className="sr-only peer"
           />
-          <div className="w-11 h-6 bg-gray-600 rounded-full peer peer-checked:bg-blue-500"></div>
+          <div className="w-11 h-6 bg-[#333333] rounded-full peer peer-checked:bg-purple-500"></div>
         </label>
       ) : type === "link" ? (
-        <ChevronRight size={20} className="text-gray-400" />
+        <ChevronRight size={20} className="text-[#DFDFDF] text-opacity-60" />
       ) : null}
     </div>
   );
 }
+
 
 

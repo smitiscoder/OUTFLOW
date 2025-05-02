@@ -104,7 +104,7 @@ export default function ReportsScreen() {
   }, [expenses, timeframe]);
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white">
+    <div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF]">
       <Header title="Reports" />
 
       <div className="container mx-auto px-4 pb-20 max-w-md">
@@ -114,7 +114,7 @@ export default function ReportsScreen() {
               key={item.id}
               onClick={() => setTimeframe(item.id)}
               className={`flex-1 min-w-[23%] px-2 py-2 rounded-full text-sm font-medium transition-colors ${
-                timeframe === item.id ? 'bg-indigo-500 text-white' : 'bg-gray-800 text-gray-400'
+                timeframe === item.id ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-[#DFDFDF]' : 'bg-[#1A1A1A] text-[#DFDFDF] text-opacity-60'
               }`}
             >
               {item.label}
@@ -122,7 +122,7 @@ export default function ReportsScreen() {
           ))}
         </div>
 
-        <div className="bg-gray-800 rounded-xl p-6 mb-6">
+        <div className="bg-[#1A1A1A] rounded-xl p-6 mb-6">
           <h2 className="text-lg font-semibold mb-6">Spending by Category</h2>
 
           <div className="relative h-64 flex items-center justify-center mb-8">
@@ -145,7 +145,7 @@ export default function ReportsScreen() {
 
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
               <span className="text-lg font-semibold">₹{totalSpent}</span>
-              <span className="block text-xs text-gray-400">Total Spent</span>
+              <span className="block text-xs text-[#DFDFDF] text-opacity-60">Total Spent</span>
             </div>
           </div>
 
@@ -157,8 +157,8 @@ export default function ReportsScreen() {
                   style={{ backgroundColor: item.color }}
                 ></div>
                 <div className="flex-1 text-sm capitalize">{item.name.toLowerCase()}</div>
-                <div className="text-sm font-medium text-white mr-3">₹{item.spent}</div>
-                <div className="text-xs text-gray-400 w-12 text-right">
+                <div className="text-sm font-medium text-[#DFDFDF] mr-3">₹{item.spent}</div>
+                <div className="text-xs text-[#DFDFDF] text-opacity-60 w-12 text-right">
                   {item.percentage.toFixed(1)}%
                 </div>
               </div>
@@ -166,24 +166,24 @@ export default function ReportsScreen() {
           </div>
         </div>
 
-        <div className="bg-gray-800 rounded-xl p-6">
+        <div className="bg-[#1A1A1A] rounded-xl p-6">
           <h2 className="text-lg font-semibold mb-6">Summary</h2>
 
           <div className="space-y-4">
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-400">Total Spent</span>
+              <span className="text-sm text-[#DFDFDF] text-opacity-60">Total Spent</span>
               <span className="text-sm font-medium">₹{totalSpent}</span>
             </div>
 
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-400">Highest Category</span>
+              <span className="text-sm text-[#DFDFDF] text-opacity-60">Highest Category</span>
               <span className="text-sm font-medium capitalize">
                 {processedData[0]?.name.toLowerCase() || 'None'}
               </span>
             </div>
 
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-400">Average per Day</span>
+              <span className="text-sm text-[#DFDFDF] text-opacity-60">Average per Day</span>
               <span className="text-sm font-medium">
                 ₹{Math.round(totalSpent / (
                   timeframe === 'week' ? 7 :

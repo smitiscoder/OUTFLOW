@@ -101,17 +101,17 @@ const Search = () => {
   });
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white pb-20">
+    <div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF] pb-20">
       <div className="max-w-md mx-auto px-4">
       <header className="py-4">
         <h2 className="text-2xl font-bold">Search Expenses</h2>
 
         {/* Search Input with Icon */}
         <div className="relative mt-4">
-          <SearchIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <SearchIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 text-[#DFDFDF] text-opacity-60 w-5 h-5" />
           <input
             type="text"
-            className="w-full rounded-full bg-gray-800 pl-12 pr-4 py-3 text-white placeholder-gray-200 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
+            className="w-full rounded-full bg-[#1A1A1A] pl-12 pr-4 py-3 text-[#DFDFDF] placeholder-[#DFDFDF] placeholder-opacity-60 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
             placeholder="Search by amount, note, category, or date"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -121,7 +121,7 @@ const Search = () => {
 
         <div className="mt-4">
           {searchTerm && filteredExpenses.length === 0 && (
-            <p className="text-center text-gray-400 mt-10">
+            <p className="text-center text-[#DFDFDF] text-opacity-60 mt-10">
               No matching expenses found.
             </p>
           )}
@@ -132,24 +132,24 @@ const Search = () => {
             return (
               <div
                 key={expense.id}
-                className="flex items-center justify-between bg-gray-800 px-4 py-3 rounded-lg shadow mb-2"
+                className="flex items-center justify-between bg-[#1A1A1A] px-4 py-3 rounded-lg shadow mb-2"
               >
                 <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 rounded-full bg-teal-600 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-purple-500 to-pink-500 flex items-center justify-center">
                     {getIconForCategory(expense.category)}
                   </div>
                   <div>
-                    <p className="text-white font-medium capitalize">{expense.category}</p>
+                    <p className="text-[#DFDFDF] font-medium capitalize">{expense.category}</p>
                     {expense.note && (
-                      <p className="text-gray-400 text-sm">{expense.note}</p>
+                      <p className="text-[#DFDFDF] text-opacity-60 text-sm">{expense.note}</p>
                     )}
                   </div>
                 </div>
                 <div className="text-right">
-                  <p className="text-white font-semibold whitespace-nowrap">
+                  <p className="text-[#DFDFDF] font-semibold whitespace-nowrap">
                     ₹{Math.round(expense.amount)}
                   </p>
-                  <p className="text-gray-400 text-xs">
+                  <p className="text-[#DFDFDF] text-opacity-60 text-xs">
                     {format(timestamp, "MMM d, yyyy")}
                   </p>
                 </div>

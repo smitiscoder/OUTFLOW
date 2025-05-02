@@ -172,7 +172,7 @@ const Home = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white pb-20 relative">
+<div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF] pb-20 relative">
       {selectedExpense && (
         <div 
           className="fixed inset-0 bg-black bg-opacity-50 z-10 backdrop-blur-sm"
@@ -215,8 +215,8 @@ const Home = () => {
               </>
             ) : (
               <div className="w-full h-full flex flex-col items-center justify-center">
-                <p className="text-gray-400 text-sm">No expenses</p>
-                <p className="text-gray-500 text-xs mt-1">Add some to begin</p>
+                <p className="text-[#DFDFDF] text-opacity-40 text-sm">No expenses</p>
+                <p className="text-[#DFDFDF] text-opacity-30 text-xs mt-1">Add some to begin</p>
               </div>
             )}
           </div>
@@ -224,30 +224,30 @@ const Home = () => {
 
         <div className="mt-4">
           {loading ? (
-            <p className="text-center text-gray-400">Loading expenses...</p>
+            <p className="text-center text-[#DFDFDF] text-opacity-40">Loading expenses...</p>
           ) : Object.entries(groupedByDate).map(([dateStr, { total, items }]) => (
             <div key={dateStr} className="mb-6">
-              <div className="flex justify-between items-center text-gray-400 text-sm mb-2">
+              <div className="flex justify-between items-center text-[#DFDFDF] text-opacity-60 text-sm mb-2">
                 <span>{dateStr}</span>
                 <span>Expenses: ₹{total}</span>
               </div>
               {items.map((expense) => (
                 <div
                   key={expense.id}
-                  className={`flex items-center justify-between bg-gray-800 px-4 py-3 rounded-lg shadow mb-2 relative transition-all duration-200 ${selectedExpense === expense.id ? 'z-20 transform scale-105' : ''}`}
+                  className={`flex items-center justify-between bg-[#1A1A1A] px-4 py-3 rounded-lg shadow mb-2 relative transition-all duration-200 ${selectedExpense === expense.id ? 'z-20 transform scale-105' : ''}`}
                   onClick={() => handleExpenseSelect(expense.id)}
                 >
                   <div className="flex items-center space-x-3">
-                    <div className="w-10 h-10 rounded-full bg-teal-600 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-full bg-[#1A1A1A] flex items-center justify-center border border-[#DFDFDF] border-opacity-30">
                       {getIconForCategory(expense.category)}
                     </div>
-                    <div>
-                      <p className="text-white font-medium capitalize">{expense.note || expense.category}</p>
+                    <div className="flex items-center">
+                      <p className="text-[#DFDFDF] font-medium capitalize">{expense.note || expense.category}</p>
                     </div>
                   </div>
                   
                   <div className="flex items-center">
-                    <p className="text-white font-semibold whitespace-nowrap mr-3">₹{Math.round(expense.amount)}</p>
+                    <p className="text-[#DFDFDF] font-semibold whitespace-nowrap mr-3">{Math.round(expense.amount)}</p>
                     {selectedExpense === expense.id && (
                       <button 
                         className="p-2 text-red-500 hover:bg-red-500 hover:bg-opacity-20 rounded-full transition-colors"
