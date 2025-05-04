@@ -183,7 +183,6 @@ const Home = () => {
       <div className="max-w-md mx-auto px-4">
         <header className="py-4 flex items-center justify-between">
           <div className="flex justify-center items-center mt-6">
-            <div className="w-10 h-10 bg-gradient-to-tr from-purple-500 to-pink-500 rounded-full mr-2"></div>
             <h1 className="text-2xl font-bold">OUTFLOW</h1>
           </div>
           <MonthYearCalendar selectedDate={currentDate} onDateChange={handleDateChange} />

@@ -12,8 +12,9 @@ import Reports from "./pages/Reports";
 import ExpenseCategory from "./pages/ExpenseCategory";
 import ProfilePage from "./pages/ProfilePage";
 import Onboarding from "./pages/Onboarding";
-import UpdateEmail from "./pages/UpdateEmail"; // ✅ Import UpdateEmail
-import UpdatePhone from "./pages/Phonenumberupadte"; // ✅ Import UpdatePhone
+import UpdateEmail from "./pages/UpdateEmail";
+import UpdatePhone from "./pages/Phonenumberupadte";
+
 
 function AppRoutes({ user }) {
   return (
@@ -38,7 +39,7 @@ function AppRoutes({ user }) {
             <Route path="profile" element={<ProfilePage />} />
           </Route>
 
-          {/* ✅ Add Email and Phone Update Routes outside layout */}
+          {/* Add Email and Phone Update Routes outside layout */}
           <Route path="/update-email" element={<UpdateEmail />} />
           <Route path="/update-phone" element={<UpdatePhone />} />
         </>

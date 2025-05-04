@@ -65,7 +65,7 @@ const Keyboard = ({ onSubmit }) => {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-gray-900 text-white p-3 pt-4 rounded-t-2xl shadow-lg max-w-md mx-auto pb-24">
+    <div className="fixed bottom-0 left-0 right-0 bg-[#0D0D0D] text-[#DFDFDF] p-3 pt-4 rounded-t-2xl shadow-lg max-w-md mx-auto pb-24">
       {/* Amount Display */}
       <div className="text-right text-xl mb-2 px-2 min-h-6">
         {amount || "0"}

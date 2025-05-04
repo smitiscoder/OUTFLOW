@@ -1,60 +1,86 @@
 import React from "react";
 import { signInWithPopup } from "firebase/auth";
-import { auth, googleProvider } from "./firebase";
-import { useNavigate } from "react-router-dom";
+import { auth, googleProvider, db } from "./firebase";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { FcGoogle } from "react-icons/fc";
-import { doc, getDoc, setDoc, getFirestore } from "firebase/firestore";
 
-// Initialize Firestore
-const db = getFirestore();
-
-function ContinueWithGoogle() {
-  const navigate = useNavigate();
-
+export default function ContinueWithGoogle() {
   const handleGoogleSignIn = async () => {
     try {
-      // Sign in with Google
+      console.groupCollapsed("[Firebase] Google Sign-In Initiated");
+      console.log("Opening Google sign-in popup...");
+
+      // Step 1: Authenticate with Google
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
+      console.log("Authentication successful:", {
+        uid: user.uid,
+        email: user.email,
+        name: user.displayName
+      });
 
-      // Check if the user's data already exists in Firestore
+      // Step 2: Prepare user document
       const userDocRef = doc(db, "users", user.uid);
-      const userDocSnap = await getDoc(userDocRef);
+      const userData = {
+        uid: user.uid,
+        email: user.email,
+        displayName: user.displayName || "User",
+        photoURL: user.photoURL || "",
+        lastLogin: new Date(),
+        provider: "google"
+      };
 
-      if (!userDocSnap.exists()) {
-        // Ask the user if they want to add their name
-        const userName = window.confirm("Would you like to add your name to your profile?");
-        if (userName) {
-          const name = prompt("Please enter your name:");
-          // Save user data with the name
-          await setDoc(userDocRef, {
-            displayName: name || "User", // Use entered name or default to "User"
-            email: user.email,
-            photoURL: user.photoURL || "default-avatar-url", // Optional, use default avatar if none
-            createdAt: new Date(),
-          });
-        } else {
-          // Save user data without the name
-          await setDoc(userDocRef, {
-            displayName: "User", // Default to "User" if no name provided
-            email: user.email,
-            photoURL: user.photoURL || "default-avatar-url", // Optional, use default avatar if none
-            createdAt: new Date(),
-          });
-        }
+      // Step 3: Check if user exists
+      const userDoc = await getDoc(userDocRef);
+      if (!userDoc.exists()) {
+        console.log("Creating new user document...");
+        userData.createdAt = new Date();
+        await setDoc(userDocRef, userData);
+        toast.success("Welcome! Your account has been created.");
+      } else {
+        console.log("Updating existing user document...");
+        await setDoc(userDocRef, userData, { merge: true });
+        toast.success("Welcome back!");
       }
 
-      // Notify the user that they logged in successfully
-      toast.success("User logged in successfully!", { position: "top-center" });
-      navigate("/home");
+      console.log("Firestore operation completed successfully");
+      console.groupEnd();
+
     } catch (error) {
-      console.error(error.message);
-      toast.error("Failed to log in with Google.", { position: "bottom-center" });
+      console.groupCollapsed("[Firebase] Error during sign-in");
+      console.error("Error details:", {
+        code: error.code,
+        message: error.message,
+        fullError: error
+      });
+      console.groupEnd();
+
+      // Handle specific error cases
+      switch (error.code) {
+        case 'auth/popup-closed-by-user':
+          console.warn("User closed the sign-in popup");
+          return; // Silent failure for user-cancelled actions
+          
+        case 'auth/network-request-failed':
+          toast.error("Network error. Please check your internet connection.");
+          break;
+          
+        case 'auth/cancelled-popup-request':
+          toast.warning("Sign-in process cancelled");
+          break;
+          
+        case 'firestore/permission-denied':
+          toast.error("Database permissions issue. Please try again later.");
+          console.error("Firestore rules may need updating");
+          break;
+          
+        default:
+          toast.error(`Sign-in failed: ${error.message}`);
+      }
     }
   };
-
-  return (
+ return (
     <button
       onClick={handleGoogleSignIn}
       className="flex items-center justify-center gap-3 w-full py-3 rounded-full bg-[#1f1f1f] border border-gray-600 text-white font-medium text-sm"
@@ -65,7 +91,7 @@ function ContinueWithGoogle() {
   );
 }
 
-export default ContinueWithGoogle;
+
 
 
 

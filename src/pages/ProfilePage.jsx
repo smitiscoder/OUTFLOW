@@ -40,7 +40,7 @@ export default function ProfilePage() {
   };
 
   return (
-<div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF] p-6 flex justify-center">
+    <div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF] p-6 flex justify-center">
       <div className="w-full max-w-2xl space-y-10">
         {/* Header */}
         <div className="text-2xl font-semibold">Settings</div>
