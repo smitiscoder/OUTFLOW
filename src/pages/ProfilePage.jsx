@@ -36,7 +36,7 @@ export default function ProfilePage() {
 
   const handleNameCancel = () => {
     setIsEditing(false);
-    setEditedName("WINter"); // Reset to original name
+    setEditedName("user"); // Reset to original name
   };
 
   return (
