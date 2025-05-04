@@ -11,7 +11,7 @@ import Search from "./pages/Search";
 import Reports from "./pages/Reports";
 import ExpenseCategory from "./pages/ExpenseCategory";
 import ProfilePage from "./pages/ProfilePage";
-import Onboarding from "./pages/Onboarding";
+import OnBoarding from "./pages/OnBoarding";
 import UpdateEmail from "./pages/UpdateEmail";
 import UpdatePhone from "./pages/Phonenumberupadte";
 
@@ -20,7 +20,7 @@ function AppRoutes({ user }) {
   return (
     <Routes>
       {/* Public Routes */}
-      <Route path="/onboarding" element={<Onboarding />} />
+      <Route path="/OnBoarding" element={<OnBoarding />} />
       <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
       <Route path="/phone" element={user ? <Navigate to="/" replace /> : <Phone />} />
       <Route path="/continuewithgoogle" element={user ? <Navigate to="/" replace /> : <ContinueWithGoogle />} />
