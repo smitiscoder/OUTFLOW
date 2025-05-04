@@ -159,34 +159,35 @@ function SettingItem({ icon, label, value, type, onClick, onToggle, labelColor =
   const clickable = type === "link";
 
   return (
-    <div
-      className={`flex justify-between items-center px-4 py-4 ${
-        clickable ? "cursor-pointer hover:bg-[#252525] transition" : ""
-      }`}
-      onClick={clickable ? onClick : undefined}
-    >
-      <div className="flex items-start space-x-3">
-        <div className="mt-1">{icon}</div>
-        <div>
-          <div className={`font-medium ${labelColor}`}>{label}</div>
-          {value && <div className="text-sm text-[#DFDFDF] text-opacity-60">{value}</div>}
-        </div>
-      </div>
-
-      {type === "toggle" ? (
-        <label className="inline-flex items-center cursor-pointer">
-          <input
-            type="checkbox"
-            checked={value}
-            onChange={onToggle}
-            className="sr-only peer"
-          />
-          <div className="w-11 h-6 bg-[#333333] rounded-full peer peer-checked:bg-purple-500"></div>
-        </label>
-      ) : type === "link" ? (
-        <ChevronRight size={20} className="text-[#DFDFDF] text-opacity-60" />
-      ) : null}
+<div
+  className={`flex justify-between items-center px-4 py-4 ${
+    clickable ? "cursor-pointer hover:bg-[#252525] transition" : ""
+  }`}
+  onClick={clickable ? onClick : undefined}
+>
+  <div className="flex items-start space-x-3">
+    <div className="mt-1">{icon}</div>
+    <div>
+      <div className={`font-medium ${labelColor}`}>{label}</div>
+      {value && <div className="text-sm text-[#DFDFDF] text-opacity-60">{value}</div>}
     </div>
+  </div>
+
+  {type === "toggle" ? (
+    <label className="inline-flex items-center cursor-pointer">
+      <input
+        type="checkbox"
+        checked={value}
+        onChange={onToggle}
+        className="sr-only peer"
+      />
+      <div className="w-11 h-6 bg-[#333333] rounded-full peer peer-checked:bg-purple-500"></div>
+    </label>
+  ) : type === "link" ? (
+    <ChevronRight size={20} className="text-[#DFDFDF] text-opacity-60" />
+  ) : null}
+</div>
+
   );
 }
 

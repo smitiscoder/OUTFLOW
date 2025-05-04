@@ -74,37 +74,40 @@ const ExpenseCategories = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF] pb-20">
-    <div className="max-w-md mx-auto px-4">
-      <h2 className="text-center text-2xl font-semibold mb-6 pt-6">SELECT CATEGORY</h2>
-      
-      {/* Improved Category Grid */}
-      <div className="grid grid-cols-4 gap-3 mb-8">
-        {expensecategories.map(({ id, icon: Icon, label }) => (
-          <button
-            key={id}
-            className={`flex flex-col items-center p-3 rounded-lg transition-colors ${
-              selectedCategory?.id === id 
-                ? 'bg-[#1A1A1A] border border-[#DFDFDF]/20' 
-                : 'hover:bg-[#1A1A1A]'
-            }`}
-            onClick={() => handleCategoryClick(id, label)}
-          >
-            <div className="w-10 h-10 rounded-full bg-[#1A1A1A] flex items-center justify-center mb-2">
-              <Icon className="w-5 h-5 text-[#DFDFDF]" />
-            </div>
-            <span className="text-xs text-center">{label}</span>
-          </button>
-        ))}
-      </div>
+<div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF] pb-20">
+  <div className="w-full max-w-screen-lg mx-auto px-4">
+    <h2 className="text-center text-2xl font-semibold mb-6 pt-6">SELECT CATEGORY</h2>
 
-      {selectedCategory && (
-        <div className="fixed bottom-0 left-0 right-0 bg-[#1A1A1A] p-4 rounded-t-2xl shadow-lg border-t border-[#DFDFDF]/10">
-          <Keyboard onSubmit={handleSubmit} loading={loading} />
-        </div>
-      )}
+    {/* Fixed 6x4 Grid (24 items max) */}
+    <div className="grid grid-cols-4 gap-3 mb-8">
+      {expensecategories.map(({ id, icon: Icon, label }) => (
+        <button
+          key={id}
+          className={`flex flex-col items-center p-3 rounded-lg transition-colors ${
+            selectedCategory?.id === id 
+              ? 'bg-[#1A1A1A] border border-[#DFDFDF]/20' 
+              : 'hover:bg-[#1A1A1A]'
+          }`}
+          onClick={() => handleCategoryClick(id, label)}
+        >
+          <div className="w-10 h-10 rounded-full bg-[#1A1A1A] flex items-center justify-center mb-2">
+            <Icon className="w-5 h-5 text-[#DFDFDF]" />
+          </div>
+          <span className="text-xs text-center">{label}</span>
+        </button>
+      ))}
     </div>
+
+    {selectedCategory && (
+      <div className="fixed bottom-0 left-0 right-0 bg-[#1A1A1A] p-4 rounded-t-2xl shadow-lg border-t border-[#DFDFDF]/10">
+        <Keyboard onSubmit={handleSubmit} loading={loading} />
+      </div>
+    )}
   </div>
+</div>
+
+
+
   );
 };
 

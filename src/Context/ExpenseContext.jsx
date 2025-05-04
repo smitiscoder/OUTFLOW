@@ -3,8 +3,6 @@ import { db } from '../components/firebase';
 import { 
   collection, 
   onSnapshot, 
-  query, 
-  where, 
   addDoc,
   serverTimestamp 
 } from 'firebase/firestore';
@@ -15,21 +13,18 @@ export const useExpenses = () => useContext(ExpenseContext);
 
 export const ExpenseProvider = ({ children }) => {
   const [expenses, setExpenses] = useState([]);
-  const [filteredExpenses, setFilteredExpenses] = useState([]);
-  const [selectedMonth, setSelectedMonth] = useState(null);
 
-  // Add this function to handle adding new expenses
+  // Add new expense
   const addExpense = async (amount, category, note, date) => {
     try {
-      // Convert the date string to a Date object if provided
       const expenseDate = date ? new Date(date) : new Date();
       
       await addDoc(collection(db, "expenses"), {
         amount: parseFloat(amount),
         category,
         note,
-        timestamp: expenseDate, 
-        createdAt: serverTimestamp() 
+        timestamp: expenseDate,
+        createdAt: serverTimestamp()
       });
     } catch (error) {
       console.error("Error adding expense: ", error);
@@ -42,8 +37,8 @@ export const ExpenseProvider = ({ children }) => {
       const fetchedExpenses = snapshot.docs.map(doc => {
         const data = doc.data();
         let timestamp;
-        
-        // Handle different timestamp formats
+
+        // Handle various timestamp formats
         if (data.timestamp) {
           if (typeof data.timestamp.toDate === 'function') {
             timestamp = data.timestamp.toDate();
@@ -55,45 +50,26 @@ export const ExpenseProvider = ({ children }) => {
             timestamp = new Date(data.timestamp);
           }
         }
-        
+
         return {
           id: doc.id,
           ...data,
-          timestamp: timestamp || new Date(data.createdAt?.toDate() || Date.now()) // Fallback to createdAt or current time
+          timestamp: timestamp || new Date(data.createdAt?.toDate() || Date.now())
         };
       });
-      
-      // Sort by timestamp descending (newest first)
+
+      // Sort newest first
       fetchedExpenses.sort((a, b) => b.timestamp - a.timestamp);
       setExpenses(fetchedExpenses);
     });
 
-    
-    
+    return () => unsubscribe(); // Cleanup listener
   }, []);
-
-  useEffect(() => {
-    if (selectedMonth) {
-      const filtered = expenses.filter(expense => {
-        const expenseDate = expense.timestamp;
-        return (
-          expenseDate.getMonth() === selectedMonth.getMonth() &&
-          expenseDate.getFullYear() === selectedMonth.getFullYear()
-        );
-      });
-      setFilteredExpenses(filtered);
-    } else {
-      setFilteredExpenses(expenses);
-    }
-  }, [selectedMonth, expenses]);
 
   const value = {
     expenses,
-    filteredExpenses: selectedMonth ? filteredExpenses : expenses,
-    addExpense, // Make sure to expose the addExpense function
-    setExpenses,
-    selectedMonth,
-    setSelectedMonth
+    addExpense,
+    setExpenses
   };
 
   return (
