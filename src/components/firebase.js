@@ -1,4 +1,8 @@
+// Firebase core initialization
 import { initializeApp } from 'firebase/app';
+import { getAnalytics } from 'firebase/analytics';
+
+// Firebase services
 import {
   getAuth,
   GoogleAuthProvider,
@@ -6,11 +10,11 @@ import {
   updateProfile,
   updatePhoneNumber,
   PhoneAuthProvider,
-  RecaptchaVerifier,
+  RecaptchaVerifier
 } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
-import { getAnalytics } from 'firebase/analytics';
 
+// Firebase configuration
 const firebaseConfig = {
   apiKey: 'AIzaSyDIXQawm6JNyxwt1UnEH8rZhzYyYWhEWYg',
   authDomain: 'expensetracking-73767.firebaseapp.com',
@@ -18,23 +22,28 @@ const firebaseConfig = {
   storageBucket: 'expensetracking-73767.appspot.com',
   messagingSenderId: '433052728459',
   appId: '1:433052728459:web:98ef488a9bcd471f58688e',
-  measurementId: 'G-4CD1QW7VWT'
+  measurementId: 'G-4CD1QW7VWT',
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
+
+// Firebase Auth setup
 const auth = getAuth(app);
 
-// Enhanced Google Provider with scopes
+// Google Auth Provider setup
 const googleProvider = new GoogleAuthProvider();
 googleProvider.addScope('profile');
 googleProvider.addScope('email');
 googleProvider.setCustomParameters({
-  prompt: 'select_account'
+  prompt: 'select_account',
 });
 
+// Firestore setup
 const db = getFirestore(app);
 
+// Exporting Firebase services for use in app
 export {
   auth,
   googleProvider,
@@ -43,10 +52,11 @@ export {
   updateProfile,
   updatePhoneNumber,
   PhoneAuthProvider,
-  RecaptchaVerifier
+  RecaptchaVerifier,
 };
 
 export default app;
+
 
 
 

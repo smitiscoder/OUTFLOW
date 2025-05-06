@@ -1,22 +1,50 @@
-import React, { useState } from "react";
-import { Moon, LogOut, ChevronRight, Edit, Check, X, Mail, Phone } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import {
+  Moon,
+  LogOut,
+  ChevronRight,
+  Edit,
+  Check,
+  X,
+  Mail,
+  Phone,
+} from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { auth } from "../components/firebase";
+import { auth, db } from "../components/firebase";
+import { doc, getDoc, setDoc } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
 
 export default function ProfilePage() {
   const [darkMode, setDarkMode] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
-  const [editedName, setEditedName] = useState("WINter");
+  const [editedName, setEditedName] = useState("username");
+  const [userId, setUserId] = useState(null);
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const navigate = useNavigate();
 
-  const user = {
-    name: editedName,
-    avatar:
-      "https://i.pinimg.com/736x/23/4f/d4/234fd4285d600aaa90ae6af22512c7f5.jpg",
-  };
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        setUserId(user.uid);
+        setEmail(user.email || "");
+        setPhone(user.phoneNumber || "");
+
+        const userRef = doc(db, "users", user.uid);
+        const userSnap = await getDoc(userRef);
+        if (userSnap.exists()) {
+          const userData = userSnap.data();
+          setEditedName(userData.name || "username");
+        }
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const handleLogout = () => {
-    auth.signOut()
+    auth
+      .signOut()
       .then(() => {
         navigate("/login");
       })
@@ -29,14 +57,29 @@ export default function ProfilePage() {
     setIsEditing(true);
   };
 
-  const handleNameSave = () => {
+  const handleNameSave = async () => {
     setIsEditing(false);
-    // Here you would typically also save the name to your backend/database
+    if (!userId) return;
+    try {
+      const userRef = doc(db, "users", userId);
+      await setDoc(userRef, { name: editedName }, { merge: true });
+      console.log("Name saved to Firestore");
+    } catch (error) {
+      console.error("Error saving name: ", error);
+    }
   };
 
   const handleNameCancel = () => {
     setIsEditing(false);
-    setEditedName("user"); // Reset to original name
+    // Optionally re-fetch from Firestore here
+  };
+
+  const user = {
+    name: editedName,
+    email: email,
+    phone: phone,
+    avatar:
+      "https://i.pinimg.com/736x/23/4f/d4/234fd4285d600aaa90ae6af22512c7f5.jpg",
   };
 
   return (
@@ -47,7 +90,6 @@ export default function ProfilePage() {
 
         {/* Profile Section */}
         <div className="flex flex-col items-center space-y-4">
-          {/* Profile Picture */}
           <div>
             <img
               src={user.avatar}
@@ -67,13 +109,13 @@ export default function ProfilePage() {
                   className="bg-[#1A1A1A] text-[#DFDFDF] border border-[#333333] rounded px-2 py-1"
                   autoFocus
                 />
-                <button 
+                <button
                   onClick={handleNameSave}
                   className="text-green-500 hover:text-green-400"
                 >
                   <Check size={20} />
                 </button>
-                <button 
+                <button
                   onClick={handleNameCancel}
                   className="text-red-500 hover:text-red-400"
                 >
@@ -83,7 +125,7 @@ export default function ProfilePage() {
             ) : (
               <>
                 <h2 className="text-xl font-bold">{user.name}</h2>
-                <button 
+                <button
                   onClick={handleNameEdit}
                   className="text-purple-500 hover:text-purple-400"
                 >
@@ -94,9 +136,9 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* Sections */}
+        {/* Settings Sections */}
         <div className="space-y-8">
-          {/* Account Section */}
+          {/* Account */}
           <SettingsSection title="Account">
             <SettingItem
               icon={<Mail size={20} />}
@@ -108,7 +150,7 @@ export default function ProfilePage() {
             <SettingItem
               icon={<Phone size={20} />}
               label="Phone Number"
-              value={user.phone}
+              value={user.phone || "Not provided"}
               type="link"
               onClick={() => navigate("/update-phone")}
             />
@@ -138,7 +180,9 @@ export default function ProfilePage() {
         </div>
 
         {/* App Info */}
-        <div className="text-center text-sm text-[#DFDFDF] text-opacity-60 pt-10">Version 1.0.0</div>
+        <div className="text-center text-sm text-[#DFDFDF] text-opacity-60 pt-10">
+          Version 1.0.0
+        </div>
       </div>
     </div>
   );
@@ -155,39 +199,48 @@ function SettingsSection({ title, children }) {
   );
 }
 
-function SettingItem({ icon, label, value, type, onClick, onToggle, labelColor = "text-[#DFDFDF]" }) {
+function SettingItem({
+  icon,
+  label,
+  value,
+  type,
+  onClick,
+  onToggle,
+  labelColor = "text-[#DFDFDF]",
+}) {
   const clickable = type === "link";
 
   return (
-<div
-  className={`flex justify-between items-center px-4 py-4 ${
-    clickable ? "cursor-pointer hover:bg-[#252525] transition" : ""
-  }`}
-  onClick={clickable ? onClick : undefined}
->
-  <div className="flex items-start space-x-3">
-    <div className="mt-1">{icon}</div>
-    <div>
-      <div className={`font-medium ${labelColor}`}>{label}</div>
-      {value && <div className="text-sm text-[#DFDFDF] text-opacity-60">{value}</div>}
+    <div
+      className={`flex justify-between items-center px-4 py-4 ${
+        clickable ? "cursor-pointer hover:bg-[#252525] transition" : ""
+      }`}
+      onClick={clickable ? onClick : undefined}
+    >
+      <div className="flex items-start space-x-3">
+        <div className="mt-1">{icon}</div>
+        <div>
+          <div className={`font-medium ${labelColor}`}>{label}</div>
+          {value && (
+            <div className="text-sm text-[#DFDFDF] text-opacity-60">{value}</div>
+          )}
+        </div>
+      </div>
+
+      {type === "toggle" ? (
+        <label className="inline-flex items-center cursor-pointer">
+          <input
+            type="checkbox"
+            checked={value}
+            onChange={onToggle}
+            className="sr-only peer"
+          />
+          <div className="w-11 h-6 bg-[#333333] rounded-full peer peer-checked:bg-purple-500"></div>
+        </label>
+      ) : type === "link" ? (
+        <ChevronRight size={20} className="text-[#DFDFDF] text-opacity-60" />
+      ) : null}
     </div>
-  </div>
-
-  {type === "toggle" ? (
-    <label className="inline-flex items-center cursor-pointer">
-      <input
-        type="checkbox"
-        checked={value}
-        onChange={onToggle}
-        className="sr-only peer"
-      />
-      <div className="w-11 h-6 bg-[#333333] rounded-full peer peer-checked:bg-purple-500"></div>
-    </label>
-  ) : type === "link" ? (
-    <ChevronRight size={20} className="text-[#DFDFDF] text-opacity-60" />
-  ) : null}
-</div>
-
   );
 }
 

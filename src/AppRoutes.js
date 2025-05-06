@@ -1,10 +1,10 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
-import Auth from "./components/login";
+
 import MainLayout from "./components/layout/MainLayout";
+import Login from "./components/login";
 import Phone from "./components/Phone";
 import ContinueWithGoogle from "./components/ContinuewithGoogle";
-import Login from "./components/login";
 
 import Home from "./pages/Home";
 import Search from "./pages/Search";
@@ -15,20 +15,19 @@ import OnBoarding from "./pages/OnBoarding";
 import UpdateEmail from "./pages/UpdateEmail";
 import UpdatePhone from "./pages/Phonenumberupadte";
 
-
 function AppRoutes({ user }) {
   return (
     <Routes>
-      {/* Public Routes */}
+      {/* ✅ Public Routes */}
       <Route path="/OnBoarding" element={<OnBoarding />} />
       <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
       <Route path="/phone" element={user ? <Navigate to="/" replace /> : <Phone />} />
       <Route path="/continuewithgoogle" element={user ? <Navigate to="/" replace /> : <ContinueWithGoogle />} />
 
-      {/* Redirect /home to root */}
+      {/* ✅ Redirect /home to root */}
       <Route path="/home" element={<Navigate to="/" replace />} />
 
-      {/* Protected Routes */}
+      {/* ✅ Protected Routes */}
       {user ? (
         <>
           <Route path="/" element={<MainLayout />}>
@@ -39,7 +38,7 @@ function AppRoutes({ user }) {
             <Route path="profile" element={<ProfilePage />} />
           </Route>
 
-          {/* Add Email and Phone Update Routes outside layout */}
+          {/* ✅ Account Settings Outside Layout */}
           <Route path="/update-email" element={<UpdateEmail />} />
           <Route path="/update-phone" element={<UpdatePhone />} />
         </>
@@ -47,7 +46,7 @@ function AppRoutes({ user }) {
         <Route path="*" element={<Navigate to="/login" replace />} />
       )}
 
-      {/* Fallback for wrong URLs */}
+      {/* ✅ Fallback 404 if user is not authenticated */}
       {!user && (
         <Route path="*" element={<div className="text-center text-2xl p-10">404 - Page Not Found</div>} />
       )}
