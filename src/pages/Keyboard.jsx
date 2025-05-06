@@ -5,167 +5,183 @@ import { format } from "date-fns";
 
 const Keyboard = ({ onSubmit }) => {
   const { state } = useLocation();
-  const [amount, setAmount] = useState("");
+  const [input, setInput] = useState("");
+  const [calculatedAmount, setCalculatedAmount] = useState("");
   const [note, setNote] = useState("");
-  const [selectedDate, setSelectedDate] = useState(() => {
-    // Start with today's date in local timezone
-    const now = new Date();
-    now.setHours(0, 0, 0, 0);
-    return now;
-  });
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [showCalendar, setShowCalendar] = useState(false);
-  const [dateSelected, setDateSelected] = useState(false);
+  const [isEvaluated, setIsEvaluated] = useState(false);
+
   const navigate = useNavigate();
   const { selectedCategory } = state || {};
 
   const handleKeyPress = (key) => {
     if (key === "Delete") {
-      setAmount((prev) => prev.slice(0, -1));
-    } else if (!(key === "." && amount.includes("."))) {
-      setAmount((prev) => prev + key);
+      setInput((prev) => prev.slice(0, -1));
+    } else {
+      setInput((prev) => prev + key);
+    }
+    setCalculatedAmount("");
+    setIsEvaluated(false);
+  };
+
+  const evaluateAmount = () => {
+    try {
+      const result = eval(input);
+      if (!isNaN(result)) {
+        const final = parseFloat(result).toFixed(2);
+        setCalculatedAmount(final);
+        setInput(final);
+        setIsEvaluated(true);
+      }
+    } catch (e) {
+      alert("Invalid expression");
     }
   };
 
   const handleSubmit = () => {
-    if (!amount || parseFloat(amount) <= 0) {
-      alert("Please enter a valid amount.");
+    if (!calculatedAmount || parseFloat(calculatedAmount) <= 0) {
+      alert("Enter a valid amount.");
       return;
     }
-  
-    // Use formatted date string (no time component)
-    const localDate = new Date(selectedDate);
-    localDate.setHours(0, 0, 0, 0);
-    const dateString = format(localDate, "yyyy-MM-dd");
-  
+
+    const finalDate = new Date(selectedDate);
+    finalDate.setHours(0, 0, 0, 0);
+    const formattedDate = format(finalDate, "yyyy-MM-dd");
+
     onSubmit({
-      amount,
+      amount: calculatedAmount,
       note,
-      date: dateString, // <-- only the date part, as a string
+      date: formattedDate,
     });
-  
-    setAmount("");
+
+    setInput("");
     setNote("");
+    setCalculatedAmount("");
+    setIsEvaluated(false);
     navigate("/home");
   };
-  
 
   const handleDateChange = (e) => {
     const newDate = new Date(e.target.value);
-    newDate.setHours(0, 0, 0, 0); // Reset time to avoid timezone shifts
+    newDate.setHours(0, 0, 0, 0);
     setSelectedDate(newDate);
     setShowCalendar(false);
-    setDateSelected(true);
   };
 
   const toggleCalendar = () => {
     setShowCalendar(!showCalendar);
-    if (!showCalendar) {
-      setDateSelected(true);
-    }
   };
 
+  const isMathOperationPresent = /[+\-*/]/.test(input) && !isEvaluated;
+
+  const keys = [
+    "7", "8", "9", "Delete",
+    "4", "5", "6", "+",
+    "1", "2", "3", "-",
+    ".", "0", "Cal", isMathOperationPresent ? "=" : "Done"
+  ];
+
   return (
-<div className="fixed bottom-0 left-0 right-0 w-full bg-[#0D0D0D] text-[#DFDFDF] px-4 pt-4 pb-24 rounded-t-2xl shadow-lg max-w-screen-lg mx-auto">
-  {/* Amount Display */}
-  <div className="text-right text-xl mb-2 px-1 min-h-6 break-words">
-    {amount || "0"}
-  </div>
-
-  {/* Selected Category Display */}
-  {selectedCategory && (
-    <div className="text-sm mb-2 px-1 text-gray-300">
-      {selectedCategory.label}
+    <div className="fixed bottom-0 left-0 right-0 w-full bg-[#0D0D0D] text-[#DFDFDF] px-4 pt-4 pb-24 rounded-t-2xl shadow-lg max-w-md mx-auto">
+      {/* Display area */}
+      <div className="text-right text-2xl mb-3 px-2 min-h-8 break-words font-medium">
+        {input || "0"}
+      </div>
+  
+      {/* Category indicator */}
+      {selectedCategory && (
+        <div className="text-xs mb-3 px-2 text-[#DFDFDF] text-opacity-60 capitalize">
+          {selectedCategory.label.toLowerCase()}
+        </div>
+      )}
+  
+      {/* Date picker */}
+      {showCalendar && (
+        <div className="bg-[#1A1A1A] p-3 rounded-lg mb-4">
+          <input
+            type="date"
+            value={format(selectedDate, "yyyy-MM-dd")}
+            onChange={handleDateChange}
+            className="w-full bg-[#0D0D0D] p-2 text-[#DFDFDF] rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+          />
+        </div>
+      )}
+  
+      {/* Note input */}
+      <div className="flex items-center bg-[#1A1A1A] rounded-lg p-3 mb-4">
+        <input
+          type="text"
+          value={note}
+          onChange={(e) => setNote(e.target.value)}
+          placeholder="Add a note..."
+          className="flex-1 bg-transparent border-none outline-none text-sm text-[#DFDFDF] placeholder-[#DFDFDF] placeholder-opacity-60"
+        />
+      </div>
+  
+      {/* Calculator keyboard */}
+      <div className="grid grid-cols-4 gap-2">
+        {keys.map((key, index) => {
+          if (key === "Delete") {
+            return (
+              <button
+                key={index}
+                onClick={() => handleKeyPress("Delete")}
+                className="bg-[#1A1A1A] hover:bg-[#333] py-3 rounded-lg flex items-center justify-center transition-colors"
+              >
+                <Delete className="text-[#DFDFDF] w-5 h-5" />
+              </button>
+            );
+          } else if (key === "Cal") {
+            return (
+              <button
+                key={index}
+                onClick={toggleCalendar}
+                className="bg-[#1A1A1A] hover:bg-[#333] py-3 rounded-lg flex items-center justify-center transition-colors"
+              >
+                <Calendar className="text-[#DFDFDF] w-5 h-5" />
+              </button>
+            );
+          } else if (key === "=") {
+            return (
+              <button
+                key={index}
+                onClick={evaluateAmount}
+                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-[#DFDFDF] py-3 rounded-lg text-lg font-medium transition-colors"
+              >
+                =
+              </button>
+            );
+          } else if (key === "Done") {
+            return (
+              <button
+                key={index}
+                onClick={handleSubmit}
+                className="bg-green-600 hover:bg-green-700 text-[#DFDFDF] py-3 rounded-lg flex items-center justify-center transition-colors"
+              >
+                <Check className="w-5 h-5" />
+              </button>
+            );
+          } else {
+            return (
+              <button
+                key={index}
+                onClick={() => handleKeyPress(key)}
+                className="bg-[#1A1A1A] hover:bg-[#333] py-3 rounded-lg text-lg font-medium transition-colors"
+              >
+                {key}
+              </button>
+            );
+          }
+        })}
+      </div>
     </div>
-  )}
-
-  {/* Date Display - Only shown after selection */}
-  {dateSelected && (
-    <div className="text-sm mb-2 px-1 text-gray-300 flex justify-between items-center">
-      <span>Date: {format(selectedDate, "MMM dd, yyyy")}</span>
-      <button onClick={toggleCalendar} className="text-blue-400 text-xs">
-        Change
-      </button>
-    </div>
-  )}
-
-  {/* Minimal Calendar Popup */}
-  {showCalendar && (
-    <div className="bg-[#1A1A1A] p-3 rounded-lg mb-3">
-      <input
-        type="date"
-        value={format(selectedDate, "yyyy-MM-dd")}
-        onChange={handleDateChange}
-        className="w-full bg-[#333333] p-2 rounded text-white"
-      />
-    </div>
-  )}
-
-  {/* Note Input and Submit Button */}
-  <div className="flex items-center gap-2 bg-[#1A1A1A] p-2 rounded-lg mb-3">
-    <input
-      type="text"
-      value={note}
-      placeholder="Note..."
-      onChange={(e) => setNote(e.target.value)}
-      className="flex-1 bg-transparent text-white text-sm border-none outline-none"
-    />
-    <button
-      onClick={handleSubmit}
-      className={`p-1.5 rounded-md ${
-        amount ? "bg-gradient-to-r from-purple-500 to-pink-500" : "bg-[#333333]"
-      }`}
-      disabled={!amount}
-    >
-      <Check className="w-4 h-4" />
-    </button>
-  </div>
-
-  {/* Number Keyboard */}
-  <div className="grid grid-cols-3 gap-2 mb-2">
-    {["7", "8", "9", "4", "5", "6", "1", "2", "3"].map((key) => (
-      <button
-        key={key}
-        onClick={() => handleKeyPress(key)}
-        className="py-3 rounded-md text-lg bg-[#1A1A1A] hover:bg-[#333333] active:bg-[#444444] transition-colors"
-      >
-        {key}
-      </button>
-    ))}
-
-    {/* Bottom row with calendar, 0, delete */}
-    <div className="col-span-3 grid grid-cols-3 gap-2">
-      <button
-        onClick={toggleCalendar}
-        className="py-3 rounded-md bg-[#1A1A1A] hover:bg-[#333333] active:bg-[#444444] transition-colors flex justify-center items-center"
-      >
-        <Calendar className="w-5 h-5 text-white" />
-      </button>
-
-      <button
-        onClick={() => handleKeyPress("0")}
-        className="py-3 rounded-md text-lg bg-[#1A1A1A] hover:bg-[#333333] active:bg-[#444444] transition-colors"
-      >
-        0
-      </button>
-
-      <button
-        onClick={() => handleKeyPress("Delete")}
-        className="py-3 rounded-md bg-[#1A1A1A] hover:bg-[#333333] active:bg-[#444444] transition-colors flex justify-center items-center"
-      >
-        <Delete className="w-5 h-5 text-white" />
-      </button>
-    </div>
-  </div>
-
-  <div className="h-2"></div>
-</div>
-
-
-
   );
 };
 
 export default Keyboard;
+
+
 
 
 
