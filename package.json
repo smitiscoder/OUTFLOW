@@ -14,7 +14,7 @@
     "clsx": "^2.1.1",
     "date-fns": "^4.1.0",
     "firebase": "^11.6.1",
-    "framer-motion": "^12.9.2",
+    "framer-motion": "^12.10.0",
     "lucide": "^0.503.0",
     "lucide-react": "^0.501.0",
     "react": "^18.0.0",
@@ -29,6 +29,7 @@
     "react-swipeable": "^7.0.2",
     "react-toastify": "^10.0.5",
     "recharts": "^2.15.3",
+    "tailwind-merge": "^3.2.0",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
