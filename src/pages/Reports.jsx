@@ -1,17 +1,22 @@
 import React, { useState, useEffect } from 'react';
-import { useExpenses } from '../Context/ExpenseContext';
+import { getAuth } from "firebase/auth";
+import { getFirestore, collection, query, where, onSnapshot } from "firebase/firestore";
 import Header from '../components/Header';
 import { PieChart, Pie, Cell } from 'recharts';
 
 const COLORS = [
-  "#D4AF37", "#20B2AA", "#FF6B6B", "#00FA9A", "#66BB6A", "#9C27B0", "#03A9F4", "#F4A261"
+  "#D4AF37", "#20B2AA", "#FF6B6B", "#00FA9A", 
+  "#66BB6A", "#9C27B0", "#03A9F4", "#F4A261"
 ];
 
 export default function ReportsScreen() {
-  const { expenses } = useExpenses();
   const [timeframe, setTimeframe] = useState('month');
   const [processedData, setProcessedData] = useState([]);
   const [totalSpent, setTotalSpent] = useState(0);
+  const [userExpenses, setUserExpenses] = useState([]);
+  const auth = getAuth();
+  const db = getFirestore();
+  const now = new Date(); // ✅ Make 'now' available everywhere
 
   const timeframes = [
     { id: 'week', label: 'Week' },
@@ -21,7 +26,26 @@ export default function ReportsScreen() {
   ];
 
   useEffect(() => {
-    const now = new Date();
+    const userId = auth.currentUser?.uid;
+    if (!userId) return;
+
+    const q = query(
+      collection(db, 'expenses'),
+      where('userId', '==', userId)
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const expenses = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setUserExpenses(expenses);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
     let filteredExpenses = [];
 
     const getClonedDate = () => new Date(now.getTime());
@@ -30,33 +54,31 @@ export default function ReportsScreen() {
       case 'week':
         const oneWeekAgo = getClonedDate();
         oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
-        filteredExpenses = expenses.filter(exp =>
+        filteredExpenses = userExpenses.filter(exp =>
           new Date(exp.timestamp?.toDate?.() || exp.timestamp) >= oneWeekAgo
         );
         break;
       case 'month':
-        const oneMonthAgo = getClonedDate();
-        oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
-        filteredExpenses = expenses.filter(exp =>
-          new Date(exp.timestamp?.toDate?.() || exp.timestamp) >= oneMonthAgo
+        const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+        filteredExpenses = userExpenses.filter(exp =>
+          new Date(exp.timestamp?.toDate?.() || exp.timestamp) >= startOfMonth
         );
         break;
       case 'quarter':
         const threeMonthsAgo = getClonedDate();
         threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
-        filteredExpenses = expenses.filter(exp =>
+        filteredExpenses = userExpenses.filter(exp =>
           new Date(exp.timestamp?.toDate?.() || exp.timestamp) >= threeMonthsAgo
         );
         break;
       case 'year':
-        const oneYearAgo = getClonedDate();
-        oneYearAgo.setFullYear(oneYearAgo.getFullYear() - 1);
-        filteredExpenses = expenses.filter(exp =>
-          new Date(exp.timestamp?.toDate?.() || exp.timestamp) >= oneYearAgo
+        const startOfYear = new Date(now.getFullYear(), 0, 1); // ✅ Start of current year
+        filteredExpenses = userExpenses.filter(exp =>
+          new Date(exp.timestamp?.toDate?.() || exp.timestamp) >= startOfYear
         );
         break;
       default:
-        filteredExpenses = expenses;
+        filteredExpenses = userExpenses;
     }
 
     const categoryMap = filteredExpenses.reduce((acc, expense) => {
@@ -101,107 +123,115 @@ export default function ReportsScreen() {
 
     setProcessedData(finalData);
     setTotalSpent(calculatedTotal);
-  }, [expenses, timeframe]);
+  }, [userExpenses, timeframe]);
+
+  const getDaysInTimeframe = () => {
+    switch (timeframe) {
+      case 'week':
+        return 7;
+      case 'month':
+        return new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate(); // days in current month
+      case 'quarter':
+        return 90;
+      case 'year':
+        const startOfYear = new Date(now.getFullYear(), 0, 1);
+        const today = new Date();
+        const diffTime = Math.abs(today - startOfYear);
+        return Math.ceil(diffTime / (1000 * 60 * 60 * 24)); // exact days since Jan 1st
+      default:
+        return 30;
+    }
+  };
 
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF]">
-    <Header title="Reports" />
+      <Header title="Reports" />
 
-    <div className="container mx-auto px-4 pb-20 max-w-md">
-      {/* Timeframe selector buttons - includes quarterly option */}
-      <div className="flex flex-wrap justify-between gap-2 mt-6 mb-6">
-        {timeframes.map(item => (
-          <button
-            key={item.id}
-            onClick={() => setTimeframe(item.id)}
-            className={`flex-1 min-w-[23%] px-2 py-2 rounded-full text-sm font-medium transition-colors ${
-              timeframe === item.id ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-[#DFDFDF]' : 'bg-[#1A1A1A] text-[#DFDFDF] text-opacity-60'
-            }`}
-          >
-            {item.label}
-          </button>
-        ))}
-      </div>
-
-      {/* Spending by Category section */}
-      <div className="bg-[#1A1A1A] rounded-xl p-6 mb-6">
-        <h2 className="text-lg font-semibold mb-6">Spending by Category</h2>
-
-        {/* Pie chart visualization */}
-        <div className="relative h-64 flex items-center justify-center mb-8">
-          <PieChart width={280} height={280}>
-            <Pie
-              data={processedData}
-              cx="50%"
-              cy="50%"
-              innerRadius={70}
-              outerRadius={100}
-              paddingAngle={1}
-              dataKey="spent"
-              stroke="none"
+      <div className="container mx-auto px-4 pb-20 max-w-md">
+        <div className="flex flex-wrap justify-between gap-2 mt-6 mb-6">
+          {timeframes.map(item => (
+            <button
+              key={item.id}
+              onClick={() => setTimeframe(item.id)}
+              className={`flex-1 min-w-[23%] px-2 py-2 rounded-full text-sm font-medium transition-colors ${
+                timeframe === item.id ? 'bg-gradient-to-r from-purple-500 to-pink-500 text-[#DFDFDF]' : 'bg-[#1A1A1A] text-[#DFDFDF] text-opacity-60'
+              }`}
             >
-              {processedData.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={entry.color} />
-              ))}
-            </Pie>
-          </PieChart>
-
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
-            <span className="text-lg font-semibold">₹{totalSpent}</span>
-            <span className="block text-xs text-[#DFDFDF] text-opacity-60">Total Spent</span>
-          </div>
-        </div>
-
-        {/* Category breakdown list */}
-        <div className="space-y-4">
-          {processedData.map(item => (
-            <div key={item.name} className="flex items-center">
-              <div
-                className="w-3 h-3 rounded-full mr-3"
-                style={{ backgroundColor: item.color }}
-              ></div>
-              <div className="flex-1 text-sm capitalize">{item.name.toLowerCase()}</div>
-              <div className="text-sm font-medium text-[#DFDFDF] mr-3">₹{item.spent}</div>
-              <div className="text-xs text-[#DFDFDF] text-opacity-60 w-12 text-right">
-                {item.percentage.toFixed(1)}%
-              </div>
-            </div>
+              {item.label}
+            </button>
           ))}
         </div>
-      </div>
 
-      {/* Summary section - includes calculations for different timeframes */}
-      <div className="bg-[#1A1A1A] rounded-xl p-6">
-        <h2 className="text-lg font-semibold mb-6">Summary</h2>
+        <div className="bg-[#1A1A1A] rounded-xl p-6 mb-6">
+          <h2 className="text-lg font-semibold mb-6">Spending by Category</h2>
 
-        <div className="space-y-4">
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-[#DFDFDF] text-opacity-60">Total Spent</span>
-            <span className="text-sm font-medium">₹{totalSpent}</span>
+          <div className="relative h-64 flex items-center justify-center mb-8">
+            <PieChart width={280} height={280}>
+              <Pie
+                data={processedData}
+                cx="50%"
+                cy="50%"
+                innerRadius={70}
+                outerRadius={100}
+                paddingAngle={1}
+                dataKey="spent"
+                stroke="none"
+              >
+                {processedData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Pie>
+            </PieChart>
+
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
+              <span className="text-lg font-semibold">₹{totalSpent}</span>
+              <span className="block text-xs text-[#DFDFDF] text-opacity-60">Total Spent</span>
+            </div>
           </div>
 
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-[#DFDFDF] text-opacity-60">Highest Category</span>
-            <span className="text-sm font-medium capitalize">
-              {processedData[0]?.name.toLowerCase() || 'None'}
-            </span>
+          <div className="space-y-4">
+            {processedData.map(item => (
+              <div key={item.name} className="flex items-center">
+                <div
+                  className="w-3 h-3 rounded-full mr-3"
+                  style={{ backgroundColor: item.color }}
+                ></div>
+                <div className="flex-1 text-sm capitalize">{item.name.toLowerCase()}</div>
+                <div className="text-sm font-medium text-[#DFDFDF] mr-3">₹{item.spent}</div>
+                <div className="text-xs text-[#DFDFDF] text-opacity-60 w-12 text-right">
+                  {item.percentage.toFixed(1)}%
+                </div>
+              </div>
+            ))}
           </div>
+        </div>
 
-          {/* Average per day calculation - handles all timeframes including quarter (90 days) and year (365 days) */}
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-[#DFDFDF] text-opacity-60">Average per Day</span>
-            <span className="text-sm font-medium">
-              ₹{Math.round(totalSpent / (
-                timeframe === 'week' ? 7 :          // Weekly average
-                timeframe === 'month' ? 30 :       // Monthly average (approximate)
-                timeframe === 'quarter' ? 90 :      // Quarterly average (90 days)
-                365                                 // Yearly average
-              ))}
-            </span>
+        <div className="bg-[#1A1A1A] rounded-xl p-6">
+          <h2 className="text-lg font-semibold mb-6">Summary</h2>
+
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-[#DFDFDF] text-opacity-60">Total Spent</span>
+              <span className="text-sm font-medium">₹{totalSpent}</span>
+            </div>
+
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-[#DFDFDF] text-opacity-60">Highest Category</span>
+              <span className="text-sm font-medium capitalize">
+                {processedData[0]?.name.toLowerCase() || 'None'}
+              </span>
+            </div>
+
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-[#DFDFDF] text-opacity-60">Average per Day</span>
+              <span className="text-sm font-medium">
+                ₹{Math.round(totalSpent / getDaysInTimeframe())}
+              </span>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
-);
+  );
 }
+

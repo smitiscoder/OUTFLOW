@@ -237,7 +237,7 @@ const Home = () => {
               onClick={() => handleExpenseSelect(expense.id)}
             >
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-full bg-[#1A1A1A] flex items-center justify-center border border-[#DFDFDF] border-opacity-30">
+                <div className="w-10 h-10 rounded-full bg-[#1A1A1A] flex items-center justify-center">
                   {getIconForCategory(expense.category)}
                 </div>
                 <div className="flex items-center">
