@@ -208,7 +208,7 @@ const Home = () => {
               </Pie>
             </PieChart>
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
-              <p className="text-2xl font-bold">{Math.round(totalSpent)}</p>
+              <p className="text-2xl font-bold">{totalSpent % 1 === 0 ? totalSpent : totalSpent.toFixed(2)}</p>
             </div>
           </>
         ) : (
@@ -228,7 +228,7 @@ const Home = () => {
         <div key={dateStr} className="mb-6">
           <div className="flex justify-between items-center text-[#DFDFDF] text-opacity-60 text-sm mb-2">
             <span>{dateStr}</span>
-            <span>Expenses: ₹{total}</span>
+            <span>Expenses: ₹{total % 1 === 0 ? total : total.toFixed(2)}</span>
           </div>
           {items.map((expense) => (
             <div
@@ -246,7 +246,7 @@ const Home = () => {
               </div>
               
               <div className="flex items-center">
-                <p className="text-[#DFDFDF] font-semibold whitespace-nowrap mr-3">{Math.round(expense.amount)}</p>
+                <p className="text-[#DFDFDF] font-semibold whitespace-nowrap mr-3">{expense.amount % 1 === 0 ? expense.amount : expense.amount.toFixed(2)}</p>
                 {selectedExpense === expense.id && (
                   <button 
                     className="p-2 text-red-500 hover:bg-red-500 hover:bg-opacity-20 rounded-full transition-colors"

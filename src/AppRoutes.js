@@ -1,5 +1,5 @@
-import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 
 import MainLayout from "./components/layout/MainLayout";
 import Login from "./components/login";
@@ -16,6 +16,30 @@ import UpdateEmail from "./pages/UpdateEmail";
 import UpdatePhone from "./pages/Phonenumberupadte";
 
 function AppRoutes({ user }) {
+  const [firstVisit, setFirstVisit] = useState(false);
+  const [checkedVisit, setCheckedVisit] = useState(false);
+  const location = useLocation();
+
+  useEffect(() => {
+    const hasVisited = localStorage.getItem("hasVisited");
+
+    if (!hasVisited) {
+      setFirstVisit(true);
+    } else {
+      setFirstVisit(false);
+    }
+
+    setCheckedVisit(true);
+  }, []);
+
+  // Show nothing until the check is done
+  if (!checkedVisit) return null;
+
+  // Redirect to onboarding only on first visit
+  if (firstVisit && location.pathname !== "/OnBoarding") {
+    return <Navigate to="/OnBoarding" replace />;
+  }
+
   return (
     <Routes>
       {/* ✅ Public Routes */}
@@ -37,8 +61,6 @@ function AppRoutes({ user }) {
             <Route path="search" element={<Search />} />
             <Route path="profile" element={<ProfilePage />} />
           </Route>
-
-          {/* ✅ Account Settings Outside Layout */}
           <Route path="/update-email" element={<UpdateEmail />} />
           <Route path="/update-phone" element={<UpdatePhone />} />
         </>
@@ -46,7 +68,7 @@ function AppRoutes({ user }) {
         <Route path="*" element={<Navigate to="/login" replace />} />
       )}
 
-      {/* ✅ Fallback 404 if user is not authenticated */}
+      {/* ✅ Fallback 404 */}
       {!user && (
         <Route path="*" element={<div className="text-center text-2xl p-10">404 - Page Not Found</div>} />
       )}
