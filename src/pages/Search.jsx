@@ -2,33 +2,7 @@ import React, { useState } from "react";
 import { useExpenses } from "../Context/ExpenseContext";
 import Header from '../components/Header';
 
-import { 
-  ShoppingCart, 
-  Utensils, 
-  FileText, 
-  Mic, 
-  Stethoscope, 
-  Users, 
-  Bus, 
-  Scissors, 
-  Car, 
-  BookOpen, 
-  TrendingUp, 
-  Wrench, 
-  Gift, 
-  Plane, 
-  Shield, 
-  CreditCard,
-  Dog, 
-  Pen, 
-  Smartphone, 
-  Baby, 
-  Cookie, 
-  Apple, 
-  Salad, 
-  Banknote,
-  Search as SearchIcon 
-} from "lucide-react";
+import { ShoppingCart, Utensils, FileText, Mic, Stethoscope, Users, Bus, Scissors, Car, BookOpen, TrendingUp, Wrench, Gift, Plane, Shield, CreditCard, Dog, Pen, Smartphone, Baby, Cookie, Apple, Salad, Banknote, Search as SearchIcon, X } from "lucide-react";
 import { format } from "date-fns";
 
 const getIconForCategory = (category) => {
@@ -102,6 +76,10 @@ const Search = () => {
     return noteMatch || categoryMatch;
   });
 
+  const clearSearch = () => {
+    setSearchTerm("");
+  };
+
   return (
       <div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF]">
         <Header title="Search Expenses" />
@@ -112,11 +90,19 @@ const Search = () => {
             <SearchIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 text-[#DFDFDF] text-opacity-60 w-5 h-5" />
             <input
               type="text"
-              className="w-full rounded-full bg-[#1A1A1A] pl-12 pr-4 py-3 text-[#DFDFDF] placeholder-[#DFDFDF] placeholder-opacity-60 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
+              className="w-full rounded-full bg-[#1A1A1A] pl-12 pr-10 py-3 text-[#DFDFDF] placeholder-[#DFDFDF] placeholder-opacity-60 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500"
               placeholder="Search by amount, note, category, or date"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
+            {searchTerm && (
+              <button
+                onClick={clearSearch}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#DFDFDF] text-opacity-60 hover:text-opacity-100"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            )}
           </div>
     
           {/* Search Results */}
@@ -136,7 +122,7 @@ const Search = () => {
                       className="flex items-center justify-between px-4 py-3 rounded-lg bg-[#0D0D0D]"
                     >
                       <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-full  flex items-center justify-center">
                           {getIconForCategory(expense.category)}
                         </div>
                         <div>
@@ -166,7 +152,6 @@ const Search = () => {
 };
 
 export default Search;
-
 
 
 
