@@ -10,7 +10,7 @@ export default function Login() {
     <div className="relative min-h-screen bg-[#0f0f0f] text-white flex flex-col justify-center items-center px-6 space-y-8 overflow-hidden">
 
       {/* 💡 Top Gradient Glow */}
-      <div className="absolute top-[-200px] left-1/2 transform -translate-x-1/2 w-[800px] h-[800px] bg-gradient-to-b from-purple-600 via-purple-800 to-transparent opacity-40 blur-[120px] z-0" />
+      <div className="absolute top-[-150px] left-1/2 transform -translate-x-1/2 w-[600px] h-[600px] bg-gradient-to-b from-purple-600 via-purple-800 to-transparent opacity-30 blur-[100px] z-0" />
 
       {/* 🔒 Main Content */}
       <div className="relative z-10 w-full max-w-sm space-y-8">
@@ -37,7 +37,7 @@ export default function Login() {
         </div>
 
         {/* Terms and Privacy */}
-        <div className="text-gray-500 text-xs mt-8 text-center max-w-xs">
+        <div className="text-gray-500 text-xs mt-8 text-center mx-auto max-w-xs">
           By signing in, you agree to our{" "}
           <span className="underline">Terms</span> and{" "}
           <span className="underline">Privacy Policy</span>.

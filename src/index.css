@@ -20,5 +20,13 @@
     background-color: #f3e8ff !important; /* purple-100 */
     color: #000 !important;
   }
+
+
+  body {
+    margin: 0;
+    background-color: #0D0D0D;
+  }
+  
+
   
   
