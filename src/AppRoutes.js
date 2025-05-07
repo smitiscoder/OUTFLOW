@@ -14,6 +14,7 @@ import ProfilePage from "./pages/ProfilePage";
 import OnBoarding from "./pages/OnBoarding";
 import UpdateEmail from "./pages/UpdateEmail";
 import UpdatePhone from "./pages/Phonenumberupadte";
+import SetBudget from "./pages/SetBudget"; // ✅ Imported new page
 
 function AppRoutes({ user }) {
   return (
@@ -36,6 +37,7 @@ function AppRoutes({ user }) {
             <Route path="expensecategory" element={<ExpenseCategory />} />
             <Route path="search" element={<Search />} />
             <Route path="profile" element={<ProfilePage />} />
+            <Route path="setbudget" element={<SetBudget />} /> {/* ✅ New Route */}
           </Route>
 
           {/* ✅ Account Settings Outside Layout */}

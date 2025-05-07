@@ -53,15 +53,29 @@ const Home = () => {
   });
   const [loading, setLoading] = useState(true);
   const [selectedExpense, setSelectedExpense] = useState(null);
+  const [budget, setBudget] = useState(null);
   
   const { expenses, setExpenses } = useExpenses();
   const db = getFirestore();
   const auth = getAuth();
   const navigate = useNavigate();
 
-  const monthMap = {
-    0: 'JAN', 1: 'FEB', 2: 'MAR', 3: 'APR', 4: 'MAY', 5: 'JUN',
-    6: 'JUL', 7: 'AUG', 8: 'SEP', 9: 'OCT', 10: 'NOV', 11: 'DEC',
+  const fetchBudget = () => {
+    const userId = auth.currentUser?.uid;
+    if (!userId) return;
+
+    const unsubscribe = onSnapshot(doc(db, 'budgets', userId), (doc) => {
+      if (doc.exists()) {
+        setBudget(doc.data().amount);
+      } else {
+        setBudget(null);
+      }
+    }, (error) => {
+      console.error("Error listening to budget:", error);
+      setBudget(null);
+    });
+
+    return unsubscribe;
   };
 
   const fetchExpenses = () => {
@@ -113,8 +127,13 @@ const Home = () => {
   };
 
   useEffect(() => {
-    const unsubscribe = fetchExpenses();
-    return () => unsubscribe && unsubscribe();
+    const unsubscribeExpenses = fetchExpenses();
+    const unsubscribeBudget = fetchBudget();
+    
+    return () => {
+      unsubscribeExpenses && unsubscribeExpenses();
+      unsubscribeBudget && unsubscribeBudget();
+    };
   }, [currentDate]);
 
   const handleDateChange = (year, month) => {
@@ -122,6 +141,17 @@ const Home = () => {
   };
 
   const totalSpent = expenses.reduce((sum, expense) => sum + expense.amount, 0);
+
+  const calculateBudgetSaved = () => {
+    if (!budget || budget === 0) return null;
+    
+    const spentPercentage = (totalSpent / budget) * 100;
+    const savedPercentage = 100 - spentPercentage;
+    
+    return Math.max(0, Math.min(100, savedPercentage));
+  };
+
+  const budgetSaved = calculateBudgetSaved();
 
   const categoryData = expenses.reduce((acc, expense) => {
     const existing = acc.find(item => item.category === expense.category);
@@ -172,102 +202,139 @@ const Home = () => {
   };
 
   return (
-<div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF] pb-20">
-  <div className="container mx-auto px-4 max-w-md relative">
-    {selectedExpense && (
-      <div 
-        className="fixed inset-0 bg-black bg-opacity-50 z-10 backdrop-blur-sm"
-        onClick={() => setSelectedExpense(null)}
-      />
-    )}
-
-    <header className="py-4 flex items-center justify-between mt-6">
-      <h1 className="text-2xl font-bold">OUTFLOW</h1>
-      <MonthYearCalendar selectedDate={currentDate} onDateChange={handleDateChange} />
-    </header>
-
-    {/* Pie chart section */}
-    <div className="flex justify-center items-center my-4 cursor-pointer" onClick={() => navigate('/reports')}>
-      <div className="relative w-64 h-64">
-        {expenses.length > 0 ? (
-          <>
-            <PieChart width={256} height={256}>
-              <Pie
-                data={finalCategoryData}
-                cx="50%"
-                cy="50%"
-                innerRadius={60}
-                outerRadius={90}
-                paddingAngle={2}
-                dataKey="amount"
-                stroke="none"
-              >
-                {finalCategoryData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-            </PieChart>
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
-              <p className="text-2xl font-bold">{totalSpent % 1 === 0 ? totalSpent : totalSpent.toFixed(2)}</p>
-            </div>
-          </>
-        ) : (
-          <div className="w-full h-full flex flex-col items-center justify-center">
-            <p className="text-[#DFDFDF] text-opacity-40 text-sm">No expenses</p>
-            <p className="text-[#DFDFDF] text-opacity-30 text-xs mt-1">Add some to begin</p>
-          </div>
+    <div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF] pb-20">
+      <div className="container mx-auto px-4 max-w-md relative">
+        {selectedExpense && (
+          <div 
+            className="fixed inset-0 bg-black bg-opacity-50 z-10 backdrop-blur-sm"
+            onClick={() => setSelectedExpense(null)}
+          />
         )}
-      </div>
-    </div>
 
-    {/* Expense List Section */}
-    <div className="mt-4">
-      {loading ? (
-        <p className="text-center text-[#DFDFDF] text-opacity-40">Loading expenses...</p>
-      ) : Object.entries(groupedByDate).map(([dateStr, { total, items }]) => (
-        <div key={dateStr} className="mb-6">
-          <div className="flex justify-between items-center text-[#DFDFDF] text-opacity-60 text-sm mb-2">
-            <span>{dateStr}</span>
-            <span>Expenses: ₹{total % 1 === 0 ? total : total.toFixed(2)}</span>
+        <header className="py-4 flex items-center justify-between mt-6">
+          <h1 className="text-2xl font-bold">OUTFLOW</h1>
+          <div className="flex items-center gap-4">
+            <MonthYearCalendar selectedDate={currentDate} onDateChange={handleDateChange} />
           </div>
-          {items.map((expense) => (
-            <div
-              key={expense.id}
-              className={`flex items-center justify-between bg-[#1A1A1A] px-4 py-3 rounded-lg shadow mb-2 relative transition-all duration-200 ${selectedExpense === expense.id ? 'z-20 transform scale-105' : ''}`}
-              onClick={() => handleExpenseSelect(expense.id)}
-            >
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 rounded-full bg-[#1A1A1A] flex items-center justify-center">
-                  {getIconForCategory(expense.category)}
-                </div>
-                <div className="flex items-center">
-                  <p className="text-[#DFDFDF] font-medium capitalize">{expense.note || expense.category}</p>
-                </div>
-              </div>
-              
-              <div className="flex items-center">
-                <p className="text-[#DFDFDF] font-semibold whitespace-nowrap mr-3">{expense.amount % 1 === 0 ? expense.amount : expense.amount.toFixed(2)}</p>
-                {selectedExpense === expense.id && (
-                  <button 
-                    className="p-2 text-red-500 hover:bg-red-500 hover:bg-opacity-20 rounded-full transition-colors"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleDelete(expense.id);
-                    }}
+        </header>
+
+        {/* Pie chart section */}
+        <div className="flex justify-center items-center my-4 cursor-pointer" onClick={() => navigate('/reports')}>
+          <div className="relative w-64 h-64">
+            {expenses.length > 0 ? (
+              <>
+                <PieChart width={256} height={256}>
+                  <Pie
+                    data={finalCategoryData}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={60}
+                    outerRadius={90}
+                    paddingAngle={2}
+                    dataKey="amount"
+                    stroke="none"
                   >
-                    <Trash2 className="w-5 h-5" />
-                  </button>
-                )}
+                    {finalCategoryData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    ))}
+                  </Pie>
+                </PieChart>
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
+                  <p className="text-2xl font-bold">{totalSpent % 1 === 0 ? totalSpent : totalSpent.toFixed(2)}</p>
+                </div>
+              </>
+            ) : (
+              <div className="w-full h-full flex flex-col items-center justify-center">
+                <p className="text-[#DFDFDF] text-opacity-40 text-sm">No expenses</p>
+                <p className="text-[#DFDFDF] text-opacity-30 text-xs mt-1">Add some to begin</p>
               </div>
+            )}
+          </div>
+        </div>
+
+        {/* Budget information section */}
+        <div className="mb-6">
+          {budget && (
+            <div className="w-full bg-gray-700 rounded-full h-2.5 mb-2">
+              <div 
+                className="bg-purple-600 h-2.5 rounded-full" 
+                style={{ width: `${Math.min(100, (totalSpent / budget) * 100)}%` }}
+              ></div>
+            </div>
+          )}
+          {budgetSaved !== null ? (
+            <div className="text-center">
+              <p className="text-lg">
+                {budgetSaved >= 0 ? (
+                  <>You have saved <span className="font-bold">{Math.round(budgetSaved)}%</span> of your budget</>
+                ) : (
+                  <>You've exceeded your budget by <span className="font-bold text-red-400">{Math.abs(Math.round(budgetSaved))}%</span></>
+                )}
+              </p>
+              <p className="text-sm text-gray-400 mt-1">
+                Spent: ₹{totalSpent.toFixed(2)} / Budget: ₹{budget.toFixed(2)}
+              </p>
+            </div>
+          ) : (
+            <div className="text-center">
+              <p className="text-gray-400">No budget set</p>
+              <button 
+                onClick={() => navigate('/SetBudget')}
+                className="text-purple-400 hover:text-purple-300 text-sm mt-1"
+              >
+                Set a budget to track your savings
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Expense List Section */}
+        <div className="mt-4">
+          {loading ? (
+            <p className="text-center text-[#DFDFDF] text-opacity-40">Loading expenses...</p>
+          ) : Object.entries(groupedByDate).map(([dateStr, { total, items }]) => (
+            <div key={dateStr} className="mb-6">
+              <div className="flex justify-between items-center text-[#DFDFDF] text-opacity-60 text-sm mb-2">
+                <span>{dateStr}</span>
+                <span>Expenses: ₹{total % 1 === 0 ? total : total.toFixed(2)}</span>
+              </div>
+              {items.map((expense) => (
+                <div
+                  key={expense.id}
+                  className={`flex items-center justify-between bg-[#1A1A1A] px-4 py-3 rounded-lg shadow mb-2 relative transition-all duration-200 ${selectedExpense === expense.id ? 'z-20 transform scale-105' : ''}`}
+                  onClick={() => handleExpenseSelect(expense.id)}
+                >
+                  <div className="flex items-center space-x-3">
+                    <div className="w-10 h-10 rounded-full bg-[#1A1A1A] flex items-center justify-center">
+                      {getIconForCategory(expense.category)}
+                    </div>
+                    <div className="flex items-center">
+                      <p className="text-[#DFDFDF] font-medium capitalize">{expense.note || expense.category}</p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center">
+                    <p className="text-[#DFDFDF] font-semibold whitespace-nowrap mr-3">{expense.amount % 1 === 0 ? expense.amount : expense.amount.toFixed(2)}</p>
+                    {selectedExpense === expense.id && (
+                      <button 
+                        className="p-2 text-red-500 hover:bg-red-500 hover:bg-opacity-20 rounded-full transition-colors"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete(expense.id);
+                        }}
+                      >
+                        <Trash2 className="w-5 h-5" />
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
           ))}
         </div>
-      ))}
+        <BottomNav />
+      </div>
     </div>
-    <BottomNav />
-  </div>
-</div>
-
   );
 };
 
