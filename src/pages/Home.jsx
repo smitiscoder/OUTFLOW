@@ -209,19 +209,19 @@ const Home = () => {
     <div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF] pb-20">
       <div className="container mx-auto px-4 max-w-md relative">
         {selectedExpense && (
-          <div 
+          <div
             className="fixed inset-0 bg-black bg-opacity-50 z-10 backdrop-blur-sm"
             onClick={() => setSelectedExpense(null)}
           />
         )}
-
+  
         <header className="py-4 flex items-center justify-between mt-6">
           <h1 className="text-2xl font-bold">OUTFLOW</h1>
           <div className="flex items-center gap-4">
             <MonthYearCalendar selectedDate={currentDate} onDateChange={handleDateChange} />
           </div>
         </header>
-
+  
         {/* Pie chart section */}
         <div className="flex justify-center items-center my-4 cursor-pointer" onClick={() => navigate('/reports')}>
           <div className="relative w-64 h-64">
@@ -255,13 +255,13 @@ const Home = () => {
             )}
           </div>
         </div>
-
+  
         {/* Budget information section */}
         <div className="mb-6">
           {budget && (
             <div className="w-full bg-gray-700 rounded-full h-2.5 mb-2">
-              <div 
-                className="bg-purple-600 h-2.5 rounded-full" 
+              <div
+                className="bg-purple-600 h-2.5 rounded-full"
                 style={{ width: `${Math.min(100, (totalSpent / budget) * 100)}%` }}
               ></div>
             </div>
@@ -282,7 +282,7 @@ const Home = () => {
           ) : (
             <div className="text-center">
               <p className="text-gray-400">No budget set</p>
-              <button 
+              <button
                 onClick={() => navigate('/SetBudget')}
                 className="text-purple-400 hover:text-purple-300 text-sm mt-1"
               >
@@ -291,7 +291,7 @@ const Home = () => {
             </div>
           )}
         </div>
-
+  
         {/* Expense List Section */}
         <div className="mt-4">
           {loading ? (
@@ -312,15 +312,18 @@ const Home = () => {
                     <div className="w-10 h-10 rounded-full bg-[#1A1A1A] flex items-center justify-center">
                       {getIconForCategory(expense.category)}
                     </div>
-                    <div className="flex items-center">
+                    <div>
                       <p className="text-[#DFDFDF] font-medium capitalize">{expense.note || expense.category}</p>
+                      {expense.note && (
+                        <p className="text-[#DFDFDF] text-sm text-opacity-50 capitalize">{expense.category}</p>
+                      )}
                     </div>
                   </div>
-                  
+  
                   <div className="flex items-center">
                     <p className="text-[#DFDFDF] font-semibold whitespace-nowrap mr-3">{formatNumber(expense.amount)}</p>
                     {selectedExpense === expense.id && (
-                      <button 
+                      <button
                         className="p-2 text-red-500 hover:bg-red-500 hover:bg-opacity-20 rounded-full transition-colors"
                         onClick={(e) => {
                           e.stopPropagation();
@@ -340,6 +343,7 @@ const Home = () => {
       </div>
     </div>
   );
+  
 };
 
 export default Home;

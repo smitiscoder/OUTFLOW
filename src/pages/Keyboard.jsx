@@ -52,7 +52,7 @@ const Keyboard = ({ onSubmit }) => {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 w-full bg-[#0D0D0D] text-white px-4 pt-4 pb-24 rounded-t-2xl shadow-lg max-w-screen-sm mx-auto">
+    <div className="fixed bottom-0 left-0 right-0 w-full bg-[#0D0D0D] text-white px-3 pt-3 pb-20 rounded-t-2xl shadow-lg max-w-screen-sm mx-auto">
       <div className="flex justify-between items-center mb-2">
         <div className="text-sm text-gray-400">{selectedCategory?.label}</div>
         <div className="text-2xl">{expression || "0"}</div>
@@ -75,7 +75,7 @@ const Keyboard = ({ onSubmit }) => {
             <button
               key={key}
               onClick={() => handleKeyPress(key)}
-              className="py-4 text-lg bg-[#1A1A1A] rounded-md hover:bg-[#2A2A2A] active:bg-[#333333] transition-colors"
+              className="py-3 text-lg bg-[#1A1A1A] rounded-md hover:bg-[#2A2A2A] active:bg-[#333333] transition-colors"
             >
               {key}
             </button>
@@ -83,35 +83,35 @@ const Keyboard = ({ onSubmit }) => {
 
         <button
           onClick={() => handleKeyPress(".")}
-          className="py-4 text-lg bg-[#1A1A1A] rounded-md hover:bg-[#2A2A2A] active:bg-[#333333]"
+          className="py-3 text-lg bg-[#1A1A1A] rounded-md hover:bg-[#2A2A2A] active:bg-[#333333]"
         >
           .
         </button>
 
         <button
           onClick={() => handleKeyPress("0")}
-          className="py-4 text-lg bg-[#1A1A1A] rounded-md hover:bg-[#2A2A2A] active:bg-[#333333]"
+          className="py-3 text-lg bg-[#1A1A1A] rounded-md hover:bg-[#2A2A2A] active:bg-[#333333]"
         >
           0
         </button>
 
         <button
           onClick={() => handleKeyPress("Delete")}
-          className="py-4 bg-[#1A1A1A] rounded-md hover:bg-[#2A2A2A] active:bg-[#333333] flex justify-center items-center"
+          className="py-3 bg-[#1A1A1A] rounded-md hover:bg-[#2A2A2A] active:bg-[#333333] flex justify-center items-center"
         >
-          <Delete className="w-5 h-5 text-white" />
+          <Delete className="w-5 h-6 text-white" />
         </button>
 
         <button
           onClick={handleSubmit}
           disabled={!expression}
-          className={`py-4 rounded-md flex justify-center items-center ${
+          className={`py-3 rounded-md flex justify-center items-center ${
             expression
               ? "bg-gradient-to-r from-purple-500 to-pink-500"
               : "bg-[#333333]"
           }`}
         >
-          <Check className="w-5 h-5" />
+          <Check className="w-5 h-6" />
         </button>
       </div>
     </div>
@@ -119,7 +119,6 @@ const Keyboard = ({ onSubmit }) => {
 };
 
 export default Keyboard;
-
 
 
 
