@@ -46,6 +46,10 @@ const getIconForCategory = (category) => {
   return categoryIcons[key] || <Gift className="w-5 h-5" />;
 };
 
+const formatNumber = (num) => {
+  return num % 1 === 0 ? num : num.toFixed(2);
+};
+
 const Home = () => {
   const [currentDate, setCurrentDate] = useState({
     year: new Date().getFullYear(),
@@ -240,7 +244,7 @@ const Home = () => {
                   </Pie>
                 </PieChart>
                 <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
-                  <p className="text-2xl font-bold">{totalSpent % 1 === 0 ? totalSpent : totalSpent.toFixed(2)}</p>
+                  <p className="text-2xl font-bold">{formatNumber(totalSpent)}</p>
                 </div>
               </>
             ) : (
@@ -272,7 +276,7 @@ const Home = () => {
                 )}
               </p>
               <p className="text-sm text-gray-400 mt-1">
-                Spent: ₹{totalSpent.toFixed(2)} / Budget: ₹{budget.toFixed(2)}
+                Spent: ₹{formatNumber(totalSpent)} / Budget: ₹{formatNumber(budget)}
               </p>
             </div>
           ) : (
@@ -296,7 +300,7 @@ const Home = () => {
             <div key={dateStr} className="mb-6">
               <div className="flex justify-between items-center text-[#DFDFDF] text-opacity-60 text-sm mb-2">
                 <span>{dateStr}</span>
-                <span>Expenses: ₹{total % 1 === 0 ? total : total.toFixed(2)}</span>
+                <span>Expenses: ₹{formatNumber(total)}</span>
               </div>
               {items.map((expense) => (
                 <div
@@ -314,7 +318,7 @@ const Home = () => {
                   </div>
                   
                   <div className="flex items-center">
-                    <p className="text-[#DFDFDF] font-semibold whitespace-nowrap mr-3">{expense.amount % 1 === 0 ? expense.amount : expense.amount.toFixed(2)}</p>
+                    <p className="text-[#DFDFDF] font-semibold whitespace-nowrap mr-3">{formatNumber(expense.amount)}</p>
                     {selectedExpense === expense.id && (
                       <button 
                         className="p-2 text-red-500 hover:bg-red-500 hover:bg-opacity-20 rounded-full transition-colors"

@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { db } from "../components/firebase";
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc, deleteDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
 export default function SetBudget() {
   const [budget, setBudget] = useState("");  // Local state for budget
+  const [currentBudget, setCurrentBudget] = useState(null); // State to track if a budget exists
   const [loading, setLoading] = useState(false);
+  const [removeLoading, setRemoveLoading] = useState(false);
   const navigate = useNavigate();
   const auth = getAuth();
   const user = auth.currentUser;
@@ -22,6 +24,9 @@ export default function SetBudget() {
 
         if (docSnap.exists()) {
           setBudget(docSnap.data().amount);  // Set the fetched budget to state
+          setCurrentBudget(docSnap.data().amount); // Set current budget
+        } else {
+          setCurrentBudget(null); // No budget exists
         }
       } catch (err) {
         console.error("Error fetching budget:", err);
@@ -41,11 +46,29 @@ export default function SetBudget() {
         updatedAt: new Date(),
       });
       console.log("Budget saved:", budget);
+      setCurrentBudget(Number(budget)); // Update current budget state
       navigate("/");  // Navigate to home after saving the budget
     } catch (err) {
       console.error("Error saving budget:", err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleRemoveBudget = async () => {
+    if (!user) return;
+
+    setRemoveLoading(true);
+    try {
+      await deleteDoc(doc(db, "budgets", user.uid));
+      console.log("Budget removed");
+      setBudget(""); // Clear the input field
+      setCurrentBudget(null); // Update current budget state
+      navigate("/"); // Navigate to home after removing the budget
+    } catch (err) {
+      console.error("Error removing budget:", err);
+    } finally {
+      setRemoveLoading(false);
     }
   };
 
@@ -69,8 +92,22 @@ export default function SetBudget() {
               : "bg-purple-600 hover:bg-purple-500"
           }`}
         >
-          {loading ? "Saving..." : "Save Budget"}
+          {loading ? "Saving..." : "Save"}
         </button>
+        
+        {currentBudget !== null && (
+          <button
+            onClick={handleRemoveBudget}
+            disabled={removeLoading}
+            className={`w-full py-2 rounded font-semibold ${
+              removeLoading
+                ? "bg-gray-600 cursor-not-allowed"
+                : "bg-red-600 hover:bg-red-500"
+            }`}
+          >
+            {removeLoading ? "Removing..." : "Remove Budget"}
+          </button>
+        )}
       </div>
     </div>
   );

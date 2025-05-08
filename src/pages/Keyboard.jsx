@@ -69,9 +69,9 @@ const Keyboard = ({ onSubmit }) => {
       </div>
 
       <div className="grid grid-cols-4 gap-2">
-        {["7", "8", "9", "=",
+        {["7", "8", "9", "-",
           "4", "5", "6", "+",
-          "1", "2", "3", "-"].map((key) => (
+          "1", "2", "3", "="].map((key) => (
             <button
               key={key}
               onClick={() => handleKeyPress(key)}
