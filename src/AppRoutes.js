@@ -6,7 +6,7 @@ import Login from "./components/login";
 import Phone from "./components/Phone";
 import ContinueWithGoogle from "./components/ContinuewithGoogle";
 
-import Home from "./pages/Home/Homemain"; // ✅ Correct import
+import Home from "./pages/Home/Homemain";
 import Search from "./pages/Search";
 import Reports from "./pages/Reports";
 import ExpenseCategory from "./pages/ExpenseCategory";
@@ -14,8 +14,9 @@ import ProfilePage from "./pages/ProfilePage";
 import OnBoarding from "./pages/OnBoarding";
 import UpdateEmail from "./pages/UpdateEmail";
 import UpdatePhone from "./pages/Phonenumberupadte";
-import SetBudget from "./pages/SetBudget"; // ✅ Imported
+import SetBudget from "./pages/SetBudget";
 import Space from "./pages/Space";
+import Notifications from "./pages/Notifications";
 
 function AppRoutes({ user }) {
   return (
@@ -41,8 +42,9 @@ function AppRoutes({ user }) {
             <Route path="expensecategory" element={<ExpenseCategory />} />
             <Route path="search" element={<Search />} />
             <Route path="profile" element={<ProfilePage />} />
-            <Route path="setbudget" element={<SetBudget />} /> {/* ✅ Route */}
+            <Route path="setbudget" element={<SetBudget />} />
             <Route path="space" element={<Space />} />
+            <Route path="notifications" element={<Notifications />} /> {/* New route */}
             {/* Fallback 404 for protected routes */}
             <Route
               path="*"

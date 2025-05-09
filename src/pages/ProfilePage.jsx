@@ -8,7 +8,8 @@ import {
   X,
   Mail,
   Phone,
-  Users
+  BellDot,
+  Users,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "../components/firebase";
@@ -37,7 +38,7 @@ export default function ProfilePage() {
           // Fetch user data
           const userRef = doc(db, "users", user.uid);
           const userSnap = await getDoc(userRef);
-          
+
           if (userSnap.exists()) {
             const userData = userSnap.data();
             setEditedName(userData.name || "");
@@ -67,7 +68,7 @@ export default function ProfilePage() {
       await signOut(auth);
       navigate("/login");
     } catch (error) {
-      console.error("Error signing out: ", error);
+      console.error("Error signing out:", error);
     }
   };
 
@@ -75,13 +76,13 @@ export default function ProfilePage() {
 
   const handleNameSave = async () => {
     if (!userId || !editedName.trim()) return;
-    
-    setIsEditing(false);
+
     try {
       const userRef = doc(db, "users", userId);
       await setDoc(userRef, { name: editedName.trim() }, { merge: true });
+      setIsEditing(false);
     } catch (error) {
-      console.error("Error saving name: ", error);
+      console.error("Error saving name:", error);
     }
   };
 
@@ -132,8 +133,8 @@ export default function ProfilePage() {
                   autoFocus
                   maxLength={30}
                 />
-                <button 
-                  onClick={handleNameSave} 
+                <button
+                  onClick={handleNameSave}
                   className="text-green-500"
                   disabled={!editedName.trim()}
                 >
@@ -145,9 +146,7 @@ export default function ProfilePage() {
               </>
             ) : (
               <>
-                <h2 className="text-xl font-bold">
-                  {editedName || "username"}
-                </h2>
+                <h2 className="text-xl font-bold">{editedName || "username"}</h2>
                 <button
                   onClick={handleNameEdit}
                   className="text-purple-500 hover:text-purple-400"
@@ -164,12 +163,12 @@ export default function ProfilePage() {
         <div className="space-y-8">
           {/* Account */}
           <SettingsSection title="Account">
-          <SettingItem
-              icon={<Users size={20} />} 
-              label="Space" 
-              value={ "space" || "Not provided"} 
+            <SettingItem
+              icon={<Users size={20} />}
+              label="Space"
+              value={"space" || "Not provided"}
               type="link"
-              onClick={() => navigate("/Space")} 
+              onClick={() => navigate("/Space")}
             />
             <SettingItem
               icon={<Mail size={20} />}
@@ -202,6 +201,12 @@ export default function ProfilePage() {
               value={budget ? `₹${budget.toLocaleString()}` : "Not set"}
               type="link"
               onClick={() => navigate("/setbudget")}
+            />
+            <SettingItem
+              icon={<BellDot size={20} />}
+              label="Notification"
+              type="link"
+              onClick={() => navigate("/Notifications")} // Fixed typo
             />
           </SettingsSection>
 

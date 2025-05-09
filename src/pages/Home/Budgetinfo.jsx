@@ -7,7 +7,8 @@ const BudgetInfo = ({ budget, expenses }) => {
   const totalSpent = expenses.reduce((sum, expense) => sum + expense.amount, 0);
 
   const calculateBudgetSaved = () => {
-    if (!budget || budget === 0) return null;
+    // Treat undefined, null, or 0 as no budget
+    if (!budget || budget <= 0) return null;
     const spentPercentage = (totalSpent / budget) * 100;
     const savedPercentage = 100 - spentPercentage;
     return Math.max(0, Math.min(100, savedPercentage));
@@ -18,10 +19,12 @@ const BudgetInfo = ({ budget, expenses }) => {
   };
 
   const budgetSaved = calculateBudgetSaved();
+  // Determine if there's a valid budget
+  const hasValidBudget = budget && budget > 0;
 
   return (
     <div className="mb-6">
-      {budget && (
+      {hasValidBudget && (
         <div className="w-full bg-gray-700 rounded-full h-2.5 mb-2">
           <div
             className="bg-purple-600 h-2.5 rounded-full"
@@ -29,7 +32,7 @@ const BudgetInfo = ({ budget, expenses }) => {
           ></div>
         </div>
       )}
-      {budgetSaved !== null ? (
+      {budgetSaved !== null && hasValidBudget ? (
         <div className="text-center">
           <p className="text-lg">
             {budgetSaved >= 0 ? (
@@ -51,7 +54,7 @@ const BudgetInfo = ({ budget, expenses }) => {
         <div className="text-center">
           <p className="text-gray-400">No budget set</p>
           <button
-            onClick={() => navigate('/setbudget')} // Fixed to lowercase
+            onClick={() => navigate('/setbudget')}
             className="text-purple-400 hover:text-purple-300 text-sm mt-1"
           >
             Set a budget to track your savings
