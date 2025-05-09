@@ -1,13 +1,21 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Check, Delete } from "lucide-react";
 
-const Keyboard = ({ onSubmit }) => {
+const Keyboard = ({ initialAmount = "", initialNote = "", category = "", onSubmit, onCancel, loading = false }) => {
   const { state } = useLocation();
   const navigate = useNavigate();
-  const { selectedCategory } = state || {};
-  const [expression, setExpression] = useState("");
-  const [note, setNote] = useState("");
+  const [expression, setExpression] = useState(initialAmount);
+  const [note, setNote] = useState(initialNote);
+
+  // Determine the category to display
+  const displayCategory = category || state?.selectedCategory?.label || "Category";
+
+  // Update state if props change (e.g., editing a different expense)
+  useEffect(() => {
+    setExpression(initialAmount);
+    setNote(initialNote);
+  }, [initialAmount, initialNote]);
 
   const isOperator = (char) => ["+", "-"].includes(char);
 
@@ -48,13 +56,20 @@ const Keyboard = ({ onSubmit }) => {
     onSubmit({ amount: finalAmount.toFixed(2), note });
     setExpression("");
     setNote("");
-    navigate("/home");
+  };
+
+  const handleCancel = () => {
+    if (onCancel) {
+      onCancel(); // Edit flow (HomeMain)
+    } else {
+      navigate(-1); // Add flow (ExpenseCategories)
+    }
   };
 
   return (
     <div className="fixed bottom-0 left-0 right-0 w-full bg-[#0D0D0D] text-white px-3 pt-3 pb-20 rounded-t-2xl shadow-lg max-w-screen-sm mx-auto">
       <div className="flex justify-between items-center mb-2">
-        <div className="text-sm text-gray-400">{selectedCategory?.label}</div>
+        <div className="text-sm text-gray-400">{displayCategory}</div>
         <div className="text-2xl">{expression || "0"}</div>
       </div>
 
@@ -63,23 +78,21 @@ const Keyboard = ({ onSubmit }) => {
           type="text"
           value={note}
           onChange={(e) => setNote(e.target.value)}
-          placeholder="Note :  Enter a note..."
+          placeholder="Note : Enter a note..."
           className="flex-1 bg-transparent text-white text-sm placeholder-gray-400 outline-none"
         />
       </div>
 
       <div className="grid grid-cols-4 gap-2">
-        {["7", "8", "9", "-",
-          "4", "5", "6", "+",
-          "1", "2", "3", "="].map((key) => (
-            <button
-              key={key}
-              onClick={() => handleKeyPress(key)}
-              className="py-3 text-lg bg-[#1A1A1A] rounded-md hover:bg-[#2A2A2A] active:bg-[#333333] transition-colors"
-            >
-              {key}
-            </button>
-          ))}
+        {["7", "8", "9", "-", "4", "5", "6", "+", "1", "2", "3", "="].map((key) => (
+          <button
+            key={key}
+            onClick={() => handleKeyPress(key)}
+            className="py-3 text-lg bg-[#1A1A1A] rounded-md hover:bg-[#2A2A2A] active:bg-[#333333] transition-colors"
+          >
+            {key}
+          </button>
+        ))}
 
         <button
           onClick={() => handleKeyPress(".")}
@@ -104,23 +117,27 @@ const Keyboard = ({ onSubmit }) => {
 
         <button
           onClick={handleSubmit}
-          disabled={!expression}
+          disabled={!expression || loading}
           className={`py-3 rounded-md flex justify-center items-center ${
-            expression
-              ? "bg-gradient-to-r from-purple-500 to-pink-500"
-              : "bg-[#333333]"
+            expression && !loading ? "bg-gradient-to-r from-purple-500 to-pink-500" : "bg-[#333333]"
           }`}
         >
           <Check className="w-5 h-6" />
         </button>
       </div>
+
+      <button
+        onClick={handleCancel}
+        disabled={loading}
+        className="mt-2 w-full py-2 bg-[#1A1A1A] text-red-500 border border-red-500 rounded-md transition-colors"
+      >
+        Cancel
+      </button>
     </div>
   );
 };
 
 export default Keyboard;
-
-
 
 
 

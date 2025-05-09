@@ -1,15 +1,22 @@
 import React from 'react';
-import { useExpenses } from '../../Context/ExpenseContext'; // Updated path
+import { useExpenses } from '../../Context/ExpenseContext';
 import { format } from 'date-fns';
 import { getIconForCategory } from './constants';
 import { handleDelete, handleExpenseSelect } from './HandleDeleteAndEdit';
-import { Trash2 } from 'lucide-react'; // Added Trash2 import
+import { Trash2, SquarePen } from 'lucide-react';
 
-const ExpenseList = ({ loading, selectedExpense, setSelectedExpense }) => {
+const ExpenseList = ({ loading, selectedExpense, setSelectedExpense, setEditingExpense }) => {
   const { expenses } = useExpenses();
 
   const formatNumber = (num) => {
     return num % 1 === 0 ? num : num.toFixed(2);
+  };
+
+  const handleEdit = (expense, e) => {
+    e.stopPropagation();
+    console.log('Editing expense:', expense); // Debug: Confirm expense is passed
+    setEditingExpense(expense);
+    setSelectedExpense(null); // Clear selection to focus on editing
   };
 
   const groupedByDate = expenses.reduce((acc, expense) => {
@@ -65,17 +72,27 @@ const ExpenseList = ({ loading, selectedExpense, setSelectedExpense }) => {
                 </div>
 
                 <div className="flex items-center">
-                  <p className="text-[#DFDFDF] font-semibold whitespace-nowrap mr-3">{formatNumber(expense.amount)}</p>
+                  <p className="text-[#DFDFDF] font-semibold whitespace-nowrap mr-3">
+                    ₹{formatNumber(expense.amount)}
+                  </p>
                   {selectedExpense === expense.id && (
-                    <button
-                      className="p-2 text-red-500 hover:bg-red-500 hover:bg-opacity-20 rounded-full transition-colors"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleDelete(expense.id, setSelectedExpense);
-                      }}
-                    >
-                      <Trash2 className="w-5 h-5" />
-                    </button>
+                    <div className="flex space-x-2">
+                      <button
+                        className="p-2 text-blue-500 hover:bg-blue-500 hover:bg-opacity-20 rounded-full transition-colors"
+                        onClick={(e) => handleEdit(expense, e)}
+                      >
+                        <SquarePen className="w-5 h-5" />
+                      </button>
+                      <button
+                        className="p-2 text-red-500 hover:bg-red-500 hover:bg-opacity-20 rounded-full transition-colors"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDelete(expense.id, setSelectedExpense);
+                        }}
+                      >
+                        <Trash2 className="w-5 h-5" />
+                      </button>
+                    </div>
                   )}
                 </div>
               </div>
