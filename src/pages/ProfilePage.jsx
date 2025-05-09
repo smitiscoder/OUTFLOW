@@ -8,6 +8,7 @@ import {
   X,
   Mail,
   Phone,
+  Users
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "../components/firebase";
@@ -163,6 +164,13 @@ export default function ProfilePage() {
         <div className="space-y-8">
           {/* Account */}
           <SettingsSection title="Account">
+          <SettingItem
+              icon={<Users size={20} />} 
+              label="Space" 
+              value={ "space" || "Not provided"} 
+              type="link"
+              onClick={() => navigate("/Space")} 
+            />
             <SettingItem
               icon={<Mail size={20} />}
               label="Email"
