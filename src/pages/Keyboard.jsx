@@ -2,19 +2,27 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Check, Delete } from "lucide-react";
 
-const Keyboard = ({ initialAmount = "", initialNote = "", category = "", onSubmit, onCancel, loading = false }) => {
+const Keyboard = ({
+  initialAmount = "",
+  initialNote = "",
+  category = "",
+  onSubmit = () => {}, // Default to empty function
+  onCancel,
+  loading = false,
+}) => {
   const { state } = useLocation();
   const navigate = useNavigate();
-  const [expression, setExpression] = useState(initialAmount);
-  const [note, setNote] = useState(initialNote);
+  const [expression, setExpression] = useState(String(initialAmount || ""));
+  const [note, setNote] = useState(initialNote || "");
 
-  // Determine the category to display
+  // Log props for debugging
+  console.log({ initialAmount, initialNote, category, onSubmit, onCancel, loading });
+
   const displayCategory = category || state?.selectedCategory?.label || "Category";
 
-  // Update state if props change (e.g., editing a different expense)
   useEffect(() => {
-    setExpression(initialAmount);
-    setNote(initialNote);
+    setExpression(String(initialAmount || ""));
+    setNote(initialNote || "");
   }, [initialAmount, initialNote]);
 
   const isOperator = (char) => ["+", "-"].includes(char);
@@ -30,10 +38,10 @@ const Keyboard = ({ initialAmount = "", initialNote = "", category = "", onSubmi
         alert("Invalid expression");
       }
     } else if (key === "." && expression.split(/[\+\-]/).pop().includes(".")) {
-      return; // Prevent multiple decimals in a single number
+      return;
     } else if (isOperator(key)) {
       if (expression === "" || isOperator(expression.slice(-1))) {
-        return; // Prevent starting with or stacking operators
+        return;
       }
       setExpression((prev) => prev + key);
     } else {
@@ -47,22 +55,34 @@ const Keyboard = ({ initialAmount = "", initialNote = "", category = "", onSubmi
       return;
     }
 
-    const finalAmount = eval(expression);
+    let finalAmount;
+    try {
+      finalAmount = eval(expression);
+    } catch {
+      alert("Invalid expression");
+      return;
+    }
+
     if (isNaN(finalAmount) || finalAmount <= 0) {
       alert("Amount must be greater than 0.");
       return;
     }
 
-    onSubmit({ amount: finalAmount.toFixed(2), note });
-    setExpression("");
-    setNote("");
+    if (typeof onSubmit === "function") {
+      onSubmit({ amount: finalAmount.toFixed(2), note });
+      setExpression("");
+      setNote("");
+    } else {
+      console.error("onSubmit is not a function");
+      alert("Error: Unable to submit. Please try again.");
+    }
   };
 
   const handleCancel = () => {
     if (onCancel) {
-      onCancel(); // Edit flow (HomeMain)
+      onCancel();
     } else {
-      navigate(-1); // Add flow (ExpenseCategories)
+      navigate(-1);
     }
   };
 
@@ -138,7 +158,6 @@ const Keyboard = ({ initialAmount = "", initialNote = "", category = "", onSubmi
 };
 
 export default Keyboard;
-
 
 
 

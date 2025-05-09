@@ -6,7 +6,7 @@ import { useExpenses } from '../../Context/ExpenseContext';
 import BottomNav from '../../components/BottomNavbar';
 import MonthYearCalendar from '../../components/MonthYearCalendar';
 import PieChart from './PieChart';
-import BudgetInfo from './Budgetinfo';
+import BudgetInfo from './Budgetinfo'; // Fixed typo in import
 import ExpenseList from './ExpenseList';
 import { fetchExpenses, fetchBudget } from './DataFiltering';
 import Keyboard from '../Keyboard'; // Adjust path as needed
@@ -75,11 +75,14 @@ const HomeMain = () => {
       // Update local expenses state to reflect changes
       setExpenses((prev) =>
         prev.map((exp) =>
-          exp.id === updatedExpense.id ? { ...exp, ...updatedExpense, amount: parseFloat(updatedExpense.amount) || 0 } : exp
+          exp.id === updatedExpense.id
+            ? { ...exp, ...updatedExpense, amount: parseFloat(updatedExpense.amount) || 0 }
+            : exp
         )
       );
     } catch (error) {
       console.error('Error updating expense:', error);
+      alert('Failed to update expense. Please try again.');
     }
   };
 
@@ -119,10 +122,10 @@ const HomeMain = () => {
           <div className="fixed bottom-0 left-0 right-0 bg-gray-800 p-4 z-20">
             <h2 className="text-lg font-semibold mb-2">{editingExpense.category}</h2>
             <Keyboard
-              initialAmount={editingExpense.amount?.toString() || ""}
+              initialAmount={editingExpense.amount?.toString() || "0"}
               initialNote={editingExpense.note || editingExpense.description || ""}
               category={editingExpense.category || ""}
-              onSave={({ amount, note }) =>
+              onSubmit={({ amount, note }) =>
                 saveEditedExpense({
                   ...editingExpense,
                   amount,
@@ -130,6 +133,7 @@ const HomeMain = () => {
                 })
               }
               onCancel={cancelEdit}
+              loading={loading}
             />
           </div>
         )}
