@@ -1,25 +1,28 @@
 import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
+// Layout
 import MainLayout from "./components/layout/MainLayout";
+
+// Public Pages
 import Login from "./pages/Login/login";
 import Phone from "./pages/Login/Phone";
-import EmailLogin from "./pages/Login/EmailLogin"; // Added EmailLogin import
+import EmailLogin from "./pages/Login/EmailLogin";
 import ContinueWithGoogle from "./pages/Login/ContinuewithGoogle";
-// Placeholder imports for ForgotPassword and Signup (create these components)
-import ForgotPassword from "./pages/Login/ForgotPassword"; // Adjust path as needed
-import EmailSignup from "./pages/Login/EmailSignup"; // Adjust path as needed
+import ForgotPassword from "./pages/Login/ForgotPassword";
+import EmailSignup from "./pages/Login/EmailSignup";
+import OnBoarding from "./pages/OnBoarding";
 
+// Protected Pages
 import Home from "./pages/Home/Homemain";
-import Search from "./pages/Search";
-import Reports from "./pages/Reports";
+import Search from "./pages/Search/SearchMain";
+import Reports from "./pages/Reports/ReportsScreen";
 import ExpenseCategory from "./pages/ExpenseCategory";
 import ProfileMain from "./pages/Profile/ProfileMain";
-import OnBoarding from "./pages/OnBoarding";
-import UpdateEmail from "./pages/Profile/UpdateEmail";
-import UpdatePhone from "./pages/Profile/Phonenumberupadte";
 import SetBudget from "./pages/Profile/SetBudget";
 import Notifications from "./pages/Profile/Notifications";
+import UpdateEmail from "./pages/Profile/UpdateEmail";
+import UpdatePhone from "./pages/Profile/Phonenumberupadte";
 
 function AppRoutes({ user }) {
   return (
@@ -28,22 +31,10 @@ function AppRoutes({ user }) {
       <Route path="/onboarding" element={<OnBoarding />} />
       <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
       <Route path="/phone" element={user ? <Navigate to="/" replace /> : <Phone />} />
-      <Route
-        path="/email"
-        element={user ? <Navigate to="/" replace /> : <EmailLogin />}
-      />
-      <Route
-        path="/forgot-password"
-        element={user ? <Navigate to="/" replace /> : <ForgotPassword />}
-      />
-      <Route
-        path="/signup"
-        element={user ? <Navigate to="/" replace /> : <EmailSignup />}
-      />
-      <Route
-        path="/continuewithgoogle"
-        element={user ? <Navigate to="/" replace /> : <ContinueWithGoogle />}
-      />
+      <Route path="/email" element={user ? <Navigate to="/" replace /> : <EmailLogin />} />
+      <Route path="/signup" element={user ? <Navigate to="/" replace /> : <EmailSignup />} />
+      <Route path="/forgot-password" element={user ? <Navigate to="/" replace /> : <ForgotPassword />} />
+      <Route path="/continuewithgoogle" element={user ? <Navigate to="/" replace /> : <ContinueWithGoogle />} />
 
       {/* Redirect /home to root */}
       <Route path="/home" element={<Navigate to="/" replace />} />
@@ -51,6 +42,7 @@ function AppRoutes({ user }) {
       {/* Protected Routes */}
       {user ? (
         <>
+          {/* Main layout with nested routes */}
           <Route path="/" element={<MainLayout />}>
             <Route index element={<Home />} />
             <Route path="reports" element={<Reports />} />
@@ -59,18 +51,19 @@ function AppRoutes({ user }) {
             <Route path="profile" element={<ProfileMain />} />
             <Route path="setbudget" element={<SetBudget />} />
             <Route path="notifications" element={<Notifications />} />
-            {/* Fallback 404 for protected routes */}
+            {/* Fallback for unmatched routes */}
             <Route
               path="*"
               element={<div className="text-center text-2xl p-10">404 - Page Not Found</div>}
             />
           </Route>
 
-          {/* Account Settings Outside Layout */}
+          {/* Settings pages outside layout */}
           <Route path="/update-email" element={<UpdateEmail />} />
           <Route path="/update-phone" element={<UpdatePhone />} />
         </>
       ) : (
+        // Redirect any unknown route to login if not authenticated
         <Route path="*" element={<Navigate to="/login" replace />} />
       )}
     </Routes>

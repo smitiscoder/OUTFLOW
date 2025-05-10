@@ -4,7 +4,7 @@ import {
   Stethoscope, Users, Bus, Scissors, Car, BookOpen, 
   TrendingUp, Home, Gift, Plane, Shield, CreditCard,
   Dog, Wrench, Pen, Smartphone, Baby, Cookie, Apple,
-  MoreHorizontal, Banknote, Salad
+  MoreHorizontal , Banknote, Salad
 } from 'lucide-react';
 import { getAuth } from 'firebase/auth';
 import { getFirestore, collection, addDoc } from 'firebase/firestore';
