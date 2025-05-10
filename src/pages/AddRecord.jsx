@@ -3,7 +3,7 @@ import { db } from '../components/firebase';
 import { collection, addDoc, Timestamp } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Keyboard from './Keyboard';
+import Keyboard from './Page/Keyboard';
 
 const AddRecord = () => {
   const auth = getAuth();

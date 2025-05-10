@@ -8,7 +8,7 @@ import {
 } from 'lucide-react';
 import { getAuth } from 'firebase/auth';
 import { getFirestore, collection, addDoc } from 'firebase/firestore';
-import Keyboard from '../pages/Keyboard';
+import Keyboard from './Keyboard';
 
 const expensecategories = [
   { id: 'shopping', icon: ShoppingCart, label: 'Shopping' },

@@ -4,6 +4,11 @@ import { getAnalytics } from 'firebase/analytics';
 import {
   getAuth,
   GoogleAuthProvider,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+  sendPasswordResetEmail,
   updateEmail,
   updateProfile,
   updatePhoneNumber,
@@ -26,29 +31,34 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const auth = getAuth(app);
+
+// Google Auth
 const googleProvider = new GoogleAuthProvider();
 googleProvider.addScope('profile');
 googleProvider.addScope('email');
-googleProvider.setCustomParameters({
-  prompt: 'select_account',
-});
+googleProvider.setCustomParameters({ prompt: 'select_account' });
+
+// Firestore & Messaging
 const db = getFirestore(app);
 const messaging = getMessaging(app);
 
+// Export everything needed
 export {
+  app,
   auth,
   googleProvider,
   db,
+  messaging,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  onAuthStateChanged,
+  sendPasswordResetEmail,
   updateEmail,
   updateProfile,
   updatePhoneNumber,
   PhoneAuthProvider,
   RecaptchaVerifier,
-  messaging,
 };
 
 export default app;
-
-
-
-

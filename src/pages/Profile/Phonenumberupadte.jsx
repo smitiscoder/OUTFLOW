@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { auth } from "../components/firebase"; // adjust path as needed
+import { auth } from "../../components/firebase"; // adjust path as needed
 import { ArrowLeft, Phone, Check, X } from "lucide-react";
 
 export default function UpdatePhone() {

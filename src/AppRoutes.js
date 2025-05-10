@@ -2,19 +2,23 @@ import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
 import MainLayout from "./components/layout/MainLayout";
-import Login from "./components/login";
-import Phone from "./components/Phone";
-import ContinueWithGoogle from "./components/ContinuewithGoogle";
+import Login from "./pages/Login/login";
+import Phone from "./pages/Login/Phone";
+import EmailLogin from "./pages/Login/EmailLogin"; // Added EmailLogin import
+import ContinueWithGoogle from "./pages/Login/ContinuewithGoogle";
+// Placeholder imports for ForgotPassword and Signup (create these components)
+import ForgotPassword from "./pages/Login/ForgotPassword"; // Adjust path as needed
+import EmailSignup from "./pages/Login/EmailSignup"; // Adjust path as needed
 
 import Home from "./pages/Home/Homemain";
 import Search from "./pages/Search";
 import Reports from "./pages/Reports";
 import ExpenseCategory from "./pages/ExpenseCategory";
-import ProfileMain from "./pages/Profile/ProfileMain"; // Fixed case
+import ProfileMain from "./pages/Profile/ProfileMain";
 import OnBoarding from "./pages/OnBoarding";
-import UpdateEmail from "./pages/UpdateEmail";
-import UpdatePhone from "./pages/Phonenumberupadte";
-import SetBudget from "./pages/SetBudget";
+import UpdateEmail from "./pages/Profile/UpdateEmail";
+import UpdatePhone from "./pages/Profile/Phonenumberupadte";
+import SetBudget from "./pages/Profile/SetBudget";
 import Notifications from "./pages/Profile/Notifications";
 
 function AppRoutes({ user }) {
@@ -24,6 +28,18 @@ function AppRoutes({ user }) {
       <Route path="/onboarding" element={<OnBoarding />} />
       <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
       <Route path="/phone" element={user ? <Navigate to="/" replace /> : <Phone />} />
+      <Route
+        path="/email"
+        element={user ? <Navigate to="/" replace /> : <EmailLogin />}
+      />
+      <Route
+        path="/forgot-password"
+        element={user ? <Navigate to="/" replace /> : <ForgotPassword />}
+      />
+      <Route
+        path="/signup"
+        element={user ? <Navigate to="/" replace /> : <EmailSignup />}
+      />
       <Route
         path="/continuewithgoogle"
         element={user ? <Navigate to="/" replace /> : <ContinueWithGoogle />}
@@ -62,6 +78,3 @@ function AppRoutes({ user }) {
 }
 
 export default AppRoutes;
-
-
-
