@@ -1,8 +1,6 @@
-// Firebase core initialization
+// src/components/firebase.js
 import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
-
-// Firebase services
 import {
   getAuth,
   GoogleAuthProvider,
@@ -10,11 +8,11 @@ import {
   updateProfile,
   updatePhoneNumber,
   PhoneAuthProvider,
-  RecaptchaVerifier
+  RecaptchaVerifier,
 } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import { getMessaging } from 'firebase/messaging';
 
-// Firebase configuration
 const firebaseConfig = {
   apiKey: 'AIzaSyDIXQawm6JNyxwt1UnEH8rZhzYyYWhEWYg',
   authDomain: 'expensetracking-73767.firebaseapp.com',
@@ -25,25 +23,18 @@ const firebaseConfig = {
   measurementId: 'G-4CD1QW7VWT',
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
-
-// Firebase Auth setup
 const auth = getAuth(app);
-
-// Google Auth Provider setup
 const googleProvider = new GoogleAuthProvider();
 googleProvider.addScope('profile');
 googleProvider.addScope('email');
 googleProvider.setCustomParameters({
   prompt: 'select_account',
 });
-
-// Firestore setup
 const db = getFirestore(app);
+const messaging = getMessaging(app);
 
-// Exporting Firebase services for use in app
 export {
   auth,
   googleProvider,
@@ -53,6 +44,7 @@ export {
   updatePhoneNumber,
   PhoneAuthProvider,
   RecaptchaVerifier,
+  messaging,
 };
 
 export default app;

@@ -10,13 +10,12 @@ import Home from "./pages/Home/Homemain";
 import Search from "./pages/Search";
 import Reports from "./pages/Reports";
 import ExpenseCategory from "./pages/ExpenseCategory";
-import ProfilePage from "./pages/ProfilePage";
+import ProfileMain from "./pages/Profile/ProfileMain"; // Fixed case
 import OnBoarding from "./pages/OnBoarding";
 import UpdateEmail from "./pages/UpdateEmail";
 import UpdatePhone from "./pages/Phonenumberupadte";
 import SetBudget from "./pages/SetBudget";
-import Space from "./pages/Space";
-import Notifications from "./pages/Notifications";
+import Notifications from "./pages/Profile/Notifications";
 
 function AppRoutes({ user }) {
   return (
@@ -41,10 +40,9 @@ function AppRoutes({ user }) {
             <Route path="reports" element={<Reports />} />
             <Route path="expensecategory" element={<ExpenseCategory />} />
             <Route path="search" element={<Search />} />
-            <Route path="profile" element={<ProfilePage />} />
+            <Route path="profile" element={<ProfileMain />} />
             <Route path="setbudget" element={<SetBudget />} />
-            <Route path="space" element={<Space />} />
-            <Route path="notifications" element={<Notifications />} /> {/* New route */}
+            <Route path="notifications" element={<Notifications />} />
             {/* Fallback 404 for protected routes */}
             <Route
               path="*"
