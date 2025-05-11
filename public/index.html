@@ -3,11 +3,11 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta name="description" content="Web app for tracking expenses" />
-    <meta name="apple-mobile-web-app-title" content="OUTFLOW" />
+    <meta name="theme-color" content="#0D0D0D" />
+    <meta name="description" content="Track your expenses easily with Outflow." />
+    <meta name="apple-mobile-web-app-title" content="Outflow" />
 
-    <title>OUTFLOW</title>
+    <title>Outflow - Expense Tracker</title>
 
     <!-- Favicon and Icons -->
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
@@ -19,8 +19,28 @@
 
     <!-- Manifest -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    <!-- Optional: If you have another manifest file for PWA -->
-    <!-- <link rel="manifest" href="%PUBLIC_URL%/site.webmanifest" /> -->
+    
+    <!-- Additional meta tags for PWA: -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="msapplication-TileColor" content="#0D0D0D" />
+    <meta name="msapplication-TileImage" content="%PUBLIC_URL%/logo192.png" />
+    <meta name="application-name" content="Outflow" />
+
+    <!-- Service Worker -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', function () {
+          navigator.serviceWorker.register('/service-worker.js')
+            .then(function (registration) {
+              console.log('Service Worker registered with scope:', registration.scope);
+            })
+            .catch(function (error) {
+              console.log('Service Worker registration failed:', error);
+            });
+        });
+      }
+    </script>
   </head>
 
   <body>
@@ -28,3 +48,4 @@
     <div id="root"></div>
   </body>
 </html>
+
