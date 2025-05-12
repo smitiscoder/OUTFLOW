@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Added for navigation
 import { getAuth } from "firebase/auth";
 import { getFirestore, collection, query, where, onSnapshot } from "firebase/firestore";
 import Header from "../../components/Header";
@@ -20,6 +21,7 @@ export default function ReportsScreen() {
   const auth = getAuth();
   const db = getFirestore();
   const now = new Date();
+  const navigate = useNavigate(); // Added for navigation
 
   const timeframes = [
     { id: 'week', label: 'Week' },
@@ -148,6 +150,21 @@ export default function ReportsScreen() {
         <SpendingPieChart processedData={processedData} totalSpent={totalSpent} />
         <SpendingList processedData={processedData} />
         <SummaryCard totalSpent={totalSpent} processedData={processedData} getDaysInTimeframe={getDaysInTimeframe} />
+        
+        <div className="flex gap-4 mt-6">
+        <button
+          onClick={() => navigate('/bar-graphs')}
+          className="flex-1 py-2 rounded-full text-sm font-semibold bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 transition-colors"
+        >
+          BarGraph
+        </button>
+        <button
+          onClick={() => navigate('/recurring-expenses')}
+          className="flex-1 py-2 rounded-full text-sm font-semibold bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 transition-colors"
+        >
+          Recurring Expense
+        </button>
+      </div>
       </div>
     </div>
   );

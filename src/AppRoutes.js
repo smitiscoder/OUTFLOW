@@ -17,6 +17,8 @@ import OnBoarding from "./pages/OnBoarding";
 import Home from "./pages/Home/Homemain";
 import Search from "./pages/Search/SearchMain";
 import Reports from "./pages/Reports/ReportsScreen";
+import BarGraphScreen from "./pages/Reports/BarGraphScreen"; // Added
+import RecurringExpenses from "./pages/Reports/RecurringExpenses"; // Added
 import ExpenseCategory from "./pages/ExpenseCategory";
 import ProfileMain from "./pages/Profile/ProfileMain";
 import SetBudget from "./pages/Profile/SetBudget";
@@ -46,6 +48,8 @@ function AppRoutes({ user }) {
           <Route path="/" element={<MainLayout />}>
             <Route index element={<Home />} />
             <Route path="reports" element={<Reports />} />
+            <Route path="bar-graphs" element={<BarGraphScreen />} /> {/* Added */}
+            <Route path="recurring-expenses" element={<RecurringExpenses />} /> {/* Added */}
             <Route path="expensecategory" element={<ExpenseCategory />} />
             <Route path="search" element={<Search />} />
             <Route path="profile" element={<ProfileMain />} />
