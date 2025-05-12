@@ -17,14 +17,15 @@ import OnBoarding from "./pages/OnBoarding";
 import Home from "./pages/Home/Homemain";
 import Search from "./pages/Search/SearchMain";
 import Reports from "./pages/Reports/ReportsScreen";
-import BarGraphScreen from "./pages/Reports/BarGraphScreen"; // Added
-import RecurringExpenses from "./pages/Reports/RecurringExpenses"; // Added
+import BarGraphScreen from "./pages/Reports/BarGraphScreen";
+import RecurringExpenses from "./pages/Reports/RecurringExpenses";
 import ExpenseCategory from "./pages/Add Expense/ExpenseCategory";
 import ProfileMain from "./pages/Profile/ProfileMain";
 import SetBudget from "./pages/Profile/SetBudget";
 import Notifications from "./pages/Profile/Notifications";
 import UpdateEmail from "./pages/Profile/UpdateEmail";
 import UpdatePhone from "./pages/Profile/Phonenumberupadte";
+import ExportData from "./pages/Profile/ExportData"; // ✅ Newly Added
 
 function AppRoutes({ user }) {
   return (
@@ -48,13 +49,15 @@ function AppRoutes({ user }) {
           <Route path="/" element={<MainLayout />}>
             <Route index element={<Home />} />
             <Route path="reports" element={<Reports />} />
-            <Route path="bar-graphs" element={<BarGraphScreen />} /> {/* Added */}
-            <Route path="recurring-expenses" element={<RecurringExpenses />} /> {/* Added */}
+            <Route path="bar-graphs" element={<BarGraphScreen />} />
+            <Route path="recurring-expenses" element={<RecurringExpenses />} />
             <Route path="expensecategory" element={<ExpenseCategory />} />
             <Route path="search" element={<Search />} />
             <Route path="profile" element={<ProfileMain />} />
             <Route path="setbudget" element={<SetBudget />} />
             <Route path="notifications" element={<Notifications />} />
+            <Route path="exportdata" element={<ExportData />} /> {/* ✅ Export PDF Page */}
+
             {/* Fallback for unmatched routes */}
             <Route
               path="*"
@@ -75,3 +78,4 @@ function AppRoutes({ user }) {
 }
 
 export default AppRoutes;
+

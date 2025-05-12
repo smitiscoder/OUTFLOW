@@ -1,6 +1,6 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import { Mail, Phone, Moon, Edit, BellDot } from "lucide-react";
+import { FaFilePdf } from "react-icons/fa6";
 import LogoutButton from "./LogoutButton";
 import { ROUTES } from "../../utils/constants";
 
@@ -10,6 +10,8 @@ export default function SettingsButtons({ user, budget, darkMode, setDarkMode, n
       {/* Account Section */}
       <div className="space-y-2">
         <h3 className="text-lg font-medium text-[#DFDFDF]">Account</h3>
+
+        {/* Email */}
         <div
           className="flex items-center justify-between bg-[#1A1A1A] rounded-lg p-4 cursor-pointer"
           onClick={() => navigate(ROUTES.UPDATE_EMAIL)}
@@ -24,6 +26,8 @@ export default function SettingsButtons({ user, budget, darkMode, setDarkMode, n
             </div>
           </div>
         </div>
+
+        {/* Phone Number */}
         <div
           className="flex items-center justify-between bg-[#1A1A1A] rounded-lg p-4 cursor-pointer"
           onClick={() => navigate(ROUTES.UPDATE_PHONE)}
@@ -38,11 +42,29 @@ export default function SettingsButtons({ user, budget, darkMode, setDarkMode, n
             </div>
           </div>
         </div>
+
+        {/* Export Data */}
+        <div
+          className="flex items-center justify-between bg-[#1A1A1A] rounded-lg p-4 cursor-pointer"
+          onClick={() => navigate(ROUTES.EXPORT_DATA)}
+        >
+          <div className="flex items-center space-x-3">
+            <FaFilePdf size={20} className="text-[#DFDFDF]" />
+            <div>
+              <div className="text-sm text-[#DFDFDF]">Export Data</div>
+              <div className="text-xs text-[#DFDFDF] text-opacity-60">
+                Download your data as PDF
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Preferences Section */}
       <div className="space-y-2">
         <h3 className="text-lg font-medium text-[#DFDFDF]">Preferences</h3>
+
+        {/* Dark Mode */}
         <div className="flex items-center justify-between bg-[#1A1A1A] rounded-lg p-4">
           <div className="flex items-center space-x-3">
             <Moon size={20} className="text-[#DFDFDF]" />
@@ -63,6 +85,8 @@ export default function SettingsButtons({ user, budget, darkMode, setDarkMode, n
             />
           </button>
         </div>
+
+        {/* Set Budget */}
         <div
           className="flex items-center justify-between bg-[#1A1A1A] rounded-lg p-4 cursor-pointer"
           onClick={() => navigate(ROUTES.SET_BUDGET)}
@@ -77,6 +101,8 @@ export default function SettingsButtons({ user, budget, darkMode, setDarkMode, n
             </div>
           </div>
         </div>
+
+        {/* Notifications */}
         <div
           className="flex items-center justify-between bg-[#1A1A1A] rounded-lg p-4 cursor-pointer"
           onClick={() => navigate(ROUTES.NOTIFICATIONS)}
