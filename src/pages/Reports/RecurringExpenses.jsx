@@ -1,119 +1,221 @@
 import React, { useState, useEffect } from 'react';
 import { getAuth } from 'firebase/auth';
 import { getFirestore, collection, query, where, onSnapshot } from 'firebase/firestore';
-import Header from '../../components/Header'; // Adjust path as needed
+import Header from '../../components/Header';
 
-export default function RecurringExpensesScreen() {
+export default function RecurringExpenses() {
   const [recurringExpenses, setRecurringExpenses] = useState([]);
+  const [timeframeUsed, setTimeframeUsed] = useState('6months');
+  const [selectedExpense, setSelectedExpense] = useState(null);
+
   const auth = getAuth();
   const db = getFirestore();
   const now = new Date();
 
-  // Fetch recurring expenses
+  const standardDeviation = (values, mean) => {
+    if (values.length === 0) return 0;
+    const variance = values.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / values.length;
+    return Math.sqrt(variance);
+  };
+
+  const calculateRecurringScore = (expense, totalMonths) => {
+    const monthsScore = (expense.months.size / totalMonths) * 0.4;
+
+    const amounts = expense.allAmounts;
+    const avgAmount = amounts.reduce((sum, val) => sum + val, 0) / amounts.length;
+    const stdDevAmount = standardDeviation(amounts, avgAmount);
+    const amountConsistency = avgAmount > 0 ? Math.min(1, (avgAmount / (stdDevAmount + 1))) : 0;
+    const amountScore = amountConsistency * 0.3;
+
+    const dates = expense.allDates.map((date) => new Date(date?.toDate?.() || date).getTime()).sort((a, b) => a - b);
+    const intervals = [];
+    for (let i = 1; i < dates.length; i++) {
+      intervals.push((dates[i] - dates[i - 1]) / (1000 * 60 * 60 * 24));
+    }
+    const avgInterval = intervals.length > 0 ? intervals.reduce((sum, val) => sum + val, 0) / intervals.length : 0;
+    const stdDevInterval = standardDeviation(intervals, avgInterval);
+    const timingConsistency = avgInterval > 0 ? Math.min(1, 5 / (stdDevInterval + 1)) : 0;
+    const timingScore = timingConsistency * 0.1;
+
+    return monthsScore + amountScore + timingScore;
+  };
+
   useEffect(() => {
     const userId = auth.currentUser?.uid;
     if (!userId) return;
 
-    // Set timeframe to last 3 months
-    const startDate = new Date(now.getFullYear(), now.getMonth() - 3, 1);
+    const startDate6Months = new Date(now.getFullYear(), now.getMonth() - 6, 1);
     const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 
-    const q = query(
-      collection(db, 'expenses'),
-      where('userId', '==', userId),
-      where('isRecurring', '==', true) // Filter for recurring expenses
-    );
+    const q = query(collection(db, 'expenses'), where('userId', '==', userId));
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
-      const expenses = snapshot.docs
-        .map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }))
-        .filter((exp) => {
+      const expenses = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+
+      const processExpenses = (filteredExpenses, monthsCount) => {
+        const expenseMap = filteredExpenses.reduce((acc, exp) => {
           const expDate = new Date(exp.timestamp?.toDate?.() || exp.timestamp);
-          return expDate >= startDate && expDate <= endDate;
-        });
+          const key = `${exp.description || exp.category || 'Unknown'}-${exp.category || 'Uncategorized'}`;
+          const monthKey = `${expDate.getFullYear()}-${expDate.getMonth() + 1}`;
 
-      // Aggregate expenses by description to calculate frequency
-      const expenseMap = expenses.reduce((acc, exp) => {
-        const key = exp.description || exp.category || 'Unknown';
-        if (!acc[key]) {
-          acc[key] = {
+          if (!acc[key]) {
+            acc[key] = {
+              description: exp.description || exp.category || 'Unknown',
+              category: exp.category || 'Uncategorized',
+              amount: 0,
+              count: 0,
+              lastDate: exp.timestamp,
+              months: new Set(),
+              allAmounts: [],
+              allDates: [],
+              fullRecords: [],
+            };
+          }
+
+          acc[key].amount += exp.amount;
+          acc[key].count += 1;
+          acc[key].months.add(monthKey);
+          acc[key].allAmounts.push(exp.amount);
+          acc[key].allDates.push(exp.timestamp);
+          acc[key].fullRecords.push({
             description: exp.description || exp.category || 'Unknown',
-            category: exp.category || 'Uncategorized',
-            amount: 0,
-            count: 0,
-            lastDate: exp.timestamp,
-          };
-        }
-        acc[key].amount += exp.amount;
-        acc[key].count += 1;
-        // Update lastDate if this expense is more recent
-        if (new Date(exp.timestamp?.toDate?.() || exp.timestamp) > new Date(acc[key].lastDate?.toDate?.() || acc[key].lastDate)) {
-          acc[key].lastDate = exp.timestamp;
-        }
-        return acc;
-      }, {});
+            amount: exp.amount,
+            note: exp.note || '', // Added note field
+            timestamp: new Date(exp.timestamp?.toDate?.() || exp.timestamp).toLocaleDateString('en-US', {
+              month: 'short',
+              day: 'numeric',
+              year: 'numeric',
+            }),
+          });
 
-      // Convert to array and sort by frequency (count), then by total amount
-      const sortedExpenses = Object.values(expenseMap)
-        .map((item) => ({
-          ...item,
-          amount: Math.round(item.amount),
-          lastDate: new Date(item.lastDate?.toDate?.() || item.lastDate).toLocaleDateString('en-US', {
-            month: 'short',
-            day: 'numeric',
-            year: 'numeric',
-          }),
-        }))
-        .sort((a, b) => b.count - a.count || b.amount - a.amount); // Sort by count, then amount
+          if (new Date(exp.timestamp?.toDate?.() || exp.timestamp) > new Date(acc[key].lastDate?.toDate?.() || acc[key].lastDate)) {
+            acc[key].lastDate = exp.timestamp;
+          }
 
-      setRecurringExpenses(sortedExpenses);
-    }, (error) => {
-      console.error('Error fetching recurring expenses:', error);
+          return acc;
+        }, {});
+
+        return Object.values(expenseMap)
+          .filter((item) => {
+            const score = calculateRecurringScore(item, monthsCount);
+            const monthCount = item.months.size;
+            return item.count >= 4 && score >= 0.7 && monthCount >= 2 && monthCount <= 6;
+          })
+          .map((item) => ({
+            ...item,
+            amount: Math.round(item.amount),
+            lastDate: new Date(item.lastDate?.toDate?.() || item.lastDate).toLocaleDateString('en-US', {
+              month: 'short',
+              day: 'numeric',
+              year: 'numeric',
+            }),
+          }))
+          .sort((a, b) => b.count - a.count || b.amount - a.amount);
+      };
+
+      const expenses6Months = expenses.filter((exp) => {
+        const expDate = new Date(exp.timestamp?.toDate?.() || exp.timestamp);
+        return expDate >= startDate6Months && expDate <= endDate;
+      });
+
+      const results6Months = processExpenses(expenses6Months, 6);
+      if (results6Months.length > 0) {
+        setRecurringExpenses(results6Months);
+        setTimeframeUsed('6months');
+        return;
+      }
+
+      const startDate2Months = new Date(now.getFullYear(), now.getMonth() - 2, 1);
+      const expenses2Months = expenses.filter((exp) => {
+        const expDate = new Date(exp.timestamp?.toDate?.() || exp.timestamp);
+        return expDate >= startDate2Months && expDate <= endDate;
+      });
+
+      const results2Months = processExpenses(expenses2Months, 2);
+      setRecurringExpenses(results2Months);
+      setTimeframeUsed(results2Months.length > 0 ? '2months' : 'none');
     });
 
     return () => unsubscribe();
   }, [auth.currentUser]);
 
+  const handleExpenseClick = (expense) => {
+    setSelectedExpense(selectedExpense === expense ? null : expense);
+  };
+
   return (
-    <div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF]">
-      <Header title="Recurring Expenses" />
-      <div className="container mx-auto px-4 pb-20 max-w-md">
-        <h2 className="text-lg font-semibold mt-6 mb-4">Recurring Expenses (Last 3 Months)</h2>
-        {recurringExpenses.length > 0 ? (
-          <div className="bg-[#1A1A1A] rounded-xl p-6">
-            <ul className="space-y-4">
-              {recurringExpenses.map((expense, index) => (
-                <li key={index} className="flex flex-col">
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <span className="font-medium capitalize">{expense.description.toLowerCase()}</span>
-                      <span className="block text-sm text-[#DFDFDF] text-opacity-60 capitalize">
-                        {expense.category.toLowerCase()}
-                      </span>
-                    </div>
-                    <div className="text-right">
-                      <span className="font-medium">₹{expense.amount}</span>
-                      <span className="block text-sm text-[#DFDFDF] text-opacity-60">
-                        {expense.count} time{expense.count > 1 ? 's' : ''}
-                      </span>
-                    </div>
+  <div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF]">
+    <Header title="Recurring Expenses" />
+    <div className="container mx-auto px-4 pb-20 max-w-md">
+
+
+      {recurringExpenses.length > 0 ? (
+        <div className="bg-[#1A1A1A] rounded-xl p-6">
+          <ul className="space-y-4">
+            {recurringExpenses.map((expense, index) => (
+              <li key={index} className="flex flex-col">
+                <div
+                  className="flex justify-between items-center cursor-pointer"
+                  onClick={() => handleExpenseClick(expense)}
+                >
+                  <div>
+                    <span className="font-medium capitalize">
+                      {expense.description.toLowerCase()}
+                    </span>
                   </div>
-                  <span className="text-xs text-[#DFDFDF] text-opacity-60 mt-1">
-                    Last: {expense.lastDate}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ) : (
-          <p className="text-center text-[#DFDFDF] text-opacity-60 mt-6">
-            No recurring expenses found for the last 3 months.
-          </p>
-        )}
-      </div>
+                  <div className="text-right">
+                    <span className="font-medium">₹{expense.amount}</span>
+                    <span className="block text-sm text-[#DFDFDF] text-opacity-60">
+                      {expense.count} time{expense.count > 1 ? 's' : ''}
+                    </span>
+                  </div>
+                </div>
+
+                <span className="text-xs text-[#DFDFDF] text-opacity-60 mt-1">
+                  Last: {expense.lastDate}
+                </span>
+
+                {selectedExpense === expense && (
+                  <div className="mt-2 pl-4 border-l-2 border-[#DFDFDF] border-opacity-20">
+                    <h3 className="text-sm font-medium mb-2">Expense Records</h3>
+                    {expense.fullRecords.length > 0 ? (
+                      <ul className="space-y-3">
+                        {expense.fullRecords.map((record, idx) => (
+                          <li key={idx} className="bg-[#2A2A2A] rounded-lg p-3">
+                            <div className="flex justify-between">
+                              <span className="text-sm font-medium capitalize">
+                               {record.note} 
+                              </span>
+                              <span className="text-sm font-medium">
+                                ₹{record.amount}
+                              </span>
+                            </div>
+                            <div className="flex justify-between mt-1">
+                              <span className="text-xs text-[#DFDFDF] text-opacity-60">
+                                {record.timestamp}
+                              </span>
+                            </div>
+                          </li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <p className="text-sm text-[#DFDFDF] text-opacity-60">No records found.</p>
+                    )}
+                  </div>
+                )}
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : (
+        <p className="text-center text-[#DFDFDF] text-opacity-60 mt-6">
+          {timeframeUsed === 'none' || timeframeUsed === '2months' || timeframeUsed === '6months'
+            ? 'No recurring expenses found.'
+            : 'No recurring expenses found.'}
+        </p>
+      )}
     </div>
-  );
+  </div>
+);
+
 }

@@ -1,9 +1,9 @@
 import React from 'react';
-import { db } from '../components/firebase';
+import { db } from '../../components/firebase';
 import { collection, addDoc, Timestamp } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Keyboard from './Page/Keyboard';
+import Keyboard from './Keyboard';
 
 const AddRecord = () => {
   const auth = getAuth();

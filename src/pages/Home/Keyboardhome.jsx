@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Check, Delete } from "lucide-react";
 
-const Keyboard = ({
+const Keyboardhome = ({
   initialAmount = "",
   initialNote = "",
   category = "",
@@ -157,7 +157,7 @@ const Keyboard = ({
   );
 };
 
-export default Keyboard;
+export default Keyboardhome;
 
 
 

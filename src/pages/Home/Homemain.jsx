@@ -9,7 +9,7 @@ import PieChart from './PieChart';
 import BudgetInfo from './Budgetinfo';
 import ExpenseList from './ExpenseList';
 import { fetchExpenses, fetchBudget } from './DataFiltering';
-import Keyboard from '../Keyboard';
+import Keyboard from './Keyboardhome';
 
 const HomeMain = () => {
   const [currentDate, setCurrentDate] = useState({

@@ -19,7 +19,7 @@ import Search from "./pages/Search/SearchMain";
 import Reports from "./pages/Reports/ReportsScreen";
 import BarGraphScreen from "./pages/Reports/BarGraphScreen"; // Added
 import RecurringExpenses from "./pages/Reports/RecurringExpenses"; // Added
-import ExpenseCategory from "./pages/ExpenseCategory";
+import ExpenseCategory from "./pages/Add Expense/ExpenseCategory";
 import ProfileMain from "./pages/Profile/ProfileMain";
 import SetBudget from "./pages/Profile/SetBudget";
 import Notifications from "./pages/Profile/Notifications";
