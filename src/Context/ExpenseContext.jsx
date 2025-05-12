@@ -7,13 +7,24 @@ import {
   updateDoc,
   deleteDoc,
   doc,
+  getDoc,
   serverTimestamp,
   enableIndexedDbPersistence,
 } from 'firebase/firestore';
+import { openDB } from 'idb';
+import { toast } from 'react-toastify';
 
-// Enable Firestore offline persistence (already in place)
+// Enable Firestore offline persistence
 enableIndexedDbPersistence(db).catch((err) => {
   console.error('Failed to enable Firestore offline persistence:', err);
+});
+
+// Initialize IndexedDB
+const dbPromise = openDB('outflow-db', 1, {
+  upgrade(db) {
+    db.createObjectStore('expenses', { keyPath: 'id' });
+    db.createObjectStore('offlineQueue', { autoIncrement: true });
+  },
 });
 
 const ExpenseContext = createContext();
@@ -21,23 +32,45 @@ const ExpenseContext = createContext();
 export const useExpenses = () => useContext(ExpenseContext);
 
 export const ExpenseProvider = ({ children }) => {
-  const [expenses, setExpenses] = useState(() => {
-    const savedExpenses = localStorage.getItem('expenses');
-    return savedExpenses ? JSON.parse(savedExpenses) : [];
-  });
+  const [expenses, setExpenses] = useState([]);
+  const [offlineQueue, setOfflineQueue] = useState([]);
+  const [isOffline, setIsOffline] = useState(!navigator.onLine);
 
-  const [offlineQueue, setOfflineQueue] = useState(() => {
-    const savedQueue = localStorage.getItem('offlineQueue');
-    return savedQueue ? JSON.parse(savedQueue) : [];
-  });
-
-  // Save expenses and queue to localStorage on change
+  // Load initial data from IndexedDB
   useEffect(() => {
-    localStorage.setItem('expenses', JSON.stringify(expenses));
-    localStorage.setItem('offlineQueue', JSON.stringify(offlineQueue));
-  }, [expenses, offlineQueue]);
+    async function loadData() {
+      const db = await dbPromise;
+      const tx = db.transaction(['expenses', 'offlineQueue'], 'readonly');
+      const expenseStore = tx.objectStore('expenses');
+      const queueStore = tx.objectStore('offlineQueue');
+      const loadedExpenses = await expenseStore.getAll();
+      const loadedQueue = await queueStore.getAll();
+      setExpenses(loadedExpenses);
+      setOfflineQueue(loadedQueue);
+    }
+    loadData();
+  }, []);
 
-  // Add new expense (already in place, repeated for context)
+  // Offline/online status listener
+  useEffect(() => {
+    const handleOffline = () => {
+      setIsOffline(true);
+      toast.warn('You are now offline. Changes will sync when you reconnect.');
+    };
+    const handleOnline = () => {
+      setIsOffline(false);
+      toast.success('Back online! Syncing changes...');
+      handleOnlineSync(); // Trigger sync immediately
+    };
+    window.addEventListener('offline', handleOffline);
+    window.addEventListener('online', handleOnline);
+    return () => {
+      window.removeEventListener('offline', handleOffline);
+      window.removeEventListener('online', handleOnline);
+    };
+  }, []);
+
+  // Add new expense
   const addExpense = async (amount, category, note, date) => {
     try {
       const expenseDate = date ? new Date(date) : new Date();
@@ -52,6 +85,7 @@ export const ExpenseProvider = ({ children }) => {
 
       if (navigator.onLine) {
         const docRef = await addDoc(collection(db, 'expenses'), newExpense);
+        toast.success('Expense added successfully!');
         return docRef.id;
       } else {
         const localExpense = {
@@ -59,6 +93,12 @@ export const ExpenseProvider = ({ children }) => {
           id: newExpense.localId,
           createdAt: new Date(),
         };
+        const db = await dbPromise;
+        const tx = db.transaction(['expenses', 'offlineQueue'], 'readwrite');
+        tx.objectStore('expenses').add(localExpense);
+        tx.objectStore('offlineQueue').add({ action: 'add', data: newExpense });
+        await tx.done;
+
         setExpenses((prev) => {
           const updatedExpenses = [...prev, localExpense].sort(
             (a, b) => b.timestamp - a.timestamp
@@ -66,6 +106,17 @@ export const ExpenseProvider = ({ children }) => {
           return updatedExpenses;
         });
         setOfflineQueue((prev) => [...prev, { action: 'add', data: newExpense }]);
+        toast.info('Expense added offline. Will sync when online.');
+
+        // Request background sync
+        if ('serviceWorker' in navigator && 'SyncManager' in window) {
+          navigator.serviceWorker.ready.then((registration) => {
+            registration.sync.register('sync-expenses').catch((err) => {
+              console.error('Background sync registration failed:', err);
+            });
+          });
+        }
+
         return localExpense.id;
       }
     } catch (error) {
@@ -79,6 +130,15 @@ export const ExpenseProvider = ({ children }) => {
         createdAt: new Date(),
         id: Date.now(),
       };
+      const db = await dbPromise;
+      const tx = db.transaction(['expenses', 'offlineQueue'], 'readwrite');
+      tx.objectStore('expenses').add(localExpense);
+      tx.objectStore('offlineQueue').add({
+        action: 'add',
+        data: { ...localExpense, localId: localExpense.id },
+      });
+      await tx.done;
+
       setExpenses((prev) => {
         const updatedExpenses = [...prev, localExpense].sort(
           (a, b) => b.timestamp - a.timestamp
@@ -89,6 +149,7 @@ export const ExpenseProvider = ({ children }) => {
         ...prev,
         { action: 'add', data: { ...localExpense, localId: localExpense.id } },
       ]);
+      toast.error('Error adding expense. Saved locally for syncing.');
       return localExpense.id;
     }
   };
@@ -97,40 +158,71 @@ export const ExpenseProvider = ({ children }) => {
   const editExpense = async (id, updatedExpense) => {
     try {
       if (navigator.onLine) {
-        // Online: Update in Firestore
         const expenseRef = doc(db, 'expenses', id);
         await updateDoc(expenseRef, {
           ...updatedExpense,
           updatedAt: serverTimestamp(),
         });
+        toast.success('Expense updated successfully!');
       } else {
-        // Offline: Update local expenses and queue the action
+        const updatedLocalExpense = { ...updatedExpense, updatedAt: new Date() };
+        const db = await dbPromise;
+        const tx = db.transaction(['expenses', 'offlineQueue'], 'readwrite');
+        tx.objectStore('expenses').put({ id, ...updatedLocalExpense });
+        tx.objectStore('offlineQueue').add({
+          action: 'edit',
+          id,
+          data: { ...updatedLocalExpense, localId: id },
+        });
+        await tx.done;
+
         setExpenses((prev) =>
           prev
             .map((exp) =>
-              exp.id === id ? { ...exp, ...updatedExpense, updatedAt: new Date() } : exp
+              exp.id === id ? { ...exp, ...updatedLocalExpense } : exp
             )
             .sort((a, b) => b.timestamp - a.timestamp)
         );
         setOfflineQueue((prev) => [
           ...prev,
-          { action: 'edit', id, data: { ...updatedExpense, localId: id } },
+          { action: 'edit', id, data: { ...updatedLocalExpense, localId: id } },
         ]);
+        toast.info('Expense updated offline. Will sync when online.');
+
+        // Request background sync
+        if ('serviceWorker' in navigator && 'SyncManager' in window) {
+          navigator.serviceWorker.ready.then((registration) => {
+            registration.sync.register('sync-expenses').catch((err) => {
+              console.error('Background sync registration failed:', err);
+            });
+          });
+        }
       }
     } catch (error) {
       console.error('Error editing expense:', error);
-      // Fallback: Update locally and queue
+      const updatedLocalExpense = { ...updatedExpense, updatedAt: new Date() };
+      const db = await dbPromise;
+      const tx = db.transaction(['expenses', 'offlineQueue'], 'readwrite');
+      tx.objectStore('expenses').put({ id, ...updatedLocalExpense });
+      tx.objectStore('offlineQueue').add({
+        action: 'edit',
+        id,
+        data: { ...updatedLocalExpense, localId: id },
+      });
+      await tx.done;
+
       setExpenses((prev) =>
         prev
           .map((exp) =>
-            exp.id === id ? { ...exp, ...updatedExpense, updatedAt: new Date() } : exp
+            exp.id === id ? { ...exp, ...updatedLocalExpense } : exp
           )
           .sort((a, b) => b.timestamp - a.timestamp)
       );
       setOfflineQueue((prev) => [
         ...prev,
-        { action: 'edit', id, data: { ...updatedExpense, localId: id } },
+        { action: 'edit', id, data: { ...updatedLocalExpense, localId: id } },
       ]);
+      toast.error('Error editing expense. Saved locally for syncing.');
     }
   };
 
@@ -138,23 +230,44 @@ export const ExpenseProvider = ({ children }) => {
   const deleteExpense = async (id) => {
     try {
       if (navigator.onLine) {
-        // Online: Delete from Firestore
         const expenseRef = doc(db, 'expenses', id);
         await deleteDoc(expenseRef);
+        toast.success('Expense deleted successfully!');
       } else {
-        // Offline: Remove from local expenses and queue the action
+        const db = await dbPromise;
+        const tx = db.transaction(['expenses', 'offlineQueue'], 'readwrite');
+        tx.objectStore('expenses').delete(id);
+        tx.objectStore('offlineQueue').add({ action: 'delete', id });
+        await tx.done;
+
         setExpenses((prev) => prev.filter((exp) => exp.id !== id));
         setOfflineQueue((prev) => [...prev, { action: 'delete', id }]);
+        toast.info('Expense deleted offline. Will sync when online.');
+
+        // Request background sync
+        if ('serviceWorker' in navigator && 'SyncManager' in window) {
+          navigator.serviceWorker.ready.then((registration) => {
+            registration.sync.register('sync-expenses').catch((err) => {
+              console.error('Background sync registration failed:', err);
+            });
+          });
+        }
       }
     } catch (error) {
       console.error('Error deleting expense:', error);
-      // Fallback: Remove locally and queue
+      const db = await dbPromise;
+      const tx = db.transaction(['expenses', 'offlineQueue'], 'readwrite');
+      tx.objectStore('expenses').delete(id);
+      tx.objectStore('offlineQueue').add({ action: 'delete', id });
+      await tx.done;
+
       setExpenses((prev) => prev.filter((exp) => exp.id !== id));
       setOfflineQueue((prev) => [...prev, { action: 'delete', id }]);
+      toast.error('Error deleting expense. Saved locally for syncing.');
     }
   };
 
-  // Firestore snapshot listener (already in place)
+  // Firestore snapshot listener
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, 'expenses'), (snapshot) => {
       const fetchedExpenses = snapshot.docs.map((doc) => {
@@ -184,58 +297,129 @@ export const ExpenseProvider = ({ children }) => {
           ...prev.filter((exp) => localIds.has(exp.localId)),
           ...fetchedExpenses.filter((exp) => !localIds.has(exp.localId)),
         ].sort((a, b) => b.timestamp - a.timestamp);
+
+        // Update IndexedDB
+        dbPromise.then((db) => {
+          const tx = db.transaction('expenses', 'readwrite');
+          const store = tx.objectStore('expenses');
+          store.clear(); // Clear existing data
+          mergedExpenses.forEach((exp) => store.put(exp)); // Add merged data
+          return tx.done;
+        });
+
         return mergedExpenses;
       });
     }, (error) => {
       console.error('Firestore snapshot error:', error);
+      toast.error('Error fetching expenses. Using local data.');
     });
 
     return () => unsubscribe();
   }, []);
 
-  // Sync offline queue when back online (updated to handle edit/delete)
-  useEffect(() => {
-    const handleOnline = async () => {
-      if (offlineQueue.length === 0) return;
+  // Sync offline queue
+  const handleOnlineSync = async () => {
+    if (offlineQueue.length === 0) return;
 
-      try {
-        for (const queuedAction of offlineQueue) {
-          if (queuedAction.action === 'add') {
-            const { localId, ...expenseData } = queuedAction.data;
+    try {
+      for (const queuedAction of offlineQueue) {
+        if (queuedAction.action === 'add') {
+          const { localId, ...expenseData } = queuedAction.data;
+          const docRef = await addDoc(collection(db, 'expenses'), {
+            ...expenseData,
+            createdAt: serverTimestamp(),
+          });
+          setExpenses((prev) =>
+            prev
+              .map((exp) =>
+                exp.localId === localId ? { ...exp, id: docRef.id, localId: undefined } : exp
+              )
+              .sort((a, b) => b.timestamp - a.timestamp)
+          );
+          const db = await dbPromise;
+          const tx = db.transaction('expenses', 'readwrite');
+          const store = tx.objectStore('expenses');
+          const expense = await store.get(localId);
+          if (expense) {
+            await store.put({ ...expense, id: docRef.id, localId: undefined });
+          }
+          await tx.done;
+        } else if (queuedAction.action === 'edit') {
+          const { id, data } = queuedAction;
+          const expenseRef = doc(db, 'expenses', id);
+          const docSnap = await getDoc(expenseRef);
+          if (docSnap.exists()) {
+            const serverData = docSnap.data();
+            const serverUpdatedAt = serverData.updatedAt?.toDate() || new Date(0);
+            const localUpdatedAt = new Date(data.updatedAt);
+            if (serverUpdatedAt > localUpdatedAt) {
+              toast.warn(`Expense ${id} was updated elsewhere. Keeping server version.`);
+              setExpenses((prev) =>
+                prev.map((exp) =>
+                  exp.id === id ? { ...exp, ...serverData, updatedAt: serverUpdatedAt } : exp
+                )
+              );
+              const db = await dbPromise;
+              const tx = db.transaction('expenses', 'readwrite');
+              tx.objectStore('expenses').put({
+                id,
+                ...serverData,
+                updatedAt: serverUpdatedAt,
+              });
+              await tx.done;
+            } else {
+              await updateDoc(expenseRef, {
+                ...data,
+                updatedAt: serverTimestamp(),
+              });
+            }
+          } else {
             const docRef = await addDoc(collection(db, 'expenses'), {
-              ...expenseData,
+              ...data,
               createdAt: serverTimestamp(),
             });
             setExpenses((prev) =>
-              prev
-                .map((exp) =>
-                  exp.localId === localId ? { ...exp, id: docRef.id, localId: undefined } : exp
-                )
-                .sort((a, b) => b.timestamp - a.timestamp)
+              prev.map((exp) =>
+                exp.id === id ? { ...exp, id: docRef.id, localId: undefined } : exp
+              )
             );
-          } else if (queuedAction.action === 'edit') {
-            const { id, data } = queuedAction;
-            const expenseRef = doc(db, 'expenses', id);
-            await updateDoc(expenseRef, {
-              ...data,
-              updatedAt: serverTimestamp(),
-            });
-          } else if (queuedAction.action === 'delete') {
-            const { id } = queuedAction;
-            const expenseRef = doc(db, 'expenses', id);
+            const db = await dbPromise;
+            const tx = db.transaction('expenses', 'readwrite');
+            tx.objectStore('expenses').put({ id: docRef.id, ...data });
+            await tx.done;
+          }
+        } else if (queuedAction.action === 'delete') {
+          const { id } = queuedAction;
+          const expenseRef = doc(db, 'expenses', id);
+          const docSnap = await getDoc(expenseRef);
+          if (docSnap.exists()) {
             await deleteDoc(expenseRef);
           }
         }
-        setOfflineQueue([]);
-        localStorage.setItem('offlineQueue', JSON.stringify([]));
-      } catch (error) {
-        console.error('Error syncing offline queue:', error);
       }
-    };
+      const db = await dbPromise;
+      const tx = db.transaction('offlineQueue', 'readwrite');
+      tx.objectStore('offlineQueue').clear();
+      await tx.done;
 
-    window.addEventListener('online', handleOnline);
-    return () => window.removeEventListener('online', handleOnline);
-  }, [offlineQueue]);
+      setOfflineQueue([]);
+      toast.success('All changes synced successfully!');
+    } catch (error) {
+      console.error('Error syncing offline queue:', error);
+      toast.error('Sync failed. Changes will retry later.');
+    }
+  };
+
+  // Listen for service worker sync requests
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.addEventListener('message', (event) => {
+        if (event.data && event.data.type === 'SYNC_REQUEST') {
+          handleOnlineSync();
+        }
+      });
+    }
+  }, []);
 
   const value = {
     expenses,
@@ -243,6 +427,8 @@ export const ExpenseProvider = ({ children }) => {
     editExpense,
     deleteExpense,
     setExpenses,
+    isOffline,
+    handleOnlineSync,
   };
 
   return <ExpenseContext.Provider value={value}>{children}</ExpenseContext.Provider>;
