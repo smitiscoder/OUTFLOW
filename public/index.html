@@ -10,37 +10,20 @@
     <title>Outflow - Expense Tracker</title>
 
     <!-- Favicon and Icons -->
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <link rel="shortcut icon" href="%PUBLIC_URL%/favicon.ico" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon-32x32.png" sizes="32x32" type="image/png" />
     <link rel="icon" type="image/png" sizes="96x96" href="%PUBLIC_URL%/favicon-96x96.png" />
-    <link rel="icon" type="image/svg+xml" href="%PUBLIC_URL%/favicon.svg" />
-    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="%PUBLIC_URL%/apple-touch-icon.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="%PUBLIC_URL%/favicon-180x180.png" />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/favicon-192x192.png" />
 
     <!-- Manifest -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
-    
-    <!-- Additional meta tags for PWA: -->
+
+    <!-- Additional meta tags for PWA -->
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="msapplication-TileColor" content="#0D0D0D" />
-    <meta name="msapplication-TileImage" content="%PUBLIC_URL%/logo192.png" />
+    <meta name="msapplication-TileImage" content="%PUBLIC_URL%/favicon-192x192.png" />
     <meta name="application-name" content="Outflow" />
-
-    <!-- Service Worker -->
-    <script>
-      if ('serviceWorker' in navigator) {
-        window.addEventListener('load', function () {
-          navigator.serviceWorker.register('/service-worker.js')
-            .then(function (registration) {
-              console.log('Service Worker registered with scope:', registration.scope);
-            })
-            .catch(function (error) {
-              console.log('Service Worker registration failed:', error);
-            });
-        });
-      }
-    </script>
   </head>
 
   <body>
