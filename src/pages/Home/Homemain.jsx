@@ -46,17 +46,7 @@ const HomeMain = () => {
     let unsubscribeBudget;
     try {
       unsubscribeExpenses = fetchExpenses(auth, currentDate, setExpenses, setLoading);
-      unsubscribeBudget = fetchBudget(auth, (fetchedBudget) => {
-        setBudget(
-          fetchedBudget == null
-            ? null
-            : typeof fetchedBudget === 'string'
-            ? parseFloat(fetchedBudget) || null
-            : typeof fetchedBudget === 'number'
-            ? fetchedBudget
-            : null
-        );
-      });
+      unsubscribeBudget = fetchBudget(auth, currentDate, setBudget);
     } catch (error) {
       console.error('Error fetching data:', error);
       setLoading(false);
@@ -115,7 +105,11 @@ const HomeMain = () => {
         <header className="py-4 flex items-center justify-between mt-6">
           <h1 className="text-2xl font-bold">OUTFLOW</h1>
           <div className="flex items-center gap-4">
-            <MonthYearCalendar selectedDate={currentDate} onDateChange={handleDateChange} />
+            <MonthYearCalendar
+              selectedYear={currentDate.year}
+              selectedMonth={currentDate.month}
+              onDateChange={handleDateChange}
+            />
           </div>
         </header>
 

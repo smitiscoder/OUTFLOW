@@ -1,20 +1,38 @@
-import { getFirestore, collection, query, where, onSnapshot, doc } from 'firebase/firestore';
+import { getFirestore, doc, onSnapshot, query, collection, where } from 'firebase/firestore';
 
-const fetchBudget = (auth, setBudget) => {
+const fetchBudget = (auth, currentDate, setBudget) => {
   const userId = auth.currentUser?.uid;
-  if (!userId) return;
+  if (!userId) {
+    setBudget(null);
+    return () => {};
+  }
 
   const db = getFirestore();
-  const unsubscribe = onSnapshot(doc(db, 'budgets', userId), (doc) => {
-    if (doc.exists()) {
-      setBudget(doc.data().amount);
-    } else {
+  // Use the same document ID format as SetBudget: ${userId}_${year}_${month}
+  const budgetDocId = `${userId}_${currentDate.year}_${currentDate.month + 1}`; // Month is 1-based in SetBudget
+  const budgetRef = doc(db, 'budgets', budgetDocId);
+
+  const unsubscribe = onSnapshot(
+    budgetRef,
+    (doc) => {
+      if (doc.exists()) {
+        const budgetData = doc.data();
+        const amount =
+          typeof budgetData.amount === 'string'
+            ? parseFloat(budgetData.amount) || null
+            : typeof budgetData.amount === 'number'
+            ? budgetData.amount
+            : null;
+        setBudget(amount);
+      } else {
+        setBudget(null); // No budget for this month
+      }
+    },
+    (error) => {
+      console.error('Error fetching budget:', error);
       setBudget(null);
     }
-  }, (error) => {
-    console.error("Error listening to budget:", error);
-    setBudget(null);
-  });
+  );
 
   return unsubscribe;
 };
@@ -55,14 +73,14 @@ const fetchExpenses = (auth, currentDate, setExpenses, setLoading) => {
 
     const sortedExpenses = filteredExpenses.sort((a, b) => {
       const dateA = a.timestamp?.toDate ? a.timestamp.toDate() : new Date(a.timestamp);
-      const dateB = b.timestamp?.toDate ? b.timestamp.toDate() : new Date(b.timestamp);
+      const dateB = b.timestamp?.toDate ? b.timestamp.toDate() : new Date(a.timestamp);
       return dateB - dateA;
     });
 
     setExpenses(sortedExpenses);
   }, (error) => {
     setLoading(false);
-    console.error("Error fetching expenses: ", error);
+    console.error('Error fetching expenses: ', error);
   });
 
   return unsubscribe;
