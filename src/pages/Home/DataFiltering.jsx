@@ -8,8 +8,7 @@ const fetchBudget = (auth, currentDate, setBudget) => {
   }
 
   const db = getFirestore();
-  // Use the same document ID format as SetBudget: ${userId}_${year}_${month}
-  const budgetDocId = `${userId}_${currentDate.year}_${currentDate.month + 1}`; // Month is 1-based in SetBudget
+  const budgetDocId = `${userId}_${currentDate.year}_${currentDate.month + 1}`; // Month is 1-based
   const budgetRef = doc(db, 'budgets', budgetDocId);
 
   const unsubscribe = onSnapshot(
@@ -25,7 +24,7 @@ const fetchBudget = (auth, currentDate, setBudget) => {
             : null;
         setBudget(amount);
       } else {
-        setBudget(null); // No budget for this month
+        setBudget(null);
       }
     },
     (error) => {
@@ -44,44 +43,48 @@ const fetchExpenses = (auth, currentDate, setExpenses, setLoading) => {
   const db = getFirestore();
   const q = query(collection(db, 'expenses'), where('userId', '==', userId));
 
-  const unsubscribe = onSnapshot(q, (querySnapshot) => {
-    setLoading(false);
-    const allExpenses = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
+  const unsubscribe = onSnapshot(
+    q,
+    (querySnapshot) => {
+      setLoading(false);
+      const allExpenses = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
 
-    const filteredExpenses = allExpenses.filter((exp) => {
-      const rawTimestamp = exp.timestamp;
+      const filteredExpenses = allExpenses.filter((exp) => {
+        const rawTimestamp = exp.timestamp;
 
-      let date;
-      if (rawTimestamp instanceof Date) {
-        date = rawTimestamp;
-      } else if (rawTimestamp?.toDate) {
-        date = rawTimestamp.toDate();
-      } else if (typeof rawTimestamp === 'string') {
-        date = new Date(rawTimestamp);
-      } else {
-        return false;
-      }
+        let date;
+        if (rawTimestamp instanceof Date) {
+          date = rawTimestamp;
+        } else if (rawTimestamp?.toDate) {
+          date = rawTimestamp.toDate();
+        } else if (typeof rawTimestamp === 'string') {
+          date = new Date(rawTimestamp);
+        } else {
+          return false;
+        }
 
-      return (
-        date.getFullYear() === parseInt(currentDate.year) &&
-        date.getMonth() === currentDate.month
-      );
-    });
+        return (
+          date.getFullYear() === parseInt(currentDate.year) &&
+          date.getMonth() === currentDate.month
+        );
+      });
 
-    const sortedExpenses = filteredExpenses.sort((a, b) => {
-      const dateA = a.timestamp?.toDate ? a.timestamp.toDate() : new Date(a.timestamp);
-      const dateB = b.timestamp?.toDate ? b.timestamp.toDate() : new Date(a.timestamp);
-      return dateB - dateA;
-    });
+      const sortedExpenses = filteredExpenses.sort((a, b) => {
+        const dateA = a.timestamp?.toDate ? a.timestamp.toDate() : new Date(a.timestamp);
+        const dateB = b.timestamp?.toDate ? b.timestamp.toDate() : new Date(b.timestamp);
+        return dateB - dateA; // Newest to oldest
+      });
 
-    setExpenses(sortedExpenses);
-  }, (error) => {
-    setLoading(false);
-    console.error('Error fetching expenses: ', error);
-  });
+      setExpenses(sortedExpenses);
+    },
+    (error) => {
+      setLoading(false);
+      console.error('Error fetching expenses: ', error);
+    }
+  );
 
   return unsubscribe;
 };
