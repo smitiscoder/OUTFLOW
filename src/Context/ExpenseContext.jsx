@@ -21,6 +21,11 @@ export const useExpenses = () => useContext(ExpenseContext);
 export const ExpenseProvider = ({ children }) => {
   const [expenses, setExpenses] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
+  // State for selected month and year
+  const [selectedDate, setSelectedDate] = useState({
+    month: new Date().getMonth(), // 0-11 (January is 0)
+    year: new Date().getFullYear(),
+  });
 
   // Listen for auth state changes
   useEffect(() => {
@@ -35,7 +40,7 @@ export const ExpenseProvider = ({ children }) => {
     return () => unsubscribe();
   }, []);
 
-  // Fetch expenses for the current user
+  // Fetch expenses for the current user and filter by selected month/year
   useEffect(() => {
     if (!currentUser?.uid) return;
 
@@ -59,9 +64,18 @@ export const ExpenseProvider = ({ children }) => {
             };
           });
 
+          // Filter expenses by selected month and year
+          const filteredExpenses = fetchedExpenses.filter((expense) => {
+            const expenseDate = new Date(expense.timestamp);
+            return (
+              expenseDate.getMonth() === selectedDate.month &&
+              expenseDate.getFullYear() === selectedDate.year
+            );
+          });
+
           // Sort expenses by timestamp (newest first)
-          fetchedExpenses.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
-          setExpenses(fetchedExpenses);
+          filteredExpenses.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+          setExpenses(filteredExpenses);
         } catch (error) {
           console.error('Error processing Firestore snapshot:', error);
           toast.error('Failed to fetch expenses. Please try again.');
@@ -74,7 +88,7 @@ export const ExpenseProvider = ({ children }) => {
     );
 
     return () => unsubscribe();
-  }, [currentUser]);
+  }, [currentUser, selectedDate]); // Re-run when selectedDate changes
 
   // Add new expense
   const addExpense = async (amount, category, note, date) => {
@@ -143,6 +157,11 @@ export const ExpenseProvider = ({ children }) => {
     }
   };
 
+  // Function to update selected month/year
+  const updateSelectedDate = (month, year) => {
+    setSelectedDate({ month, year });
+  };
+
   const value = {
     expenses,
     addExpense,
@@ -150,6 +169,8 @@ export const ExpenseProvider = ({ children }) => {
     deleteExpense,
     setExpenses,
     currentUser,
+    selectedDate,
+    updateSelectedDate,
   };
 
   return (
