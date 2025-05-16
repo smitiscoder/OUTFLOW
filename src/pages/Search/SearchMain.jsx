@@ -3,7 +3,7 @@ import Header from "../../components/Header";
 import { getAuth } from "firebase/auth";
 import { getFirestore, collection, query, where, onSnapshot } from "firebase/firestore";
 import { Search as SearchIcon, X } from "lucide-react";
-import { format } from "date-fns";
+import { format, parse, parseISO } from "date-fns";
 import getIconForCategory from "./AllIcons";
 import filterExpenses from "./DataFilteration";
 
@@ -13,13 +13,14 @@ const SearchMain = () => {
   const auth = getAuth();
   const db = getFirestore();
 
+  // Fetch user expenses from Firestore
   useEffect(() => {
     const userId = auth.currentUser?.uid;
     if (!userId) return;
 
     const q = query(
-      collection(db, 'expenses'),
-      where('userId', '==', userId)
+      collection(db, "expenses"),
+      where("userId", "==", userId)
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -33,7 +34,13 @@ const SearchMain = () => {
     return () => unsubscribe();
   }, []);
 
+  // Filter and sort expenses using the updated filterExpenses function
   const filteredExpenses = filterExpenses(userExpenses, searchTerm);
+
+  // Clear search input
+  const clearSearch = () => {
+    setSearchTerm("");
+  };
 
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF]">
@@ -52,7 +59,7 @@ const SearchMain = () => {
           />
           {searchTerm && (
             <button
-              onClick={() => setSearchTerm("")}
+              onClick={clearSearch}
               className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[#DFDFDF] text-opacity-60 hover:text-opacity-100"
             >
               <X className="w-5 h-5" />
@@ -69,17 +76,51 @@ const SearchMain = () => {
           ) : (
             <div className="space-y-4">
               {filteredExpenses.map((expense) => {
-                const timestamp = expense.timestamp?.toDate?.() || expense.timestamp;
+                let timestamp;
+                try {
+                  // Handle Firestore Timestamp
+                  if (expense.timestamp?.toDate) {
+                    timestamp = expense.timestamp.toDate();
+                  }
+                  // Handle string timestamps (e.g., "2025-05-12T05:21:15.127Z")
+                  else if (typeof expense.timestamp === "string") {
+                    const parsed =
+                      parseISO(expense.timestamp) || // ISO 8601
+                      parse(expense.timestamp, "dd/MM/yyyy", new Date()) ||
+                      parse(expense.timestamp, "yyyy-MM-dd", new Date()) ||
+                      parse(expense.timestamp, "dd-MM-yyyy", new Date());
+                    timestamp = isNaN(parsed) ? null : parsed;
+                  }
+                  // Handle JavaScript Date or other cases
+                  else {
+                    timestamp = expense.timestamp;
+                  }
+
+                  // Validate timestamp
+                  if (!(timestamp instanceof Date) || isNaN(timestamp)) {
+                    timestamp = null; // Invalid date
+                  }
+                } catch (error) {
+                  timestamp = null; // Handle conversion errors
+                }
+
                 return (
-                  <div key={expense.id} className="flex items-center justify-between px-4 py-3 rounded-lg bg-[#0D0D0D]">
+                  <div
+                    key={expense.id}
+                    className="flex items-center justify-between px-4 py-3 rounded-lg bg-[#0D0D0D]"
+                  >
                     <div className="flex items-center space-x-3">
                       <div className="w-10 h-10 rounded-full flex items-center justify-center">
                         {getIconForCategory(expense.category)}
                       </div>
                       <div>
-                        <p className="text-[#DFDFDF] font-medium capitalize">{expense.category}</p>
+                        <p className="text-[#DFDFDF] font-medium capitalize">
+                          {expense.category}
+                        </p>
                         {expense.note && (
-                          <p className="text-[#DFDFDF] text-opacity-60 text-sm">{expense.note}</p>
+                          <p className="text-[#DFDFDF] text-opacity-60 text-sm">
+                            {expense.note}
+                          </p>
                         )}
                       </div>
                     </div>
@@ -88,7 +129,7 @@ const SearchMain = () => {
                         ₹{Math.round(expense.amount)}
                       </p>
                       <p className="text-[#DFDFDF] text-opacity-60 text-xs">
-                        {format(timestamp, "MMM d, yyyy")}
+                        {timestamp ? format(timestamp, "MMM d, yyyy") : "Date N/A"}
                       </p>
                     </div>
                   </div>
