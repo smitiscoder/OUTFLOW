@@ -21,7 +21,6 @@ export const useExpenses = () => useContext(ExpenseContext);
 export const ExpenseProvider = ({ children }) => {
   const [expenses, setExpenses] = useState([]);
   const [currentUser, setCurrentUser] = useState(null);
-  // State for selected month and year
   const [selectedDate, setSelectedDate] = useState({
     month: new Date().getMonth(), // 0-11 (January is 0)
     year: new Date().getFullYear(),
@@ -33,8 +32,10 @@ export const ExpenseProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setCurrentUser(user);
       if (!user) {
-        setExpenses([]); // Clear expenses when user logs out
+        setExpenses([]);
         toast.info('Please sign in to manage expenses.');
+      } else {
+        console.log('Authenticated user:', user.uid); // Debug: Confirm user ID
       }
     });
     return () => unsubscribe();
@@ -53,10 +54,14 @@ export const ExpenseProvider = ({ children }) => {
         try {
           const fetchedExpenses = snapshot.docs.map((doc) => {
             const data = doc.data();
-            const timestamp =
-              (data.timestamp?.toDate && data.timestamp.toDate()) ||
-              (data.timestamp instanceof Date ? data.timestamp : null) ||
-              new Date(data.createdAt?.toDate() || Date.now());
+            let timestamp;
+            if (data.timestamp?.toDate) {
+              timestamp = data.timestamp.toDate();
+            } else if (typeof data.timestamp === 'string') {
+              timestamp = new Date(data.timestamp);
+            } else {
+              timestamp = data.createdAt?.toDate() || new Date();
+            }
             return {
               id: doc.id,
               ...data,
@@ -64,17 +69,26 @@ export const ExpenseProvider = ({ children }) => {
             };
           });
 
+          console.log('Fetched expenses:', fetchedExpenses); // Debug: Log raw expenses
+
           // Filter expenses by selected month and year
           const filteredExpenses = fetchedExpenses.filter((expense) => {
             const expenseDate = new Date(expense.timestamp);
+            const isValidDate = !isNaN(expenseDate.getTime());
+            if (!isValidDate) {
+              console.warn('Invalid date for expense:', expense); // Debug: Log invalid dates
+              return false;
+            }
             return (
               expenseDate.getMonth() === selectedDate.month &&
               expenseDate.getFullYear() === selectedDate.year
             );
           });
 
+          console.log('Filtered expenses:', filteredExpenses); // Debug: Log filtered expenses
+
           // Sort expenses by timestamp (newest first)
-          filteredExpenses.sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0));
+          filteredExpenses.sort((a, b) => b.timestamp - a.timestamp);
           setExpenses(filteredExpenses);
         } catch (error) {
           console.error('Error processing Firestore snapshot:', error);
@@ -88,7 +102,7 @@ export const ExpenseProvider = ({ children }) => {
     );
 
     return () => unsubscribe();
-  }, [currentUser, selectedDate]); // Re-run when selectedDate changes
+  }, [currentUser, selectedDate]);
 
   // Add new expense
   const addExpense = async (amount, category, note, date) => {

@@ -8,21 +8,17 @@ import MonthYearCalendar from '../../components/MonthYearCalendar';
 import PieChart from './PieChart';
 import BudgetInfo from './Budgetinfo';
 import ExpenseList from './ExpenseList';
-import { fetchExpenses, fetchBudget } from './DataFiltering';
+import { fetchBudget } from './DataFiltering';
 import Keyboard from './Keyboardhome';
 
 const HomeMain = () => {
-  const [currentDate, setCurrentDate] = useState({
-    year: new Date().getFullYear(),
-    month: new Date().getMonth(),
-  });
+  const { expenses, selectedDate, updateSelectedDate, setExpenses } = useExpenses();
   const [loading, setLoading] = useState(true);
   const [selectedExpense, setSelectedExpense] = useState(null);
   const [editingExpense, setEditingExpense] = useState(null);
   const [budget, setBudget] = useState(null);
   const [sanitizedExpenses, setSanitizedExpenses] = useState([]);
 
-  const { expenses, setExpenses } = useExpenses();
   const auth = getAuth();
   const navigate = useNavigate();
 
@@ -38,28 +34,28 @@ const HomeMain = () => {
       return { ...expense, amount };
     });
     setSanitizedExpenses(cleanedExpenses);
+    setLoading(false);
+    console.log('Sanitized expenses:', cleanedExpenses); // Debug: Log sanitized expenses
   }, [expenses]);
 
-  // Fetch expenses and budget
+  // Fetch budget
   useEffect(() => {
-    let unsubscribeExpenses;
     let unsubscribeBudget;
     try {
-      unsubscribeExpenses = fetchExpenses(auth, currentDate, setExpenses, setLoading);
-      unsubscribeBudget = fetchBudget(auth, currentDate, setBudget);
+      unsubscribeBudget = fetchBudget(auth, selectedDate, setBudget);
     } catch (error) {
-      console.error('Error fetching data:', error);
-      setLoading(false);
+      console.error('Error fetching budget:', error);
+      setBudget(null);
     }
 
     return () => {
-      unsubscribeExpenses?.();
       unsubscribeBudget?.();
     };
-  }, [currentDate, auth, setExpenses]);
+  }, [selectedDate, auth]);
 
+  // Sync date changes with ExpenseProvider
   const handleDateChange = (year, month) => {
-    setCurrentDate({ year, month });
+    updateSelectedDate(month, year);
   };
 
   const saveEditedExpense = async (updatedExpense) => {
@@ -72,7 +68,7 @@ const HomeMain = () => {
         note: updatedExpense.note || '',
         amount,
         category: updatedExpense.category || '',
-        timestamp: updatedExpense.timestamp || new Date().toISOString(),
+        timestamp: updatedExpense.timestamp || new Date(),
       });
       setExpenses((prev) =>
         prev.map((exp) =>
@@ -106,8 +102,8 @@ const HomeMain = () => {
           <h1 className="text-2xl font-bold">OUTFLOW</h1>
           <div className="flex items-center gap-4">
             <MonthYearCalendar
-              selectedYear={currentDate.year}
-              selectedMonth={currentDate.month}
+              selectedYear={selectedDate.year}
+              selectedMonth={selectedDate.month}
               onDateChange={handleDateChange}
             />
           </div>
@@ -116,12 +112,18 @@ const HomeMain = () => {
         <PieChart navigate={navigate} expenses={sanitizedExpenses} />
         <BudgetInfo budget={budget} expenses={sanitizedExpenses} />
 
-        <ExpenseList
-          loading={loading}
-          selectedExpense={selectedExpense}
-          setSelectedExpense={setSelectedExpense}
-          setEditingExpense={setEditingExpense}
-        />
+        {loading ? (
+          <div>Loading expenses...</div>
+        ) : expenses.length === 0 ? (
+          <div>No expenses found for this month.</div>
+        ) : (
+          <ExpenseList
+            loading={loading}
+            selectedExpense={selectedExpense}
+            setSelectedExpense={setSelectedExpense}
+            setEditingExpense={setEditingExpense}
+          />
+        )}
 
         {editingExpense && (
           <div className="fixed bottom-0 left-0 right-0 bg-gray-800 p-4 z-20">
