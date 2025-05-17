@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react';
-import { cn } from '@/lib/utils'; // Make sure the path is correct
+import { cn } from '../../components/lib/utils'; // Make sure the path is correct
 
 const Button = forwardRef(
   ({ variant = 'default', size = 'default', className, children, ...props }, ref) => {

@@ -9,8 +9,14 @@ import SpendingList from './SpendingList';
 import SummaryCard from './SummaryCard';
 
 const COLORS = [
-  "#D4AF37", "#20B2AA", "#FF6B6B", "#00FA9A", 
-  "#66BB6A", "#9C27B0", "#03A9F4", "#F4A261"
+  ["#8B5CF6", "#6D28D9"], // Purple gradient
+  ["#EC4899", "#BE185D"], // Pink gradient
+  ["#3B82F6", "#1D4ED8"], // Blue gradient
+  ["#10B981", "#047857"], // Green gradient
+  ["#F59E0B", "#B45309"], // Amber gradient
+  ["#6366F1", "#4338CA"], // Indigo gradient
+  ["#14B8A6", "#0F766E"], // Teal gradient
+  ["#F472B6", "#BE185D"]  // Pink gradient
 ];
 
 export default function ReportsScreen() {
@@ -99,7 +105,7 @@ export default function ReportsScreen() {
       if (index < 4) {
         finalData.push({
           ...item,
-          color: COLORS[index % COLORS.length]
+          color: COLORS[index % COLORS.length][0]
         });
       } else {
         othersTotal += item.spent;
@@ -154,13 +160,13 @@ export default function ReportsScreen() {
         <div className="flex gap-4 mt-6">
         <button
           onClick={() => navigate('/bar-graphs')}
-          className="flex-1 py-2 rounded-full text-sm font-semibold bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 transition-colors"
+          className="flex-1 py-2 rounded-full text-sm font-semibold bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-600 hover:to-purple-600 transition-colors"
         >
           BarGraph
         </button>
         <button
           onClick={() => navigate('/recurring-expenses')}
-          className="flex-1 py-2 rounded-full text-sm font-semibold bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 transition-colors"
+          className="flex-1 py-2 rounded-full text-sm font-semibold bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-600 hover:to-purple-600 transition-colors"
         >
           Recurring Expense
         </button>

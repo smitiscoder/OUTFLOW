@@ -121,7 +121,7 @@ const Keyboard = ({
           onClick={handleSubmit}
           disabled={!expression || loading}
           className={`py-3 rounded-md flex justify-center items-center ${
-            expression && !loading ? "bg-gradient-to-r from-purple-500 to-pink-500" : "bg-[#333333]"
+            expression && !loading ? "bg-gradient-to-r from-purple-600 to-purple-500" : "bg-[#333333]"
           }`}
         >
           <Check className="w-5 h-6" />

@@ -4,8 +4,19 @@ import { Routes, Route, Navigate } from "react-router-dom";
 // Loader Component
 import Loader from "./components/Loading"; // Updated path (adjust to "./components/Loading" if needed)
 
+<<<<<<< HEAD
 // Optional Splash Screen Route (uncomment if needed)
 // import SplashScreen from "./components/SplashScreen";
+=======
+// Public Pages
+import Login from "./pages/Login/login";
+import Phone from "./pages/Login/Phone";
+import EmailLogin from "./pages/Login/EmailLogin";
+import ContinueWithGoogle from "./pages/Login/ContinuewithGoogle";
+import ForgotPassword from "./pages/Login/ForgotPassword";
+import EmailSignup from "./pages/Login/EmailSignup";
+import OnBoarding from "./pages/Onboarding/OnBoarding";
+>>>>>>> bb93636 (add new onboarding page , change the button color,modify the graph ui)
 
 // Layout (Lazy-loaded)
 const MainLayout = lazy(() => import("./components/layout/MainLayout"));

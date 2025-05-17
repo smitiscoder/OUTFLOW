@@ -8,11 +8,8 @@ const navIconStyle =
 
 const BottomNavbar = () => {
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-transparent py-2 z-50">
-      <div className="relative flex items-center justify-around max-w-md mx-auto">
-
-        {/* Curved background behind center button */}
-        <div className="absolute -top-5 left-1/2 -translate-x-1/2 w-12 h-12 bg-gradient-to-br from-purple-500 to-pink-500 rounded-full shadow-lg blur-md" />
+    <div className="fixed bottom-0 left-0 right-0 py-2 z-50">
+      <div className="relative flex items-center justify-around max-w-md mx-auto bg-gradient-to-b from-black/60 to-black/80 backdrop-blur-lg shadow-lg border-t border-white/10 px-4 py-2 rounded-t-3xl">
 
         {/* Home */}
         <Link to="/" className={navIconStyle}>
@@ -29,11 +26,11 @@ const BottomNavbar = () => {
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
           transition={{ type: 'spring', stiffness: 400, damping: 17 }}
-          className="relative -top-8 z-20"
+          className="relative z-20"
         >
           <Link
             to="/ExpenseCategory"
-            className="p-3 bg-gradient-to-br from-red-500 to-orange-400 text-white rounded-full shadow-lg hover:shadow-xl transition-all inline-flex items-center justify-center"
+            className="p-2 bg-gradient-to-br from-purple-600 to-purple-500 text-white rounded-full shadow-[0_4px_12px_rgba(147,51,234,0.3)] hover:shadow-[0_6px_16px_rgba(147,51,234,0.5)] transition-all inline-flex items-center justify-center"
           >
             <Plus className="w-6 h-6" />
           </Link>
