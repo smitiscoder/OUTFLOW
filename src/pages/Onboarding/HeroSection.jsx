@@ -36,7 +36,7 @@ const HeroSection = () => {
           <Link to= "/login">
           <ButtonHero 
            // onClick={handleGetStarted}
-            className="bg-outflow-accent hover:bg-outflow-accent-light text-white text-base py-6 px-8 rounded-lg shadow-lg shadow-outflow-accent/20"
+            className="bg-outflow-accent hover:bg-outflow-accent-light text-white text-base py-6 px-8 rounded-lg shadow-lg shadow-outflow-accent/20 transition-all duration-300 hover:scale-105 hover:opacity-90"
           >
             Get Started
           </ButtonHero>
