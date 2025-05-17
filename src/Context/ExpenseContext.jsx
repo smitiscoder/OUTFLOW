@@ -16,7 +16,13 @@ import { toast } from 'react-toastify';
 
 const ExpenseContext = createContext();
 
-export const useExpenses = () => useContext(ExpenseContext);
+export const useExpenses = () => {
+  const context = useContext(ExpenseContext);
+  if (!context) {
+    throw new Error('useExpenses must be used within an ExpenseProvider');
+  }
+  return context;
+};
 
 export const ExpenseProvider = ({ children }) => {
   const [expenses, setExpenses] = useState([]);
@@ -25,6 +31,7 @@ export const ExpenseProvider = ({ children }) => {
     month: new Date().getMonth(), // 0-11 (January is 0)
     year: new Date().getFullYear(),
   });
+  const [isLoading, setIsLoading] = useState(false);
 
   // Listen for auth state changes
   useEffect(() => {
@@ -37,14 +44,21 @@ export const ExpenseProvider = ({ children }) => {
       } else {
         console.log('Authenticated user:', user.uid); // Debug: Confirm user ID
       }
+    }, (error) => {
+      console.error('Auth state change error:', error);
+      toast.error('Authentication error. Please try again.');
     });
     return () => unsubscribe();
   }, []);
 
   // Fetch expenses for the current user and filter by selected month/year
   useEffect(() => {
-    if (!currentUser?.uid) return;
+    if (!currentUser?.uid) {
+      setExpenses([]);
+      return;
+    }
 
+    setIsLoading(true);
     const expensesRef = collection(db, 'expenses');
     const q = query(expensesRef, where('userId', '==', currentUser.uid));
 
@@ -69,14 +83,12 @@ export const ExpenseProvider = ({ children }) => {
             };
           });
 
-          console.log('Fetched expenses:', fetchedExpenses); // Debug: Log raw expenses
-
           // Filter expenses by selected month and year
           const filteredExpenses = fetchedExpenses.filter((expense) => {
             const expenseDate = new Date(expense.timestamp);
             const isValidDate = !isNaN(expenseDate.getTime());
             if (!isValidDate) {
-              console.warn('Invalid date for expense:', expense); // Debug: Log invalid dates
+              console.warn('Invalid date for expense:', expense);
               return false;
             }
             return (
@@ -85,24 +97,25 @@ export const ExpenseProvider = ({ children }) => {
             );
           });
 
-          console.log('Filtered expenses:', filteredExpenses); // Debug: Log filtered expenses
-
           // Sort expenses by timestamp (newest first)
           filteredExpenses.sort((a, b) => b.timestamp - a.timestamp);
           setExpenses(filteredExpenses);
+          setIsLoading(false);
         } catch (error) {
           console.error('Error processing Firestore snapshot:', error);
           toast.error('Failed to fetch expenses. Please try again.');
+          setIsLoading(false);
         }
       },
       (error) => {
         console.error('Firestore snapshot error:', error);
         toast.error('Error fetching expenses. Please check your connection.');
+        setIsLoading(false);
       }
     );
 
     return () => unsubscribe();
-  }, [currentUser, selectedDate]);
+  }, [currentUser?.uid, selectedDate.month, selectedDate.year]);
 
   // Add new expense
   const addExpense = async (amount, category, note, date) => {
@@ -113,10 +126,13 @@ export const ExpenseProvider = ({ children }) => {
 
     try {
       const expenseDate = date ? new Date(date) : new Date();
+      if (isNaN(expenseDate.getTime())) {
+        throw new Error('Invalid date provided');
+      }
       const newExpense = {
-        amount: parseFloat(amount),
-        category,
-        note,
+        amount: parseFloat(amount) || 0,
+        category: category || 'Uncategorized',
+        note: note || '',
         timestamp: expenseDate,
         createdAt: serverTimestamp(),
         userId: currentUser.uid,
@@ -171,8 +187,12 @@ export const ExpenseProvider = ({ children }) => {
     }
   };
 
-  // Function to update selected month/year
+  // Update selected month/year
   const updateSelectedDate = (month, year) => {
+    if (month < 0 || month > 11 || year < 1900 || year > 9999) {
+      console.warn('Invalid month or year:', { month, year });
+      return;
+    }
     setSelectedDate({ month, year });
   };
 
@@ -185,6 +205,7 @@ export const ExpenseProvider = ({ children }) => {
     currentUser,
     selectedDate,
     updateSelectedDate,
+    isLoading,
   };
 
   return (

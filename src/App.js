@@ -1,30 +1,55 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router } from "react-router-dom";
-import { useExpenses } from "./Context/ExpenseContext"; // Import ExpenseContext hook
+import { useExpenses } from "./Context/ExpenseContext";
 
+// Components
+import SplashScreen from "./components/SplashScreen"; // New splash screen
+import Loader from "./components/Loading"; // Loading screen
+
+// Styles
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 
+// Firebase Auth
 import { auth } from "./components/firebase";
+
+// Toast Notifications
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import AppRoutes from "./AppRoutes"; // Import the new routing file
+// App Routes
+import AppRoutes from "./AppRoutes";
 
 function App() {
   const [user, setUser] = useState(null);
-  const [checkingAuth, setCheckingAuth] = useState(true);
-  const { isOffline } = useExpenses(); // Access isOffline from ExpenseContext
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
+  const [showSplash, setShowSplash] = useState(true);
+  const { isOffline } = useExpenses();
 
+  // Handle splash screen and auth check
   useEffect(() => {
+    // Show splash screen for 2 seconds
+    const splashTimer = setTimeout(() => {
+      setShowSplash(false);
+    }, 3000);
+
+    // Firebase auth check
     const unsubscribe = auth.onAuthStateChanged((user) => {
       setUser(user);
-      setCheckingAuth(false);
+      setIsAuthLoading(false);
     });
-    return () => unsubscribe();
+
+    return () => {
+      clearTimeout(splashTimer);
+      unsubscribe();
+    };
   }, []);
 
-  if (checkingAuth) return <div>Loading...</div>;
+  // Show splash screen first
+  if (showSplash) return <SplashScreen />;
+
+  // Show loader during auth check
+  if (isAuthLoading) return <Loader />;
 
   return (
     <Router>
@@ -55,11 +80,9 @@ function App() {
         pauseOnHover
         theme="light"
       />
-      <AppRoutes user={user} />
+      <AppRoutes user={user} isAuthLoading={isAuthLoading} />
     </Router>
   );
 }
 
 export default App;
-
-

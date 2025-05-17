@@ -1,6 +1,5 @@
-// src/components/firebase.js
 import { initializeApp } from 'firebase/app';
-import { getAnalytics } from 'firebase/analytics';
+import { getAnalytics, isSupported as isAnalyticsSupported } from 'firebase/analytics';
 import {
   getAuth,
   GoogleAuthProvider,
@@ -16,7 +15,7 @@ import {
   RecaptchaVerifier,
 } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
-import { getMessaging } from 'firebase/messaging';
+import { getMessaging, isSupported as isMessagingSupported } from 'firebase/messaging';
 
 const firebaseConfig = {
   apiKey: 'AIzaSyDIXQawm6JNyxwt1UnEH8rZhzYyYWhEWYg',
@@ -24,12 +23,31 @@ const firebaseConfig = {
   projectId: 'expensetracking-73767',
   storageBucket: 'expensetracking-73767.appspot.com',
   messagingSenderId: '433052728459',
-  appId: '1:433052728459:web:98ef488a9bcd471f58688e',
+  appId: '1:433052728459:web:98ef488a9bcd471f92888e',
   measurementId: 'G-4CD1QW7VWT',
 };
 
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const analytics = getAnalytics(app);
+
+// Initialize Analytics (only if supported and in browser environment)
+let analytics = null;
+if (typeof window !== 'undefined') {
+  isAnalyticsSupported()
+    .then((supported) => {
+      if (supported) {
+        analytics = getAnalytics(app);
+        console.log('Firebase Analytics initialized successfully');
+      } else {
+        console.warn('Firebase Analytics is not supported in this environment');
+      }
+    })
+    .catch((error) => {
+      console.error('Error checking Firebase Analytics support:', error);
+    });
+}
+
+// Initialize Auth
 const auth = getAuth(app);
 
 // Google Auth
@@ -38,9 +56,25 @@ googleProvider.addScope('profile');
 googleProvider.addScope('email');
 googleProvider.setCustomParameters({ prompt: 'select_account' });
 
-// Firestore & Messaging
+// Initialize Firestore
 const db = getFirestore(app);
-const messaging = getMessaging(app);
+
+// Initialize Messaging (only if supported and in browser environment)
+let messaging = null;
+if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+  isMessagingSupported()
+    .then((supported) => {
+      if (supported) {
+        messaging = getMessaging(app);
+        console.log('Firebase Messaging initialized successfully');
+      } else {
+        console.warn('Firebase Messaging is not supported in this browser');
+      }
+    })
+    .catch((error) => {
+      console.error('Error checking Firebase Messaging support:', error);
+    });
+}
 
 // Export everything needed
 export {
@@ -49,6 +83,7 @@ export {
   googleProvider,
   db,
   messaging,
+  analytics,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,

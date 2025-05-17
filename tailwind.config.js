@@ -125,3 +125,24 @@ export default {
     },
   ],
 };
+
+// tailwind.config.js
+module.exports = {
+  content: [
+    "./src/**/*.{js,jsx,ts,tsx}",
+  ],
+  theme: {
+    extend: {
+      keyframes: {
+        spinWords: {
+          '0%': { transform: 'translateY(0%)' },
+          '100%': { transform: 'translateY(-400%)' }, // Move 4 items (100% per item)
+        },
+      },
+      animation: {
+        spinWords: 'spinWords 6s linear infinite', // Increased duration for smoother looping
+      },
+    },
+  },
+  plugins: [],
+};
