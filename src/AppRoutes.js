@@ -2,21 +2,7 @@ import React, { Suspense, lazy } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 
 // Loader Component
-import Loader from "./components/Loading"; // Updated path (adjust to "./components/Loading" if needed)
-
-<<<<<<< HEAD
-// Optional Splash Screen Route (uncomment if needed)
-// import SplashScreen from "./components/SplashScreen";
-=======
-// Public Pages
-import Login from "./pages/Login/login";
-import Phone from "./pages/Login/Phone";
-import EmailLogin from "./pages/Login/EmailLogin";
-import ContinueWithGoogle from "./pages/Login/ContinuewithGoogle";
-import ForgotPassword from "./pages/Login/ForgotPassword";
-import EmailSignup from "./pages/Login/EmailSignup";
-import OnBoarding from "./pages/Onboarding/OnBoarding";
->>>>>>> bb93636 (add new onboarding page , change the button color,modify the graph ui)
+import Loader from "./components/Loading"; // Adjust path if needed
 
 // Layout (Lazy-loaded)
 const MainLayout = lazy(() => import("./components/layout/MainLayout"));
@@ -28,7 +14,7 @@ const EmailLogin = lazy(() => import("./pages/Login/EmailLogin"));
 const ContinueWithGoogle = lazy(() => import("./pages/Login/ContinuewithGoogle"));
 const ForgotPassword = lazy(() => import("./pages/Login/ForgotPassword"));
 const EmailSignup = lazy(() => import("./pages/Login/EmailSignup"));
-const OnBoarding = lazy(() => import("./pages/OnBoarding"));
+const OnBoarding = lazy(() => import("./pages/Onboarding/OnBoarding"));
 
 // Protected Pages (Lazy-loaded)
 const Home = lazy(() => import("./pages/Home/Homemain"));
@@ -53,9 +39,6 @@ function AppRoutes({ user, isAuthLoading }) {
   return (
     <Suspense fallback={<Loader />}>
       <Routes>
-        {/* Optional Splash Screen Route (uncomment if needed) */}
-        {/* <Route path="/splash" element={<SplashScreen />} /> */}
-
         {/* Public Routes */}
         <Route path="/onboarding" element={<OnBoarding />} />
         <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
