@@ -18,17 +18,36 @@
     <!-- Manifest -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
 
-    <!-- Additional meta tags for PWA -->
+    <!-- Enhanced PWA meta tags -->
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="msapplication-TileColor" content="#0D0D0D" />
     <meta name="msapplication-TileImage" content="%PUBLIC_URL%/favicon-192x192.png" />
     <meta name="application-name" content="Outflow" />
+    
+    <!-- Add splash-screen meta to prevent default Android splash -->
+    <meta name="android-chrome-192x192" content="%PUBLIC_URL%/favicon-192x192.png" />
+    <meta name="android-chrome-512x512" content="%PUBLIC_URL%/favicon-512x512.png" />
   </head>
 
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div id="root"></div>
+    
+    <!-- Optional: Add this script to prevent splash screen on some Android devices -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/service-worker.js')
+            .then(registration => {
+              console.log('ServiceWorker registration successful');
+            })
+            .catch(err => {
+              console.log('ServiceWorker registration failed: ', err);
+            });
+        });
+      }
+    </script>
   </body>
 </html>
 
