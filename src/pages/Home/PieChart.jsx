@@ -45,19 +45,27 @@ const PieChart = ({ navigate }) => {
                 data={finalCategoryData}
                 cx="50%"
                 cy="50%"
-                innerRadius={60}
-                outerRadius={90}
-                paddingAngle={2}
+                innerRadius={85}
+                outerRadius={110}
+                paddingAngle={3}
                 dataKey="amount"
                 stroke="none"
+                animationBegin={0}
+                animationDuration={1500}
+                animateNewValues={true}
               >
                 {finalCategoryData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={`url(#${createGradientId(index % COLORS.length)})`} />
+                  <Cell 
+                    key={`cell-${index}`} 
+                    fill={`url(#${createGradientId(index % COLORS.length)})`}
+                    className="hover:opacity-80 transition-opacity duration-300"
+                  />
                 ))}
               </Pie>
             </RechartsPieChart>
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
-              <p className="text-2xl font-bold">{formatNumber(totalSpent)}</p>
+              <p className="text-2xl font-bold text-[#DFDFDF]">{formatNumber(totalSpent)}</p>
+              <p className="text-sm text-[#DFDFDF] text-opacity-70 mt-1 font-medium">Total Spent</p>
             </div>
           </>
         ) : (
