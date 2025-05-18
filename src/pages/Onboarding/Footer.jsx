@@ -1,55 +1,143 @@
-import React from 'react';
-import { GithubIcon, TwitterIcon, InstagramIcon } from 'lucide-react';
-import { Separator } from '../../components/ui/separator';
+import React from "react";
+import { FaTwitter, FaLinkedin, FaInstagram, FaFacebook } from "react-icons/fa";
 
 const Footer = () => {
   return (
-    <footer className="py-12 px-6 bg-outflow-black border-t border-white/10">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex flex-col md:flex-row justify-between items-center">
-          <div className="mb-6 md:mb-0">
-            <div className="flex items-center">
-              <div className="h-8 w-8 rounded-full bg-outflow-accent flex items-center justify-center mr-3">
-                <span className="text-white font-bold text-sm">O</span>
-              </div>
-              <h3 className="text-white font-bold text-xl">OUTFLOW</h3>
-            </div>
-            <p className="text-white/60 text-sm mt-3 max-w-md">
-              The intelligent expense tracking application that helps you take control of your financial future.
-            </p>
-          </div>
+    <footer className="bg-black text-white py-10 px-6 md:px-16">
+      {/* Animated underline style */}
+      <style>
+        {`
+          .hover-underline {
+            position: relative;
+            color: inherit;
+            text-decoration: none;
+          }
+          .hover-underline::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0%;
+            height: 1px;
+            background-color: white;
+            transition: width 0.3s ease-in-out;
+          }
+          .hover-underline:hover::after {
+            width: 100%;
+          }
+        `}
+      </style>
 
-          <div className="grid grid-cols-2 gap-12 md:gap-24">
-            <div>
-              <h4 className="text-white font-semibold mb-4">Connect</h4>
-              <div className="flex items-center space-x-4">
-                <a href="#" className="text-white/70 hover:text-outflow-accent transition-colors" aria-label="Twitter">
-                  <TwitterIcon size={18} />
-                </a>
-                <a href="#" className="text-white/70 hover:text-outflow-accent transition-colors" aria-label="Instagram">
-                  <InstagramIcon size={18} />
-                </a>
-                <a href="#" className="text-white/70 hover:text-outflow-accent transition-colors" aria-label="GitHub">
-                  <GithubIcon size={18} />
-                </a>
-              </div>
-            </div>
-
-            <div>
-              <h4 className="text-white font-semibold mb-4">Legal</h4>
-              <ul className="space-y-2">
-                <li><a href="#" className="text-white/70 hover:text-white text-sm transition-colors">Privacy</a></li>
-                <li><a href="#" className="text-white/70 hover:text-white text-sm transition-colors">Terms</a></li>
-              </ul>
-            </div>
+      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10">
+        {/* About Section */}
+        <div>
+          <h3 className="text-lg font-semibold mb-4">About Outflow</h3>
+          <p className="text-gray-400 mb-4">
+            Modern tools for modern development workflows. Built with
+            performance and usability in mind.
+          </p>
+          <div className="flex space-x-4 text-gray-400">
+            <FaTwitter className="hover:text-white cursor-pointer" />
+            <FaLinkedin className="hover:text-white cursor-pointer" />
+            <FaInstagram className="hover:text-white cursor-pointer" />
+            <FaFacebook className="hover:text-white cursor-pointer" />
           </div>
         </div>
 
-        <Separator className="my-8 bg-white/10" />
+        {/* Company Section */}
+        <div>
+          <h3 className="text-lg font-semibold mb-4">Company</h3>
+          <ul className="space-y-2 text-gray-400 pl-0">
+            <li>
+              <a href="#" className="hover:text-white hover-underline">
+                Contact Us
+              </a>
+            </li>
+            <li>
+              <a href="#" className="hover:text-white hover-underline">
+                Legal
+              </a>
+            </li>
+            <li>
+              <a href="#" className="hover:text-white hover-underline">
+                Privacy Policy
+              </a>
+            </li>
+            <li>
+              <a href="#" className="hover:text-white hover-underline">
+                Terms of Service
+              </a>
+            </li>
+            <li>
+              <a href="#" className="hover:text-white hover-underline">
+                Cookie Policy
+              </a>
+            </li>
+          </ul>
+        </div>
 
-        <div className="flex flex-col md:flex-row justify-between items-center">
-          <p className="text-white/60 text-sm">© 2025 OUTFLOW. All rights reserved.</p>
-          <p className="text-white/60 text-sm italic mt-2 md:mt-0">Track smarter. Live better.</p>
+        {/* Resources Section */}
+        <div>
+          <h3 className="text-lg font-semibold mb-4">Resources</h3>
+          <ul className="space-y-2 text-gray-400 pl-0">
+            <li>
+              <a href="#" className="hover:text-white hover-underline">
+                User Manual
+              </a>
+            </li>
+            <li>
+              <a href="#" className="hover:text-white hover-underline">
+                API Documentation
+              </a>
+            </li>
+            <li>
+              <a href="#" className="hover:text-white hover-underline">
+                Tutorials
+              </a>
+            </li>
+            <li>
+              <a href="#" className="hover:text-white hover-underline">
+                Blog
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        {/* Stay Updated */}
+        <div>
+          <h3 className="text-lg font-semibold mb-4">Stay Updated</h3>
+          <p className="text-gray-400 mb-4">
+            Subscribe to our newsletter for the latest updates.
+          </p>
+          <form className="flex flex-col sm:flex-row w-full max-w-sm">
+            <input
+              type="email"
+              placeholder="Your email"
+              className="px-4 py-2 w-full bg-black text-white border border-white placeholder-gray-400 rounded-t-md sm:rounded-l-md sm:rounded-t-none focus:outline-none focus:ring-0"
+            />
+            <button
+              type="submit"
+              className="px-4 py-2 bg-white text-black rounded-b-md sm:rounded-r-md sm:rounded-b-none font-semibold hover:bg-gray-200"
+            >
+              Subscribe
+            </button>
+          </form>
+        </div>
+      </div>
+
+      {/* Bottom Section */}
+      <div className="border-t border-gray-800 mt-10 pt-6 flex flex-col md:flex-row items-center justify-between text-gray-400 text-sm gap-4">
+        <p>© 2025 Outflow. All rights reserved.</p>
+        <div className="flex flex-wrap justify-center md:justify-end space-x-6">
+          <a href="#" className="hover:text-white hover-underline">
+            Status
+          </a>
+          <a href="#" className="hover:text-white hover-underline">
+            Support
+          </a>
+          <a href="#" className="hover:text-white hover-underline">
+            Changelog
+          </a>
         </div>
       </div>
     </footer>
