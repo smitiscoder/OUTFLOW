@@ -7,7 +7,7 @@ export default function Login() {
   const navigate = useNavigate();
 
   return (
-    <div className="relative min-h-screen bg-[#0f0f0f] text-white flex flex-col justify-center items-center px-6 space-y-8 overflow-hidden">
+    <div className="relative min-h-screen bg-[#0D0D0D] text-white flex flex-col justify-center items-center px-6 space-y-8 overflow-hidden">
       {/* 💡 Top Gradient Glow */}
       <div className="absolute top-[-150px] left-1/2 transform -translate-x-1/2 w-[600px] h-[600px] bg-gradient-to-b from-purple-600 via-purple-800 to-transparent opacity-30 blur-[100px] z-0" />
 
@@ -15,8 +15,8 @@ export default function Login() {
       <div className="relative z-10 w-full max-w-sm space-y-8">
         {/* Logo */}
         <div className="text-center space-y-2">
-          <div className="bg-gradient-to-r from-purple-500 to-pink-500 w-12 h-12 rounded-full mx-auto" />
-          <h1 className="text-2xl font-bold tracking-wide">OUTFLOW</h1>
+          
+          <h1 className="text-6xl font-bold tracking-wide">OUTFLOW</h1>
         </div>
 
         {/* Sign-in Buttons */}

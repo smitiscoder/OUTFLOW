@@ -128,7 +128,7 @@ const Phone = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-center items-center bg-[#03071E] text-white px-4">
+    <div className="min-h-screen flex flex-col justify-center items-center bg-[#0D0D0D] text-white px-4">
       {/* Phone Input */}
       <div className="flex items-center border border-gray-600 rounded-full px-4 py-3 w-full max-w-xs mb-6">
         <span className="text-gray-400 pr-2">+91</span>

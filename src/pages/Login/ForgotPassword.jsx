@@ -47,8 +47,7 @@ export default function ForgotPassword() {
       <div className="absolute top-[-150px] left-1/2 transform -translate-x-1/2 w-[600px] h-[600px] bg-gradient-to-b from-purple-600 via-purple-800 to-transparent opacity-30 blur-[100px] z-0" />
       <div className="relative z-10 w-full max-w-sm space-y-8">
         <div className="text-center space-y-2">
-          <div className="bg-gradient-to-r from-purple-500 to-pink-500 w-12 h-12 rounded-full mx-auto" />
-          <h1 className="text-2xl font-bold tracking-wide">OUTFLOW</h1>
+          <h1 className="text-6xl font-bold tracking-wide">OUTFLOW</h1>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
