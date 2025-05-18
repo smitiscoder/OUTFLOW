@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Header from "../../components/Header";
+import { useNavigate } from "react-router-dom"; // Import useNavigate
 import { db } from "../../components/firebase";
 import {
   collection,
@@ -11,6 +11,7 @@ import {
   addDoc,
 } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
+import { ArrowLeft } from "lucide-react"; // Import ArrowLeft
 import {
   requestNotificationPermission,
   onMessageListener,
@@ -19,6 +20,7 @@ import {
 const NotificationsPage = () => {
   const currentUser = getAuth().currentUser;
   const userId = currentUser?.uid;
+  const navigate = useNavigate(); // Initialize navigate
 
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
   const [activeTab, setActiveTab] = useState("all");
@@ -111,8 +113,18 @@ const NotificationsPage = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF]">
-      <Header title="Notifications" />
+    <div className="min-h-screen bg-[#121212] text-[#DFDFDF] p-4">
+      {/* Header with Back Button */}
+      <div className="flex items-center mb-6">
+        <button
+          onClick={() => navigate(-1)}
+          className="p-2 rounded-full hover:bg-[#1A1A1A] mr-2"
+        >
+          <ArrowLeft size={24} />
+        </button>
+        <h1 className="text-2xl font-bold">Notifications</h1>
+      </div>
+
       <div className="container mx-auto px-4 pb-20 max-w-md">
         {/* Toggle */}
         <div className="bg-[#1A1A1A] rounded-xl p-6 mb-6">
@@ -127,7 +139,7 @@ const NotificationsPage = () => {
               onClick={() => setNotificationsEnabled(!notificationsEnabled)}
               className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none ${
                 notificationsEnabled
-                  ? "bg-gradient-to-r from-purple-500 to-pink-500"
+                  ? "bg-gradient-to-r from-purple-500 to-[#9333EA]"
                   : "bg-gray-600"
               }`}
               aria-label={`Toggle notifications ${notificationsEnabled ? "off" : "on"}`}
@@ -155,7 +167,7 @@ const NotificationsPage = () => {
                   onClick={() => setActiveTab(tab.id)}
                   className={`flex-1 min-w-[23%] px-2 py-2 rounded-full text-sm font-medium transition-colors ${
                     activeTab === tab.id
-                      ? "bg-gradient-to-r from-purple-500 to-pink-500 text-[#DFDFDF]"
+                      ? "bg-gradient-to-r from-purple-500 to-[#9333EA] text-[#DFDFDF]"
                       : "bg-[#1A1A1A] text-[#DFDFDF]/60"
                   }`}
                   aria-label={`View ${tab.label} notifications`}
@@ -222,4 +234,3 @@ const NotificationsPage = () => {
 };
 
 export default NotificationsPage;
-

@@ -26,9 +26,8 @@ const ExpenseCategory = lazy(() => import("./pages/Add Expense/ExpenseCategory")
 const ProfileMain = lazy(() => import("./pages/Profile/ProfileMain"));
 const SetBudget = lazy(() => import("./pages/Profile/SetBudget"));
 const Notifications = lazy(() => import("./pages/Profile/Notifications"));
-const UpdateEmail = lazy(() => import("./pages/Profile/UpdateEmail"));
-const UpdatePhone = lazy(() => import("./pages/Profile/Phonenumberupadte"));
 const ExportData = lazy(() => import("./pages/Profile/ExportData"));
+const HelpPage = lazy(() => import("./pages/Profile/Help"));
 
 function AppRoutes({ user, isAuthLoading }) {
   // Show Loader while authentication state is loading
@@ -72,6 +71,7 @@ function AppRoutes({ user, isAuthLoading }) {
               <Route path="setbudget" element={<SetBudget />} />
               <Route path="notifications" element={<Notifications />} />
               <Route path="exportdata" element={<ExportData />} />
+              <Route path="help" element={<HelpPage />} />
 
               {/* Fallback for unmatched routes */}
               <Route
@@ -79,10 +79,6 @@ function AppRoutes({ user, isAuthLoading }) {
                 element={<div className="text-center text-2xl p-10">404 - Page Not Found</div>}
               />
             </Route>
-
-            {/* Settings pages outside layout */}
-            <Route path="/update-email" element={<UpdateEmail />} />
-            <Route path="/update-phone" element={<UpdatePhone />} />
           </>
         ) : (
           // Redirect any unknown route to login if not authenticated

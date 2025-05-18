@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { db } from "../../components/firebase";
 import { doc, getDoc, setDoc, deleteDoc } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
+import { FiArrowLeft } from "react-icons/fi";
 
 export default function SetBudget() {
   const [budget, setBudget] = useState("");
@@ -100,58 +101,72 @@ export default function SetBudget() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0D0D0D] text-white p-6 flex justify-center items-center">
-      <div className="w-full max-w-md space-y-6">
-        <h2 className="text-2xl font-bold">Set Your Budget</h2>
-        <p className="text-gray-400">
-          {currentMonthName} {currentYear}
-        </p>
-        <input
-          type="number"
-          value={budget}
-          onChange={(e) => setBudget(e.target.value)}
-          placeholder="Enter budget amount"
-          className="w-full p-3 rounded bg-[#1A1A1A] border border-[#333333] text-white"
-        />
-        
-        <div className="flex items-center">
-          <input
-            type="checkbox"
-            id="applyToAll"
-            checked={applyToAllMonths}
-            onChange={(e) => setApplyToAllMonths(e.target.checked)}
-            className="mr-2"
-          />
-          <label htmlFor="applyToAll" className="text-sm text-gray-300">
-            Apply to all future months
-          </label>
-        </div>
-        
-        <button
-          onClick={handleSaveBudget}
-          disabled={loading || !budget}
-          className={`w-full py-2 rounded font-semibold ${
-            loading || !budget
-              ? "bg-gray-600 cursor-not-allowed"
-              : "bg-purple-600 hover:bg-purple-500"
-          }`}
+    <div className="min-h-screen bg-[#0D0D0D] text-white p-6">
+      {/* Added back button and title */}
+      <div className="flex items-center mb-6">
+        <button 
+          onClick={() => navigate(-1)}
+          className="p-2 rounded-full hover:bg-[#1A1A1A] mr-4"
+          aria-label="Go back"
         >
-          {loading ? "Saving..." : "Save Budget"}
+          <FiArrowLeft className="text-white text-xl" />
         </button>
-        
-        {currentBudget !== null && (
+        <h1 className="text-2xl font-bold">Set Budget</h1>
+      </div>
+
+      <div className="flex justify-center items-center">
+        <div className="w-full max-w-md space-y-6">
+          <h2 className="text-2xl font-bold">Set Your Monthly Budget</h2>
+          <p className="text-gray-400">
+            {currentMonthName} {currentYear}
+          </p>
+          <input
+            type="number"
+            value={budget}
+            onChange={(e) => setBudget(e.target.value)}
+            placeholder="Enter budget amount"
+            className="w-full p-3 rounded bg-[#1A1A1A] border border-[#333333] text-white"
+          />
+          
+          <div className="flex items-center">
+            <input
+              type="checkbox"
+              id="applyToAll"
+              checked={applyToAllMonths}
+              onChange={(e) => setApplyToAllMonths(e.target.checked)}
+              className="mr-2"
+            />
+            <label htmlFor="applyToAll" className="text-sm text-gray-300">
+              Apply to all future months
+            </label>
+          </div>
+          
           <button
-            onClick={handleRemoveBudget}
-            disabled={removeLoading}
+            onClick={handleSaveBudget}
+            disabled={loading || !budget}
             className={`w-full py-2 rounded font-semibold ${
-              removeLoading
+              loading || !budget
                 ? "bg-gray-600 cursor-not-allowed"
-                : "bg-red-600 hover:bg-red-500"
+                : "bg-purple-600 hover:bg-purple-500"
             }`}
           >
-            {removeLoading ? "Removing..." : "Remove Budget"}
+            {loading ? "Saving..." : "Save Budget"}
           </button>
-        )}
+          
+          {currentBudget !== null && (
+            <button
+              onClick={handleRemoveBudget}
+              disabled={removeLoading}
+              className={`w-full py-2 rounded font-semibold ${
+                removeLoading
+                  ? "bg-gray-600 cursor-not-allowed"
+                  : "bg-red-600 hover:bg-red-500"
+              }`}
+            >
+              {removeLoading ? "Removing..." : "Remove Budget"}
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

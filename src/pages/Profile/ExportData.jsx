@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FaFilePdf } from "react-icons/fa6";
+import { FaFilePdf, FaArrowLeft } from "react-icons/fa";
 import { getAuth } from "firebase/auth";
 import { getFirestore, collection, query, where, onSnapshot } from "firebase/firestore";
 import jsPDF from "jspdf";
@@ -139,28 +139,42 @@ export default function ExportData() {
 
   return (
     <div className="min-h-screen bg-[#121212] text-[#DFDFDF] p-6">
-      <div className="max-w-md mx-auto bg-[#1A1A1A] rounded-lg p-6 shadow-lg">
-        <div className="flex flex-col items-center space-y-6">
-          <FaFilePdf size={48} className="text-red-500" />
-          <h2 className="text-2xl font-bold text-center">Export Your Data</h2>
-          <p className="text-center text-[#DFDFDF] text-opacity-80">
-            Do you want to download your data as PDF?
-          </p>
+      {/* Back button and header */}
+      <div className="flex items-center mb-8">
+        <button 
+          onClick={() => navigate(-1)}
+          className="p-2 rounded-full hover:bg-[#2A2A2A] mr-4 transition-colors"
+          aria-label="Go back"
+        >
+          <FaArrowLeft className="text-[#DFDFDF] text-xl" />
+        </button>
+        <h1 className="text-2xl font-bold">Export Data</h1>
+      </div>
 
-          <div className="flex space-x-4 w-full justify-center">
-            <button
-              onClick={handleExport}
-              className="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-6 rounded-lg transition-colors flex items-center space-x-2"
-            >
-              <span>Yes</span>
-            </button>
-            <button
-              onClick={() => navigate(-1)}
-              className="bg-[#333333] hover:bg-[#444444] text-white font-medium py-2 px-6 rounded-lg transition-colors"
-            >
-              Cancel
-            </button>
-          </div>
+      {/* Content area */}
+      <div className="flex flex-col items-center justify-center space-y-8 mt-12">
+        <FaFilePdf size={64} className="text-red-500" />
+        
+        <div className="text-center space-y-2">
+          <h2 className="text-xl font-semibold">Export Your Expenses</h2>
+          <p className="text-[#DFDFDF] text-opacity-80 max-w-md">
+            Download a PDF report of all your expenses, organized by month
+          </p>
+        </div>
+
+        <div className="flex space-x-4 w-full max-w-xs">
+          <button
+            onClick={handleExport}
+            className="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center justify-center space-x-2"
+          >
+            <span>Export PDF</span>
+          </button>
+          <button
+            onClick={() => navigate(-1)}
+            className="flex-1 bg-[#333333] hover:bg-[#444444] text-white font-medium py-3 px-6 rounded-lg transition-colors"
+          >
+            Cancel
+          </button>
         </div>
       </div>
     </div>
