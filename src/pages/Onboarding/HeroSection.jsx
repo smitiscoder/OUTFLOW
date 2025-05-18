@@ -1,67 +1,122 @@
-
-import React from 'react';
-import ParticleBackground from './ParticleBackground';
-import { ButtonHero } from '../../components/ui/ButtonHero';
-import { ArrowDown } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { ArrowRight } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Button } from "../../components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 const HeroSection = () => {
- // const handleGetStarted = () => {
- //   window.location.href = "#get-started";
- // };
-  
+  const [isVisible, setIsVisible] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const timer = setTimeout(() => setIsVisible(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleGetStarted = () => {
+    // Navigate to login or signup
+    navigate("/login"); // change to "/signup" if needed
+  };
+
   const handleDownload = () => {
-    window.location.href = "#download";
+    // Redirect to a download link (replace with your actual link)
+    window.open("https://yourapp.com/download", "_blank");
   };
-  
-  const scrollToFeatures = () => {
-    window.location.href = "#features";
+
+  const handleExploreFeatures = () => {
+    // Scroll to #features section
+    const featuresSection = document.getElementById("features");
+    if (featuresSection) {
+      featuresSection.scrollIntoView({ behavior: "smooth" });
+    }
   };
-  
+
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      <ParticleBackground />
-      
-      <div className="relative z-10 max-w-4xl mx-auto px-4 text-center">
-        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6 bg-gradient-to-r from-purple-700 to-purple-500 text-transparent bg-clip-text">
-          Your finances,<br />
-          simplified.
-        </h1>
-        
-        <p className="text-xl md:text-2xl text-white/80 mb-10 max-w-2xl mx-auto leading-relaxed">
-          Track expenses, identify patterns, and take control of your financial future with OUTFLOW's intelligent expense management.
-        </p>
-        
-        <div className="flex flex-col sm:flex-row gap-5 justify-center">
-          <Link to= "/login">
-          <ButtonHero 
-           // onClick={handleGetStarted}
-            className="bg-outflow-accent hover:bg-outflow-accent-light text-white text-base py-6 px-8 rounded-lg shadow-lg shadow-outflow-accent/20 transition-all duration-300 hover:scale-105 hover:opacity-90"
+    <section className="min-h-screen flex items-center pt-24 pb-16 relative overflow-hidden bg-ododod text-white">
+      {/* Background and Particle */}
+      <div className="absolute inset-0 bg-[#020106] bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0.05)_0%,rgba(0,0,0,0)_70%)] -z-10" />
+      <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
+        <div className="shimmer absolute top-[30%] left-[10%] w-32 h-32 opacity-5 rounded-full blur-3xl animate-pulse"></div>
+        <div className="shimmer absolute top-[60%] right-[20%] w-64 h-64 opacity-5 rounded-full blur-3xl animate-pulse delay-700"></div>
+      </div>
+
+      <div className="container-section relative z-10 w-full px-4 sm:px-6">
+        <div className="max-w-3xl mx-auto text-center">
+          <h1
+            className={`text-4xl sm:text-5xl md:text-6xl font-bold leading-tight mb-6 transition-all duration-1000 ${
+              isVisible
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-4"
+            }`}
           >
-            Get Started
-          </ButtonHero>
-          </Link>
+            <span className="bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
+              Track what matters. Forget the rest."{" "}
+            </span>
+          </h1>
 
-
-
-          <ButtonHero 
-            onClick={handleDownload}
-            variant="outline" 
-            className="bg-transparent text-white border border-white/20 hover:bg-white/10 text-base py-6 px-8 rounded-lg"
+          <p
+            className={`text-text-secondary text-lg sm:text-xl md:text-2xl mb-10 max-w-2xl mx-auto transition-all duration-1000 delay-300 ${
+              isVisible
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-4"
+            }`}
           >
-            Download App
-          </ButtonHero>
-        </div>
-        
-        <button 
-          onClick={scrollToFeatures} 
-          className="mt-20 flex flex-col items-center text-white/50 hover:text-white transition-colors group"
-        >
-          <span className="text-sm mb-2">Explore Features</span>
-          <div className="p-2 rounded-full border border-white/20 group-hover:border-outflow-accent group-hover:bg-outflow-accent/10 transition-all">
-            <ArrowDown size={16} className="animate-pulse" />
+            Less noise, more numbers. Your finances — organized, always One tap to track, a lifetime to grow.
+          </p>
+
+          <div
+            className={`flex flex-col sm:flex-row gap-4 justify-center transition-all duration-1000 delay-500 ${
+              isVisible
+                ? "opacity-100 translate-y-0"
+                : "opacity-0 translate-y-4"
+            }`}
+          >
+            <Button
+              onClick={handleGetStarted}
+              className="btn-primary border border-white group transform transition-all duration-300 hover:scale-105 hover:shadow-xl"
+            >
+              Get Started
+              <ArrowRight className="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+            </Button>
+
+            <Button
+              onClick={handleDownload}
+              variant="outline"
+              className="btn-outline border-white/30 hover:border-white/50 text-white transform transition-all duration-300 hover:bg-white/5 hover:scale-105"
+            >
+              Download
+            </Button>
           </div>
-        </button>
+
+          {/* Trusted logos */}
+          <div
+            className={`mt-16 transition-all duration-1000 delay-700 ${
+              isVisible ? "opacity-75 translate-y-0" : "opacity-0 translate-y-4"
+            }`}
+          >
+            <p className="text-text-secondary text-sm mb-3">
+              Trusted by innovative teams worldwide
+            </p>
+            <div className="flex flex-wrap justify-center gap-8 md:gap-12">
+              {[...Array(4)].map((_, i) => (
+                <div
+                  key={i}
+                  className={`h-8 w-24 bg-white bg-opacity-10 rounded transform transition-transform duration-300 hover:scale-110 hover:bg-opacity-20 animate-float-${i}`}
+                ></div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Explore Features */}
+      <div
+        onClick={handleExploreFeatures}
+        className="absolute bottom-6 left-6 sm:left-10 text-white/60 hover:text-white transition-colors cursor-pointer"
+      >
+        <div className="flex items-center space-x-2 text-sm">
+          <span>Explore Features</span>
+          <ArrowRight className="h-4 w-4 animate-ping-slow" />
+        </div>
       </div>
     </section>
   );
