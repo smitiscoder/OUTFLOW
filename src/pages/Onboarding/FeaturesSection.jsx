@@ -1,35 +1,54 @@
 import React, { useState } from "react";
-import { features } from "../../components/lib/features";
 import {
-  Shield,
-  Cloud,
-  FileText,
-  CalendarDays,
-  Zap,
+  Sparkles,
+  RefreshCw,
+  BarChart2,
   Lock,
-  Eye,
   Smartphone,
-  Ban
+  Ban,
 } from "lucide-react";
 
-const FeatureIcon = ({ icon, isHovered }) => {
-  const iconMap = {
-    "⚡": <Zap className={`h-10 w-10 transition-all ${isHovered ? "text-white scale-110" : "text-outflow-accent"}`} />, 
-    "🔒": <Lock className={`h-10 w-10 transition-all ${isHovered ? "text-white scale-110" : "text-outflow-accent"}`} />,
-    "📊": <CalendarDays className={`h-10 w-10 transition-all ${isHovered ? "text-white scale-110" : "text-outflow-accent"}`} />,
-    "📈": <Cloud className={`h-10 w-10 transition-all ${isHovered ? "text-white scale-110" : "text-outflow-accent"}`} />,
-    "👁️": <Eye className={`h-10 w-10 transition-all ${isHovered ? "text-white scale-110" : "text-outflow-accent"}`} />,
-    "📱": <Smartphone className={`h-10 w-10 transition-all ${isHovered ? "text-white scale-110" : "text-outflow-accent"}`} />,
-    "🚫": <Ban className={`h-10 w-10 transition-all ${isHovered ? "text-white scale-110" : "text-outflow-accent"}`} />,
-  };
+const features = [
+  {
+    title: "Easy to Use",
+    description: "An intuitive interface that lets you manage your finances without a learning curve.",
+    icon: Sparkles,
+  },
+  {
+    title: "Real-Time Sync",
+    description: "Your data updates instantly across all your devices — no refresh needed.",
+    icon: RefreshCw,
+  },
+  {
+    title: "Visual Insights",
+    description: "Get charts and trends that help you understand your financial habits at a glance.",
+    icon: BarChart2,
+  },
+  {
+    title: "Secure & Private",
+    description: "We use bank-grade encryption and never sell your data. Privacy is built in.",
+    icon: Lock,
+  },
+  {
+    title: "Available Across Devices",
+    description: "Use the app on your phone, tablet, or desktop — your data stays in sync.",
+    icon: Smartphone,
+  },
+  {
+    title: "No Ads",
+    description: "Enjoy a completely ad-free experience, focused solely on your finances.",
+    icon: Ban,
+  },
+];
 
+const FeatureIcon = ({ Icon, isHovered }) => {
   return (
     <div
       className={`p-3 rounded-xl mb-6 transition-all duration-300 ${
         isHovered ? "border border-white bg-white/5" : "border border-transparent bg-outflow-accent/10"
       }`}
     >
-      {iconMap[icon]}
+      <Icon className={`h-10 w-10 transition-all ${isHovered ? "text-white scale-110" : "text-outflow-accent"}`} />
     </div>
   );
 };
@@ -61,18 +80,10 @@ const FeaturesSection = () => {
                   hoveredIndex === index ? "border border-white shadow-xl" : "border border-transparent"
                 }`}
               >
-                <FeatureIcon icon={feature.icon} isHovered={hoveredIndex === index} />
+                <FeatureIcon Icon={feature.icon} isHovered={hoveredIndex === index} />
                 <h3 className="text-xl font-bold mb-2 text-white">{feature.title}</h3>
                 <p className="text-white/70">{feature.description}</p>
               </div>
-
-              {/* Hover Dialog */}
-              {hoveredIndex === index && (
-                <div className="absolute left-0 top-full mt-4 w-full bg-black rounded-xl p-6 border border-white shadow-xl z-50">
-                  <h4 className="text-lg font-semibold text-white mb-2">{feature.title}</h4>
-                  <p className="text-white/70 text-sm">{feature.moreInfo}</p>
-                </div>
-              )}
             </div>
           ))}
         </div>

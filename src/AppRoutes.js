@@ -1,5 +1,5 @@
-import React, { Suspense, lazy } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import React, { Suspense, lazy, useEffect } from "react";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 
 // Loader Component
 import Loader from "./components/Loading"; // Adjust path if needed
@@ -15,6 +15,7 @@ const ContinueWithGoogle = lazy(() => import("./pages/Login/ContinuewithGoogle")
 const ForgotPassword = lazy(() => import("./pages/Login/ForgotPassword"));
 const EmailSignup = lazy(() => import("./pages/Login/EmailSignup"));
 const OnBoarding = lazy(() => import("./pages/Onboarding/OnBoarding"));
+const Download = lazy(() => import("./pages/Onboarding/Download"));
 
 // Protected Pages (Lazy-loaded)
 const Home = lazy(() => import("./pages/Home/Homemain"));
@@ -30,16 +31,34 @@ const ExportData = lazy(() => import("./pages/Profile/ExportData"));
 const HelpPage = lazy(() => import("./pages/Profile/Help"));
 
 function AppRoutes({ user, isAuthLoading }) {
+  const location = useLocation();
+
   // Show Loader while authentication state is loading
   if (isAuthLoading) {
     return <Loader />;
   }
 
+  // Check if user has visited before (stored in localStorage)
+  const hasVisited = localStorage.getItem("hasVisited") === "true";
+
+  // Set hasVisited to true after visiting onboarding
+  const markAsVisited = () => {
+    localStorage.setItem("hasVisited", "true");
+  };
+
+  // Wrapper for OnBoarding to mark as visited
+  const OnBoardingWrapper = () => {
+    useEffect(() => {
+      markAsVisited();
+    }, []);
+    return <OnBoarding />;
+  };
+
   return (
     <Suspense fallback={<Loader />}>
       <Routes>
         {/* Public Routes */}
-        <Route path="/onboarding" element={<OnBoarding />} />
+        <Route path="/onboarding" element={<OnBoardingWrapper />} />
         <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
         <Route path="/phone" element={user ? <Navigate to="/" replace /> : <Phone />} />
         <Route path="/email" element={user ? <Navigate to="/" replace /> : <EmailLogin />} />
@@ -52,15 +71,31 @@ function AppRoutes({ user, isAuthLoading }) {
           path="/continuewith.google"
           element={user ? <Navigate to="/" replace /> : <ContinueWithGoogle />}
         />
+        <Route path="/download" element={<Download />} />
 
         {/* Redirect /home to root */}
         <Route path="/home" element={<Navigate to="/" replace />} />
 
-        {/* Protected Routes */}
-        {user ? (
-          <>
-            {/* Main layout with nested routes */}
-            <Route path="/" element={<MainLayout />}>
+        {/* Root Route Logic */}
+        <Route
+          path="/"
+          element={
+            user ? (
+              hasVisited ? (
+                <MainLayout />
+              ) : (
+                <Navigate to="/onboarding" replace />
+              )
+            ) : hasVisited ? (
+              <Navigate to="/login" replace />
+            ) : (
+              <Navigate to="/onboarding" replace />
+            )
+          }
+        >
+          {/* Protected Routes (only accessible if user is authenticated and hasVisited) */}
+          {user && hasVisited && (
+            <>
               <Route index element={<Home />} />
               <Route path="reports" element={<Reports />} />
               <Route path="bar-graphs" element={<BarGraphScreen />} />
@@ -72,18 +107,23 @@ function AppRoutes({ user, isAuthLoading }) {
               <Route path="notifications" element={<Notifications />} />
               <Route path="exportdata" element={<ExportData />} />
               <Route path="help" element={<HelpPage />} />
+            </>
+          )}
+        </Route>
 
-              {/* Fallback for unmatched routes */}
-              <Route
-                path="*"
-                element={<div className="text-center text-2xl p-10">404 - Page Not Found</div>}
-              />
-            </Route>
-          </>
-        ) : (
-          // Redirect any unknown route to login if not authenticated
-          <Route path="*" element={<Navigate to="/login" replace />} />
-        )}
+        {/* Fallback for unmatched routes */}
+        <Route
+          path="*"
+          element={
+            user && hasVisited ? (
+              <div className="text-center text-2xl p-10">404 - Page Not Found</div>
+            ) : hasVisited ? (
+              <Navigate to="/login" replace />
+            ) : (
+              <Navigate to="/onboarding" replace />
+            )
+          }
+        />
       </Routes>
     </Suspense>
   );

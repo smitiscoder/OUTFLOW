@@ -13,13 +13,13 @@ const HeroSection = () => {
   }, []);
 
   const handleGetStarted = () => {
-    // Navigate to login or signup
-    navigate("/login"); // change to "/signup" if needed
+    // Navigate to login page
+    navigate("/login");
   };
 
   const handleDownload = () => {
-    // Redirect to a download link (replace with your actual link)
-    window.open("https://yourapp.com/download", "_blank");
+    // Navigate to download page
+    navigate("/download");
   };
 
   const handleExploreFeatures = () => {
@@ -49,7 +49,7 @@ const HeroSection = () => {
             }`}
           >
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
-              Track what matters. Forget the rest."{" "}
+              Track what matters. Forget the rest.
             </span>
           </h1>
 
@@ -60,7 +60,7 @@ const HeroSection = () => {
                 : "opacity-0 translate-y-4"
             }`}
           >
-            Less noise, more numbers. Your finances — organized, always One tap to track, a lifetime to grow.
+            Less noise, more numbers. Your finances — organized, always. One tap to track, a lifetime to grow.
           </p>
 
           <div
@@ -86,25 +86,6 @@ const HeroSection = () => {
               Download
             </Button>
           </div>
-
-          {/* Trusted logos */}
-          <div
-            className={`mt-16 transition-all duration-1000 delay-700 ${
-              isVisible ? "opacity-75 translate-y-0" : "opacity-0 translate-y-4"
-            }`}
-          >
-            <p className="text-text-secondary text-sm mb-3">
-              Trusted by innovative teams worldwide
-            </p>
-            <div className="flex flex-wrap justify-center gap-8 md:gap-12">
-              {[...Array(4)].map((_, i) => (
-                <div
-                  key={i}
-                  className={`h-8 w-24 bg-white bg-opacity-10 rounded transform transition-transform duration-300 hover:scale-110 hover:bg-opacity-20 animate-float-${i}`}
-                ></div>
-              ))}
-            </div>
-          </div>
         </div>
       </div>
 
@@ -112,12 +93,7 @@ const HeroSection = () => {
       <div
         onClick={handleExploreFeatures}
         className="absolute bottom-6 left-6 sm:left-10 text-white/60 hover:text-white transition-colors cursor-pointer"
-      >
-        <div className="flex items-center space-x-2 text-sm">
-          <span>Explore Features</span>
-          <ArrowRight className="h-4 w-4 animate-ping-slow" />
-        </div>
-      </div>
+      ></div>
     </section>
   );
 };

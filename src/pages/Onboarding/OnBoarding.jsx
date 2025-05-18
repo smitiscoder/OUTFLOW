@@ -6,7 +6,7 @@ import ReviewsSection from './ReviewsSection';
 import CtaSection from './CtaSection';
 import Footer from './Footer';
 import StickyButtons from './StickyButtons';
-import ParticleBackground from './ParticleBackground';
+
 
 
 const Onbording = () => {
@@ -36,9 +36,6 @@ const Onbording = () => {
       <header className="fixed top-0 left-0 right-0 z-50 py-6 px-4 bg-gradient-to-b from-outflow-black to-transparent backdrop-blur-sm">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center">
-            <div className="h-8 w-8 rounded-full bg-outflow-accent flex items-center justify-center mr-2">
-              <span className="text-white font-bold text-sm">O</span>
-            </div>
             <h1 className="text-2xl font-bold">OUTFLOW</h1>
           </div>
           <div className="flex space-x-1.5">
