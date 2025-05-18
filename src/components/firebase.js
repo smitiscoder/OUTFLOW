@@ -8,15 +8,14 @@ import {
   signOut,
   onAuthStateChanged,
   sendPasswordResetEmail,
-  updateEmail,
   updateProfile,
-  updatePhoneNumber,
   PhoneAuthProvider,
   RecaptchaVerifier,
 } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getMessaging, isSupported as isMessagingSupported } from 'firebase/messaging';
 
+// Firebase configuration (hardcoded)
 const firebaseConfig = {
   apiKey: 'AIzaSyDIXQawm6JNyxwt1UnEH8rZhzYyYWhEWYg',
   authDomain: 'expensetracking-73767.firebaseapp.com',
@@ -26,6 +25,9 @@ const firebaseConfig = {
   appId: '1:433052728459:web:98ef488a9bcd471f92888e',
   measurementId: 'G-4CD1QW7VWT',
 };
+
+// Debug log to verify config
+console.log('Firebase Config:', firebaseConfig);
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -89,9 +91,7 @@ export {
   signOut,
   onAuthStateChanged,
   sendPasswordResetEmail,
-  updateEmail,
   updateProfile,
-  updatePhoneNumber,
   PhoneAuthProvider,
   RecaptchaVerifier,
 };

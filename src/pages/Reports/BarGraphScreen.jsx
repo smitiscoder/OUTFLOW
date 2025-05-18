@@ -154,7 +154,7 @@ export default function BarGraphScreen() {
 
         {/* Combined Expenses and Savings Chart */}
         <div className="bg-[#1A1A1A] rounded-xl p-6">
-          <h2 className="text-lg font-semibold mb-6">Expenses vs Savings</h2>
+          <h2 className="text-lg font-semibold mb-6">Expenses and Savings</h2>
           {chartData.length > 0 ? (
             <ResponsiveContainer width="100%" height={300}>
               <BarChart

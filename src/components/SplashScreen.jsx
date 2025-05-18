@@ -28,14 +28,14 @@ const SplashScreen = () => {
         this.baseY = this.y;
         this.size = 1.5;
         this.density = Math.random() * 20 + 1;
-        this.color = "#ffffff";
+        this.color = "#DFDFDF";
         this.angle = Math.random() * 2 * Math.PI;
         this.alpha = 0;
         this.targetAlpha = 1;
       }
 
       draw() {
-        ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
+        ctx.fillStyle = `rgba(223, 223, 223, ${this.alpha})`;
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();
@@ -77,7 +77,7 @@ const SplashScreen = () => {
 
       const fontSize = Math.min((canvas.width / window.devicePixelRatio) * 0.2, 120);
       ctx.font = `bold ${fontSize}px Arial`;
-      ctx.fillStyle = "#ffffff";
+      ctx.fillStyle = "#DFDFDF";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
 
@@ -117,7 +117,7 @@ const SplashScreen = () => {
 
       const fontSize = Math.min((canvas.width / window.devicePixelRatio) * 0.3, 80);
       ctx.font = `bold ${fontSize}px Arial`;
-      ctx.fillStyle = `rgba(255, 255, 255, ${opacity})`;
+      ctx.fillStyle = `rgba(223, 223, 223, ${opacity})`;
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
 

@@ -3,7 +3,7 @@ import { FaTwitter, FaLinkedin, FaInstagram, FaFacebook } from "react-icons/fa";
 
 const Footer = () => {
   return (
-    <footer className="bg-black text-white py-10 px-6 md:px-16">
+    <footer className="bg-[#ododod] text-white py-10 px-6 md:px-16">
       {/* Animated underline style */}
       <style>
         {`

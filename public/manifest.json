@@ -34,9 +34,9 @@
       "type": "image/png"
     },
     {
-      "src": "favicon-64x64.png",
+      "src": "favicon-64x64.ico",
       "sizes": "64x64",
-      "type": "image/png"
+      "type": "image/ico"
     },
     {
       "src": "favicon-48x48.png",

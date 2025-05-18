@@ -4,7 +4,7 @@ import {
   Stethoscope, Users, Bus, Scissors, Car, BookOpen, 
   TrendingUp, Home, Gift, Plane, Shield, CreditCard,
   Dog, Wrench, Pen, Smartphone, Baby, Cookie, Apple,
-  MoreHorizontal , Banknote, Salad
+  MoreHorizontal, Banknote, Salad, X // Import X icon
 } from 'lucide-react';
 import { getAuth } from 'firebase/auth';
 import { getFirestore, collection, addDoc } from 'firebase/firestore';
@@ -73,9 +73,26 @@ const ExpenseCategories = () => {
     }
   };
 
+  // Close handler
+  const handleClose = () => {
+    window.history.back(); // Navigate back in browser history
+    // Alternatively, you could use: 
+    // - useNavigate() from react-router-dom: navigate(-1)
+    // - A custom onClose prop: onClose()
+  };
+
   return (
-    <div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF] pb-20">
+    <div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF] pb-20 relative">
       <div className="w-full max-w-screen-lg mx-auto px-4">
+        {/* Close Button */}
+        <button
+          onClick={handleClose}
+          className="absolute top-4 left-4 p-2 rounded-full hover:bg-[#1A1A1A] transition-colors"
+          aria-label="Close"
+        >
+          <X className="w-6 h-6 text-[#DFDFDF]" />
+        </button>
+
         <h2 className="text-center text-2xl font-semibold mb-6 pt-6">SELECT CATEGORY</h2>
 
         {/* Fixed 6x4 Grid (24 items max) */}
@@ -113,8 +130,6 @@ const ExpenseCategories = () => {
 };
 
 export default ExpenseCategories;
-
-
 
 
 
