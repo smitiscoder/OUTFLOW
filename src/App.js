@@ -26,14 +26,11 @@ function App() {
   const [showSplash, setShowSplash] = useState(true);
   const { isOffline } = useExpenses();
 
-  // Handle splash screen and auth check
   useEffect(() => {
-    // Show splash screen for 2 seconds
     const splashTimer = setTimeout(() => {
       setShowSplash(false);
     }, 3000);
 
-    // Firebase auth check
     const unsubscribe = auth.onAuthStateChanged((user) => {
       setUser(user);
       setIsAuthLoading(false);
@@ -45,44 +42,44 @@ function App() {
     };
   }, []);
 
-  // Show splash screen first
   if (showSplash) return <SplashScreen />;
-
-  // Show loader during auth check
   if (isAuthLoading) return <Loader />;
 
   return (
-    <Router>
-      {/* Offline Banner */}
-      {isOffline && (
-        <div
-          style={{
-            background: '#ffcc00',
-            padding: '10px',
-            textAlign: 'center',
-            color: '#333',
-            fontWeight: 'bold',
-          }}
-        >
-          You are offline. Changes will sync when you reconnect.
-        </div>
-      )}
-      {/* Toast Notifications */}
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
-      <AppRoutes user={user} isAuthLoading={isAuthLoading} />
-    </Router>
+    <div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF]"> {/* Consistent dark theme background */}
+      <Router>
+        {isOffline && (
+          <div
+            style={{
+              background: '#ffcc00',
+              padding: '10px',
+              textAlign: 'center',
+              color: '#333',
+              fontWeight: 'bold',
+            }}
+          >
+            You are offline. Changes will sync when you reconnect.
+          </div>
+        )}
+
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
+
+        <AppRoutes user={user} isAuthLoading={isAuthLoading} />
+      </Router>
+    </div>
   );
 }
+
 
 export default App;

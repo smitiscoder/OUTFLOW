@@ -160,13 +160,13 @@ export default function ReportsScreen() {
         <div className="flex gap-4 mt-6">
         <button
           onClick={() => navigate('/bar-graphs')}
-          className="flex-1 py-2 rounded-full text-sm font-semibold bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-600 hover:to-purple-600 transition-colors"
+          className="flex-1 py-2 rounded-full text-sm font-semibold bg-purple-600 hover:bg-purple-700 transition-colors"
         >
           BarGraph
         </button>
         <button
           onClick={() => navigate('/recurring-expenses')}
-          className="flex-1 py-2 rounded-full text-sm font-semibold bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-600 hover:to-purple-600 transition-colors"
+          className="flex-1 py-2 rounded-full text-sm font-semibold bg-purple-600 hover:bg-purple-700 transition-colors"
         >
           Recurring Expense
         </button>

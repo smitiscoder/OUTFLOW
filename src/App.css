@@ -8,9 +8,18 @@
 }
 
 html, body {
-  background-color: #111827; /* or #121212 or whatever dark color you like */
-  
-  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #0D0D0D;
+  min-height: 100vh;
+  height: 100%;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100vh;
+  padding-bottom: 80px; /* Space for bottom navbar */
+  background-color: #0D0D0D;
 }
 
 
@@ -21,7 +30,7 @@ html, body {
 }
 
 .App-header {
-  background-color: #282c34;
+  background-color: #0D0D0D;
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -32,7 +41,7 @@ html, body {
 }
 
 .App-link {
-  color: #61dafb;
+  color: #A855F7;
 }
 
 @keyframes App-logo-spin {

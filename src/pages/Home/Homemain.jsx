@@ -93,7 +93,7 @@ const HomeMain = () => {
       <div className="container mx-auto px-4 max-w-md relative">
         {selectedExpense && (
           <div
-            className="fixed inset-0 bg-black bg-opacity-50 z-10 backdrop-blur-sm"
+            className="fixed inset-0 bg-[#0D0D0D] z-10"
             onClick={cancelEdit}
           />
         )}
