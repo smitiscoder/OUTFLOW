@@ -145,8 +145,10 @@ export default function RecurringExpenses() {
 
   return (
   <div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF]">
-    <Header title="Recurring Expenses" />
     <div className="container mx-auto px-4 pb-20 max-w-md">
+      <header className="py-4 flex items-center justify-between mt-6">
+        <h1 className="text-2xl font-bold">Recurring Expenses</h1>
+      </header>
 
 
       {recurringExpenses.length > 0 ? (

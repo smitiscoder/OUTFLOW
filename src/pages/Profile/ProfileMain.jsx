@@ -97,10 +97,11 @@ export default function ProfileMain() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF] p-6 flex justify-center">
-      <div className="w-full max-w-2xl space-y-10">
-        {/* Header */}
-        <div className="text-2xl font-semibold">Settings</div>
+    <div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF]">
+    <div className="container mx-auto px-4 pb-20 max-w-md">
+      <header className="py-4 flex items-center justify-between mt-6">
+        <h1 className="text-2xl font-bold">Settings</h1>
+      </header>
 
         {/* Avatar and Name */}
         <div className="flex flex-col items-center space-y-4">

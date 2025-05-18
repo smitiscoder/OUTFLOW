@@ -151,8 +151,10 @@ export default function ReportsScreen() {
 
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF]">
-      <Header title="Reports" />
       <div className="container mx-auto px-4 pb-20 max-w-md">
+        <header className="py-4 flex items-center justify-between mt-6">
+          <h1 className="text-2xl font-bold">Reports</h1>
+        </header>
         <TimeframeSelector timeframes={timeframes} setTimeframe={setTimeframe} timeframe={timeframe} />
         <SpendingPieChart processedData={processedData} totalSpent={totalSpent} />
         <SpendingList processedData={processedData} />

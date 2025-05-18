@@ -44,9 +44,10 @@ const SearchMain = () => {
 
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF]">
-      <Header title="Search Expenses" />
-
       <div className="container mx-auto px-4 pb-20 max-w-md">
+        <header className="py-4 flex items-center justify-between mt-6">
+          <h1 className="text-2xl font-bold">Search Expenses</h1>
+        </header>
         {/* Search Input */}
         <div className="relative mt-6 mb-6">
           <SearchIcon className="absolute left-4 top-1/2 transform -translate-y-1/2 text-[#DFDFDF] text-opacity-60 w-5 h-5" />
