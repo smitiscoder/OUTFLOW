@@ -4,8 +4,14 @@ import {
 } from 'lucide-react';
 
 const COLORS = [
-  "#D4AF37", "#20B2AA", "#FF6B6B", "#00FA9A",
-  "#66BB6A", "#9C27B0", "#03A9F4", "#F4A261",
+  ["#8B5CF6", "#6D28D9"], // Purple gradient
+  ["#EC4899", "#BE185D"], // Pink gradient
+  ["#3B82F6", "#1D4ED8"], // Blue gradient
+  ["#10B981", "#047857"], // Green gradient
+  ["#F59E0B", "#B45309"], // Amber gradient
+  ["#6366F1", "#4338CA"], // Indigo gradient
+  ["#14B8A6", "#0F766E"], // Teal gradient
+  ["#F472B6", "#BE185D"]  // Pink gradient
 ];
 
 const categoryIcons = {

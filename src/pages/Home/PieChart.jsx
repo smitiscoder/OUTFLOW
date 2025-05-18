@@ -1,7 +1,9 @@
 import React from 'react';
-import { PieChart as RechartsPieChart, Pie, Cell } from 'recharts';
+import { PieChart as RechartsPieChart, Pie, Cell, defs } from 'recharts';
 import { useExpenses } from '../../Context/ExpenseContext'; // Updated path
 import { COLORS } from './constants';
+
+const createGradientId = (index) => `gradient-${index}`;
 
 const PieChart = ({ navigate }) => {
   const { expenses } = useExpenses();
@@ -31,6 +33,14 @@ const PieChart = ({ navigate }) => {
         {expenses.length > 0 ? (
           <>
             <RechartsPieChart width={256} height={256}>
+              <defs>
+                {COLORS.map((color, index) => (
+                  <linearGradient key={createGradientId(index)} id={createGradientId(index)} x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor={color[0]} />
+                    <stop offset="100%" stopColor={color[1]} />
+                  </linearGradient>
+                ))}
+              </defs>
               <Pie
                 data={finalCategoryData}
                 cx="50%"
@@ -42,7 +52,7 @@ const PieChart = ({ navigate }) => {
                 stroke="none"
               >
                 {finalCategoryData.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  <Cell key={`cell-${index}`} fill={`url(#${createGradientId(index % COLORS.length)})`} />
                 ))}
               </Pie>
             </RechartsPieChart>
