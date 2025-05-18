@@ -117,7 +117,7 @@ export default function ReportsScreen() {
       finalData.push({
         name: 'Others',
         spent: Math.round(othersTotal),
-        color: COLORS[4 % COLORS.length],
+        color: COLORS[4 % COLORS.length][0],
       });
     }
 
