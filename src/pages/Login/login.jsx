@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaPhoneAlt, FaEnvelope } from 'react-icons/fa';
+import { FaEnvelope } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import ContinueWithGoogle from './ContinuewithGoogle';
 
@@ -15,21 +15,11 @@ export default function Login() {
       <div className="relative z-10 w-full max-w-sm space-y-8">
         {/* Logo */}
         <div className="text-center space-y-2">
-          
           <h1 className="text-6xl font-bold tracking-wide">OUTFLOW</h1>
         </div>
 
         {/* Sign-in Buttons */}
         <div className="space-y-4">
-          {/* Phone Login */}
-          <button
-            className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-full bg-white text-black font-medium text-sm shadow-md hover:bg-gray-100 transition-colors"
-            onClick={() => navigate('/phone')}
-          >
-            <FaPhoneAlt size={18} />
-            Sign in with Phone Number
-          </button>
-
           {/* Email and Password Login */}
           <button
             className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-full bg-white text-black font-medium text-sm shadow-md hover:bg-gray-100 transition-colors"
@@ -53,6 +43,7 @@ export default function Login() {
     </div>
   );
 }
+
 
 
 

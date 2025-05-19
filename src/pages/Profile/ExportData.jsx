@@ -12,6 +12,14 @@ export default function ExportData() {
   const auth = getAuth();
   const db = getFirestore();
 
+  // Reset scroll position to top on page load
+  useEffect(() => {
+    window.scrollTo(0, 0); // Scroll to top
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+  }, []); // Empty dependency array ensures this runs only on mount
+
   // Fetch real-time user expenses from Firestore
   useEffect(() => {
     const userId = auth.currentUser?.uid;
@@ -40,7 +48,7 @@ export default function ExportData() {
       const doc = new jsPDF({
         orientation: "portrait",
         unit: "mm",
-        hotfixes: ["px_scaling"] // Fixes font scaling issues
+        hotfixes: ["px_scaling"],
       });
 
       // Title
@@ -51,7 +59,7 @@ export default function ExportData() {
 
       // Convert all timestamps to Date objects and sort by newest first
       const sortedExpenses = userExpenses
-        .map(expense => {
+        .map((expense) => {
           let date;
           if (expense.timestamp && typeof expense.timestamp.toDate === "function") {
             date = expense.timestamp.toDate();
@@ -84,7 +92,7 @@ export default function ExportData() {
 
       let startY = 30; // Initial Y position after title
 
-      // Generate tables for each month on the same page
+      // Generate tables for each month
       sortedMonths.forEach((monthYear) => {
         // Month title
         doc.setFont("helvetica", "bold");
@@ -93,15 +101,13 @@ export default function ExportData() {
         doc.text(monthYear, 14, startY);
         startY += 8; // Space between header and table
 
-        // Prepare table data for this month (already sorted by date)
-        const tableData = expensesByMonth[monthYear].map((expense) => {
-          return [
-            expense.date.toLocaleDateString("en-IN"),
-            expense.category || "-",
-            `Rs. ${Math.round(expense.amount) || 0}`, // Changed from ₹ to Rs.
-            expense.note || "-",
-          ];
-        });
+        // Prepare table data for this month
+        const tableData = expensesByMonth[monthYear].map((expense) => [
+          expense.date.toLocaleDateString("en-IN"),
+          expense.category || "-",
+          `Rs. ${Math.round(expense.amount) || 0}`,
+          expense.note || "-",
+        ]);
 
         // Add table for this month
         autoTable(doc, {
@@ -111,7 +117,7 @@ export default function ExportData() {
             fillColor: [50, 50, 50],
             textColor: 255,
             fontStyle: "bold",
-            fontSize: 10
+            fontSize: 10,
           },
           body: tableData,
           margin: { top: 5, bottom: 5 },
@@ -120,12 +126,12 @@ export default function ExportData() {
             fontSize: 10,
             cellPadding: 3,
             overflow: 'linebreak',
-            textColor: [40, 40, 40]
+            textColor: [40, 40, 40],
           },
           didDrawPage: (data) => {
             // Update startY for next section
             startY = data.cursor.y + 10;
-          }
+          },
         });
       });
 
@@ -138,31 +144,30 @@ export default function ExportData() {
   };
 
   return (
-    <div className="min-h-screen bg-[#121212] text-[#DFDFDF] p-6">
-      {/* Back button and header */}
+    <div className="min-h-screen bg-[#121212] text-[#DFDFDF] p-6 flex flex-col">
+      {/* Header */}
       <div className="flex items-center mb-8">
-        <button 
+        <button
           onClick={() => navigate(-1)}
-          className="p-2 rounded-full hover:bg-[#2A2A2A] mr-4 transition-colors"
-          aria-label="Go back"
+          className="p-2 rounded-full hover:bg-[#1A1A1A] mr-2"
         >
-          <FaArrowLeft className="text-[#DFDFDF] text-xl" />
+          <FaArrowLeft size={24} />
         </button>
         <h1 className="text-2xl font-bold">Export Data</h1>
       </div>
 
       {/* Content area */}
-      <div className="flex flex-col items-center justify-center space-y-8 mt-12">
+      <div className="flex flex-col items-center justify-start space-y-8 flex-1 max-w-md mx-auto w-full">
         <FaFilePdf size={64} className="text-red-500" />
         
         <div className="text-center space-y-2">
           <h2 className="text-xl font-semibold">Export Your Expenses</h2>
-          <p className="text-[#DFDFDF] text-opacity-80 max-w-md">
+          <p className="text-[#DFDFDF] text-opacity-80">
             Download a PDF report of all your expenses, organized by month
           </p>
         </div>
 
-        <div className="flex space-x-4 w-full max-w-xs">
+        <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 w-full">
           <button
             onClick={handleExport}
             className="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center justify-center space-x-2"

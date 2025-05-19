@@ -65,7 +65,7 @@ const PieChart = ({ navigate }) => {
             </RechartsPieChart>
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-center">
               <p className="text-2xl font-bold text-[#DFDFDF]">{formatNumber(totalSpent)}</p>
-              <p className="text-sm text-[#DFDFDF] text-opacity-70 mt-1 font-medium">Total Spent</p>
+              
             </div>
           </>
         ) : (

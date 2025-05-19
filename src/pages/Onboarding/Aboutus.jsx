@@ -1,7 +1,10 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { ArrowLeft } from "lucide-react";
 
 const Aboutus = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), 100);
@@ -9,13 +12,20 @@ const Aboutus = () => {
   }, []);
 
   return (
-    <section className="min-h-screen flex flex-col items-center py-24 relative overflow-hidden bg-[#020106] text-white">
-      {/* Background and Particle Effects */}
+    <section className="min-h-screen flex flex-col items-center py-24 relative overflow-hidden bg-[#0D0D0D] text-white">
+      
+            <div className="absolute top-6 left-6 flex items-center space-x-2">
+              <button
+                onClick={() => navigate(-1)}
+                className="p-2 rounded-full hover:bg-[#1A1A1A]"
+              >
+                <ArrowLeft size={24} />
+              </button>
+               <h1 className="text-2xl font-bold">About Us</h1>
+            </div>
+
+      {/* Background (keeping just the subtle gradient) */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0.05)_0%,rgba(0,0,0,0)_70%)] -z-10" />
-      <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
-        <div className="shimmer absolute top-[20%] left-[15%] w-32 h-32 opacity-5 rounded-full blur-3xl animate-pulse"></div>
-        <div className="shimmer absolute top-[50%] right-[10%] w-64 h-64 opacity-5 rounded-full blur-3xl animate-pulse delay-700"></div>
-      </div>
 
       <div className="container-section relative z-10 w-full px-4 sm:px-6">
         <div className="max-w-3xl mx-auto text-center">
@@ -30,7 +40,7 @@ const Aboutus = () => {
               About Outflow
             </h2>
             <p className="text-lg sm:text-xl text-white/80 leading-relaxed text-left">
-              At <strong>Outflow</strong>, we’re reimagining how individuals track, manage, and understand their money — with simplicity, precision, and purpose.
+              At <strong>Outflow</strong>, we're reimagining how individuals track, manage, and understand their money — with simplicity, precision, and purpose.
             </p>
           </div>
 
@@ -90,13 +100,13 @@ const Aboutus = () => {
               </span>
               <br />
               <span>
-                In 2025, we launched <strong>Outflow</strong> — a minimal, privacy-respecting, and open-access money tracking platform for anyone who values financial awareness. Since then, we’ve grown with the help of
+                In 2025, we launched <strong>Outflow</strong> — a minimal, privacy-respecting, and open-access money tracking platform for anyone who values financial awareness. Since then, we've grown with the help of
                 our users, who continue to shape our vision with real-world feedback and real financial goals.
               </span>
               <br />
               <span>
-                We believe that when people understand their money, they make better decisions — and that’s the kind of
-                future we’re building, together.
+                We believe that when people understand their money, they make better decisions — and that's the kind of
+                future we're building, together.
               </span>
             </p>
           </div>
@@ -107,4 +117,3 @@ const Aboutus = () => {
 };
 
 export default Aboutus;
-

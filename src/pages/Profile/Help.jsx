@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Book, Users } from 'lucide-react';
 import { ROUTES } from '../../utils/constants';
@@ -6,26 +6,35 @@ import { ROUTES } from '../../utils/constants';
 const HelpPage = () => {
   const navigate = useNavigate();
 
+  // Reset scroll position to top on page load
+  useEffect(() => {
+    window.scrollTo(0, 0); // Scroll to top
+    // Disable browser scroll restoration
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+  }, []); // Empty dependency array ensures this runs only on mount
+
   const helpOptions = [
     {
-      title: "User Manual",
-      description: "Learn how to use the app features",
+      title: 'User Manual',
+      description: 'Learn how to use the app features',
       icon: <Book size={20} className="text-[#DFDFDF]" />,
       route: ROUTES.USER_MANUAL,
     },
     {
-      title: "About Us",
-      description: "Learn about our mission and team",
+      title: 'About Us',
+      description: 'Learn about our mission and team',
       icon: <Users size={20} className="text-[#DFDFDF]" />,
       route: ROUTES.ABOUT_US,
-    }
+    },
   ];
 
   return (
-    <div className="min-h-screen bg-[#0D0D0D] text-white p-4">
+    <div className="min-h-screen bg-[#0D0D0D] text-white p-4 flex flex-col">
       {/* Header */}
       <div className="flex items-center mb-6">
-        <button 
+        <button
           onClick={() => navigate(-1)}
           className="p-2 rounded-full hover:bg-[#1A1A1A] mr-2"
         >
@@ -35,7 +44,7 @@ const HelpPage = () => {
       </div>
 
       {/* Help Options */}
-      <div className="space-y-3 max-w-2xl mx-auto">
+      <div className="space-y-3 max-w-2xl mx-auto w-full">
         {helpOptions.map((option, index) => (
           <div
             key={index}

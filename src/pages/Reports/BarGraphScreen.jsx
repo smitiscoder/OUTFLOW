@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
 import { getFirestore, collection, query, where, onSnapshot } from 'firebase/firestore';
-import Header from '../../components/Header'; // Adjust path as needed
+import { ArrowLeft } from 'lucide-react';
 import {
   BarChart,
   Bar,
@@ -21,12 +22,13 @@ const timeframes = [
 
 export default function BarGraphScreen() {
   const [timeframe, setTimeframe] = useState('3months');
-  const [chartData, setChartData] = useState([]); // Combined data for expenses and savings
+  const [chartData, setChartData] = useState([]);
   const [userExpenses, setUserExpenses] = useState([]);
   const [userBudgets, setUserBudgets] = useState([]);
   const auth = getAuth();
   const db = getFirestore();
   const now = new Date();
+  const navigate = useNavigate();
 
   // Fetch expenses
   useEffect(() => {
@@ -58,7 +60,7 @@ export default function BarGraphScreen() {
 
     const q = query(
       collection(db, 'budgets'),
-      where('year', '>=', now.getFullYear() - 1) // Fetch last 12 months
+      where('year', '>=', now.getFullYear() - 1)
     );
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -67,7 +69,7 @@ export default function BarGraphScreen() {
           id: doc.id,
           ...doc.data(),
         }))
-        .filter((budget) => budget.id.startsWith(userId)); // Ensure user-specific budgets
+        .filter((budget) => budget.id.startsWith(userId));
       setUserBudgets(budgets);
     }, (error) => {
       console.error('Error fetching budgets:', error);
@@ -85,13 +87,11 @@ export default function BarGraphScreen() {
     const startDate = new Date(now.getFullYear(), now.getMonth() - monthsBack, 1);
     const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
 
-    // Filter expenses
     const filteredExpenses = userExpenses.filter((exp) => {
       const expDate = new Date(exp.timestamp?.toDate?.() || exp.timestamp);
       return expDate >= startDate && expDate <= endDate;
     });
 
-    // Aggregate expenses by month
     const expenseByMonth = {};
     filteredExpenses.forEach((exp) => {
       const expDate = new Date(exp.timestamp?.toDate?.() || exp.timestamp);
@@ -99,7 +99,6 @@ export default function BarGraphScreen() {
       expenseByMonth[monthKey] = (expenseByMonth[monthKey] || 0) + exp.amount;
     });
 
-    // Aggregate budgets by month
     const budgetByMonth = {};
     userBudgets.forEach((budget) => {
       const budgetDate = new Date(budget.year, budget.month - 1, 1);
@@ -109,7 +108,6 @@ export default function BarGraphScreen() {
       }
     });
 
-    // Generate chart data
     const data = [];
     for (let i = monthsBack - 1; i >= 0; i--) {
       const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
@@ -123,7 +121,7 @@ export default function BarGraphScreen() {
       data.push({
         name: monthName,
         expenses: Math.round(expenses),
-        savings: Math.round(savings > 0 ? savings : 0), // Ensure savings is non-negative
+        savings: Math.round(savings > 0 ? savings : 0),
       });
     }
 
@@ -132,19 +130,27 @@ export default function BarGraphScreen() {
 
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF]">
-      <Header title="Bar Graphs" />
+      <div className="absolute top-6 left-6 flex items-center space-x-2">
+        <button
+          onClick={() => navigate(-1)}
+          className="p-2 rounded-full hover:bg-[#1A1A1A]"
+        >
+          <ArrowLeft size={24} />
+        </button>
+        <h1 className="text-2xl font-bold">Stacked Bar Graph</h1>
+      </div>
 
-      <div className="container mx-auto px-4 pb-20 max-w-md">
+      <div className="container mx-auto px-4 pt-20 pb-20 max-w-3xl">
         {/* Timeframe Selector */}
-        <div className="flex flex-wrap justify-between gap-2 mt-6 mb-6">
+        <div className="flex flex-wrap justify-center gap-2 mt-6 mb-8">
           {timeframes.map((item) => (
             <button
               key={item.id}
               onClick={() => setTimeframe(item.id)}
-              className={`flex-1 min-w-[30%] px-2 py-2 rounded-full text-sm font-medium transition-colors ${
+              className={`flex-1 min-w-[100px] px-4 py-2 rounded-full text-sm font-medium transition-colors ${
                 timeframe === item.id
                   ? 'bg-gradient-to-r from-purple-600 to-purple-500 text-[#DFDFDF]'
-                  : 'bg-[#1A1A1A] text-[#DFDFDF] text-opacity-60'
+                  : 'bg-[#1A1A1A] text-[#DFDFDF] text-opacity-60 hover:bg-[#2A2A2A]'
               }`}
             >
               {item.label}
@@ -153,25 +159,31 @@ export default function BarGraphScreen() {
         </div>
 
         {/* Combined Expenses and Savings Chart */}
-        <div className="bg-[#1A1A1A] rounded-xl p-6">
-          <h2 className="text-lg font-semibold mb-6">Expenses and Savings</h2>
+        <div className="bg-[#1A1A1A] rounded-xl p-6 shadow-lg">
+          <h2 className="text-lg font-semibold mb-6 text-center">Expenses vs. Savings</h2>
           {chartData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={400}>
               <BarChart
                 data={chartData}
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
               >
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip formatter={(value) => `₹${value}`} />
-                <Legend />
+                <CartesianGrid strokeDasharray="3 3" stroke="#333" />
+                <XAxis dataKey="name" stroke="#DFDFDF" />
+                <YAxis stroke="#DFDFDF" />
+                <Tooltip
+                  formatter={(value) => `₹${value.toLocaleString()}`}
+                  contentStyle={{ backgroundColor: '#1A1A1A', border: 'none' }}
+                  labelStyle={{ color: '#DFDFDF' }}
+                />
+                <Legend wrapperStyle={{ paddingTop: '20px' }} />
                 <Bar dataKey="expenses" stackId="a" fill="#8884d8" name="Expenses (₹)" />
                 <Bar dataKey="savings" stackId="a" fill="#82ca9d" name="Savings (₹)" />
               </BarChart>
             </ResponsiveContainer>
           ) : (
-            <p className="text-center text-[#DFDFDF] text-opacity-60">No data available</p>
+            <p className="text-center text-[#DFDFDF] text-opacity-60 py-10">
+              No data available for the selected timeframe
+            </p>
           )}
         </div>
       </div>
