@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Smartphone, Globe, Laptop, ChevronRight } from "lucide-react";
+import { Smartphone, Globe, Laptop, ChevronRight, ArrowLeft } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Download = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), 100);
@@ -10,12 +12,23 @@ const Download = () => {
   }, []);
 
   return (
-    <section className="min-h-screen flex items-center py-24 relative overflow-hidden bg-[#020106] text-white">
+    <section className="min-h-screen flex items-center py-24 relative overflow-hidden bg-[#0D0D0D] text-white">
       {/* Background and Particle Effects */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0.05)_0%,rgba(0,0,0,0)_70%)] -z-10" />
       <div className="absolute inset-0 overflow-hidden pointer-events-none -z-10">
-        <div className="shimmer absolute top-[20%] left-[15 gritar%] w-32 h-32 opacity-5 rounded-full blur-3xl animate-pulse"></div>
+        <div className="shimmer absolute top-[20%] left-[15%] w-32 h-32 opacity-5 rounded-full blur-3xl animate-pulse"></div>
         <div className="shimmer absolute top-[50%] right-[10%] w-64 h-64 opacity-5 rounded-full blur-3xl animate-pulse delay-700"></div>
+      </div>
+
+      {/* Back Button and User Manual Text */}
+      <div className="absolute top-6 left-6 flex items-center space-x-2">
+        <button
+          onClick={() => navigate(-1)}
+          className="p-2 rounded-full hover:bg-[#1A1A1A]"
+        >
+          <ArrowLeft size={24} />
+        </button>
+        <h1 className="text-2xl font-bold">User Manual</h1>
       </div>
 
       <div className="container-section relative z-10 w-full px-4 sm:px-6">
@@ -104,6 +117,48 @@ const Download = () => {
                 <li className="flex items-start">
                   <ChevronRight className="h-5 w-5 text-outflow-accent mr-2 mt-1" />
                   <span>Tap “Add” to confirm installation.</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* macOS Instructions */}
+            <div className="bg-black/10 p-8 rounded-2xl border border-white/10 hover:border-white/30 transition-all duration-300">
+              <div className="flex items-center justify-center mb-4">
+                <Laptop className="h-8 w-8 text-outflow-accent mr-2" />
+                <h2 className="text-2xl font-semibold">For macOS (Using Safari)</h2>
+              </div>
+              <ul className="text-left text-white/70 space-y-4">
+                <li className="flex items-start">
+                  <ChevronRight className="h-5 w-5 text-outflow-accent mr-2 mt-1" />
+                  <span>Open the website in the Safari browser.</span>
+                </li>
+                <li className="flex items-start">
+                  <ChevronRight className="h-5 w-5 text-outflow-accent mr-2 mt-1" />
+                  <span>Click the “Share” button in the toolbar (a square with an arrow pointing up).</span>
+                </li>
+                <li className="flex items-start">
+                  <ChevronRight className="h-5 w-5 text-outflow-accent mr-2 mt-1" />
+                  <span>Select “Add to Dock” from the menu.</span>
+                </li>
+                <li className="flex items-start">
+                  <ChevronRight className="h-5 w-5 text-outflow-accent mr-2 mt-1" />
+                  <span>Confirm the installation, and the app icon will appear in the Dock.</span>
+                </li>
+                <li className="flex items-start">
+                  <ChevronRight className="h-5 w-5 text-outflow-accent mr-2 mt-1" />
+                  <span>
+                    Alternatively:
+                    <ul className="ml-6 mt-2 space-y-2">
+                      <li className="flex items-start">
+                        <ChevronRight className="h-4 w-4 text-outflow-accent mr-2 mt-1" />
+                        <span>Click “File” in the menu bar and select “Add to Dock”.</span>
+                      </li>
+                      <li className="flex items-start">
+                        <ChevronRight className="h-4 w-4 text-outflow-accent mr-2 mt-1" />
+                        <span>Confirm the installation.</span>
+                      </li>
+                    </ul>
+                  </span>
                 </li>
               </ul>
             </div>
