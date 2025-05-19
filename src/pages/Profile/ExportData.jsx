@@ -144,7 +144,7 @@ export default function ExportData() {
   };
 
   return (
-    <div className="min-h-screen bg-[#121212] text-[#DFDFDF] p-6 flex flex-col">
+    <div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF] p-6 flex flex-col">
       {/* Header */}
       <div className="flex items-center mb-8">
         <button
