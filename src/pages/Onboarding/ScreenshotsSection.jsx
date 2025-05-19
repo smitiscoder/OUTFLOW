@@ -88,7 +88,7 @@ const ScreenshotsSection = () => {
                   className="relative flex-shrink-0 w-[calc(100%/6)] max-w-[320px] h-[540px] mx-auto flex flex-col items-center"
                 >
                   <img
-                    src={screenshot.src}
+                    src={`${process.env.PUBLIC_URL}${screenshot.src}`}
                     alt={screenshot.alt}
                     className="w-full h-[540px] object-contain"
                     loading="lazy"
