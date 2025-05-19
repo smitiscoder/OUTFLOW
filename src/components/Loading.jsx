@@ -8,11 +8,11 @@ const Loader = () => {
           <p>loading</p>
           <div className="relative h-[40px] overflow-hidden">
             <div className="animate-spinWords flex flex-col space-y-1 text-[#9333EA]">
-              <span className="h-[40px] flex items-center">Crunching your numbers...</span>
-              <span className="h-[40px] flex items-center">Balancing your budget...</span>
-              <span className="h-[40px] flex items-center">Setting up your wallet...</span>
-              <span className="h-[40px] flex items-center">Analyzing your spending habits...</span>
-              <span className="h-[40px] flex items-center">Summing things up..."</span> {/* clone */}
+              <span className="h-[40px] flex items-center">budget</span>
+              <span className="h-[40px] flex items-center">save</span>
+              <span className="h-[40px] flex items-center">record</span>
+              <span className="h-[40px] flex items-center">track</span>
+              <span className="h-[40px] flex items-center">analysis</span> {/* clone */}
             </div>
           </div>
         </div>
@@ -22,6 +22,3 @@ const Loader = () => {
 };
 
 export default Loader;
-
-
-

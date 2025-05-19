@@ -3,6 +3,8 @@ import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 
 // Loader Component
 import Loader from "./components/Loading"; // Adjust path if needed
+import Usermanualpage from "./pages/Onboarding/Usermanualpage";
+import Aboutus from "./pages/Onboarding/Aboutus";
 
 // Layout (Lazy-loaded)
 const MainLayout = lazy(() => import("./components/layout/MainLayout"));
@@ -33,20 +35,16 @@ const HelpPage = lazy(() => import("./pages/Profile/Help"));
 function AppRoutes({ user, isAuthLoading }) {
   const location = useLocation();
 
-  // Show Loader while authentication state is loading
   if (isAuthLoading) {
     return <Loader />;
   }
 
-  // Check if user has visited before (stored in localStorage)
   const hasVisited = localStorage.getItem("hasVisited") === "true";
 
-  // Set hasVisited to true after visiting onboarding
   const markAsVisited = () => {
     localStorage.setItem("hasVisited", "true");
   };
 
-  // Wrapper for OnBoarding to mark as visited
   const OnBoardingWrapper = () => {
     useEffect(() => {
       markAsVisited();
@@ -57,43 +55,17 @@ function AppRoutes({ user, isAuthLoading }) {
   return (
     <Suspense fallback={<Loader />}>
       <Routes>
-        {/* Public Routes */}
         <Route path="/onboarding" element={<OnBoardingWrapper />} />
         <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
         <Route path="/phone" element={user ? <Navigate to="/" replace /> : <Phone />} />
         <Route path="/email" element={user ? <Navigate to="/" replace /> : <EmailLogin />} />
         <Route path="/signup" element={user ? <Navigate to="/" replace /> : <EmailSignup />} />
-        <Route
-          path="/forgot-password"
-          element={user ? <Navigate to="/" replace /> : <ForgotPassword />}
-        />
-        <Route
-          path="/continuewith.google"
-          element={user ? <Navigate to="/" replace /> : <ContinueWithGoogle />}
-        />
+        <Route path="/forgot-password" element={user ? <Navigate to="/" replace /> : <ForgotPassword />} />
+        <Route path="/continuewith.google" element={user ? <Navigate to="/" replace /> : <ContinueWithGoogle />} />
         <Route path="/download" element={<Download />} />
-
-        {/* Redirect /home to root */}
         <Route path="/home" element={<Navigate to="/" replace />} />
 
-        {/* Root Route Logic */}
-        <Route
-          path="/"
-          element={
-            user ? (
-              hasVisited ? (
-                <MainLayout />
-              ) : (
-                <Navigate to="/onboarding" replace />
-              )
-            ) : hasVisited ? (
-              <Navigate to="/login" replace />
-            ) : (
-              <Navigate to="/onboarding" replace />
-            )
-          }
-        >
-          {/* Protected Routes (only accessible if user is authenticated and hasVisited) */}
+        <Route path="/" element={user ? (hasVisited ? <MainLayout /> : <Navigate to="/onboarding" replace />) : hasVisited ? (<Navigate to="/login" replace />) : (<Navigate to="/onboarding" replace />)}>
           {user && hasVisited && (
             <>
               <Route index element={<Home />} />
@@ -107,23 +79,13 @@ function AppRoutes({ user, isAuthLoading }) {
               <Route path="notifications" element={<Notifications />} />
               <Route path="exportdata" element={<ExportData />} />
               <Route path="help" element={<HelpPage />} />
+              <Route path="usermanual" element={<Usermanualpage />}/>
+              <Route path="aboutus" element={<Aboutus />}/>
             </>
           )}
         </Route>
 
-        {/* Fallback for unmatched routes */}
-        <Route
-          path="*"
-          element={
-            user && hasVisited ? (
-              <div className="text-center text-2xl p-10">404 - Page Not Found</div>
-            ) : hasVisited ? (
-              <Navigate to="/login" replace />
-            ) : (
-              <Navigate to="/onboarding" replace />
-            )
-          }
-        />
+        <Route path="*" element={user && hasVisited ? (<div className="text-center text-2xl p-10">404 - Page Not Found</div>) : hasVisited ? (<Navigate to="/login" replace />) : (<Navigate to="/onboarding" replace />)} />
       </Routes>
     </Suspense>
   );

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Book, AlertCircle, Share2, Users, Mail } from 'lucide-react';
+import { ArrowLeft, Book, Users } from 'lucide-react';
 import { ROUTES } from '../../utils/constants';
 
 const HelpPage = () => {
@@ -11,37 +11,19 @@ const HelpPage = () => {
       title: "User Manual",
       description: "Learn how to use the app features",
       icon: <Book size={20} className="text-[#DFDFDF]" />,
-      route: ROUTES.USER_MANUAL
-    },
-    {
-      title: "Report a Problem",
-      description: "Encountered an issue? Let us know",
-      icon: <AlertCircle size={20} className="text-[#DFDFDF]" />,
-      route: ROUTES.REPORT_PROBLEM
-    },
-    {
-      title: "Share App",
-      description: "Share with your friends and family",
-      icon: <Share2 size={20} className="text-[#DFDFDF]" />,
-      route: ROUTES.SHARE_APP
+      route: ROUTES.USER_MANUAL,
     },
     {
       title: "About Us",
       description: "Learn about our mission and team",
       icon: <Users size={20} className="text-[#DFDFDF]" />,
-      route: ROUTES.ABOUT_US
-    },
-    {
-      title: "Contact Us",
-      description: "Get in touch with our support team",
-      icon: <Mail size={20} className="text-[#DFDFDF]" />,
-      route: ROUTES.CONTACT_US
+      route: ROUTES.ABOUT_US,
     }
   ];
 
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-white p-4">
-      {/* Header with Back Button */}
+      {/* Header */}
       <div className="flex items-center mb-6">
         <button 
           onClick={() => navigate(-1)}
