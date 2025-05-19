@@ -1,26 +1,32 @@
 export const screenshots = [
   {
     id: 1,
-    src: "https://i.pinimg.com/736x/1f/f2/63/1ff2633c1aaec9741fe9ab9f205158ac.jpg",
+    src: "/images/Home.jpg",
+    alt: "Home screen of the OutFlow",
   },
   {
     id: 2,
-    src: "https://i.pinimg.com/736x/a1/5a/e1/a15ae1f2f7be56e98499df431d62ac5b.jpg",
+    src: "/images/ExpenseCategory.jpg",
+    alt: "Expense category selection ",
   },
   {
     id: 3,
-    src: "https://i.pinimg.com/736x/cb/95/b5/cb95b5f7ac265494a5fcc16f5314095f.jpg",
+    src: "/images/Keyboard.jpg",
+    alt: "Custom keyboard for data entry",
   },
   {
     id: 4,
-    src: "https://i.pinimg.com/736x/ac/47/7e/ac477ebf6a022b4987dce2c126430045.jpg",
+    src: "/images/Report.jpg",
+    alt: "Financial report overview",
   },
   {
     id: 5,
-    src: "https://i.pinimg.com/736x/b7/6a/0c/b76a0ca1a15642bc4dc1af2273bfbdd2.jpg",
+    src: "/images/Search.jpg",
+    alt: "Advance Search functionality",
   },
   {
     id: 6,
-    src: "https://i.pinimg.com/736x/11/98/bc/1198bcd3606f46c473b339a7951bdc98.jpg",
+    src: "/images/Profile.jpg",
+    alt: "User profile and settings",
   },
 ];

@@ -45,8 +45,8 @@ const PieChart = ({ navigate }) => {
                 data={finalCategoryData}
                 cx="50%"
                 cy="50%"
-                innerRadius={85}
-                outerRadius={110}
+                innerRadius={75}
+                outerRadius={100}
                 paddingAngle={3}
                 dataKey="amount"
                 stroke="none"

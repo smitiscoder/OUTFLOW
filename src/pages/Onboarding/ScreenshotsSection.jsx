@@ -1,10 +1,42 @@
 import React, { useState } from 'react';
 import { screenshots } from '../../components/lib/screenshots';
-import { Dialog, DialogContent } from "../../components/ui/dialog";
+import { useSwipeable } from 'react-swipeable';
 
 const ScreenshotsSection = () => {
-  const [activeIndex, setActiveIndex] = useState(null);
-  const [openScreenshot, setOpenScreenshot] = useState(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  // Handle manual navigation (dots, swipe, or buttons)
+  const goToSlide = (index) => {
+    console.log('Navigating to slide:', index); // Debug index
+    setActiveIndex(index);
+  };
+
+  // Swipe handlers
+  const handleSwipe = (direction) => {
+    const newIndex =
+      direction === 'left'
+        ? (activeIndex + 1) % screenshots.length
+        : (activeIndex - 1 + screenshots.length) % screenshots.length;
+    goToSlide(newIndex);
+  };
+
+  // Navigation button handlers
+  const goToPrevious = () => {
+    handleSwipe('right');
+  };
+
+  const goToNext = () => {
+    handleSwipe('left');
+  };
+
+  // Configure swipeable handlers
+  const handlers = useSwipeable({
+    onSwipedLeft: () => handleSwipe('left'),
+    onSwipedRight: () => handleSwipe('right'),
+    trackMouse: true, // Allow mouse dragging for desktop
+    preventDefaultTouchmoveEvent: true, // Prevent default scroll on touch
+    delta: 10, // Minimum swipe distance
+  });
 
   return (
     <section id="screenshots" className="section-padding bg-outflow-black relative py-24">
@@ -17,43 +49,54 @@ const ScreenshotsSection = () => {
           </p>
         </div>
 
-        <div className="overflow-x-auto pb-8 no-scrollbar">
-          <div className="flex gap-8 min-w-max px-4 md:px-0">
-            {screenshots.map((screenshot, index) => (
-              <div
-                key={screenshot.id}
-                className="relative flex-shrink-0 w-[280px] md:w-[320px] h-[540px] overflow-hidden rounded-2xl transition-all duration-500 cursor-pointer glass-card"
-                style={{
-                  transform: activeIndex === index ? 'scale(1.05)' : 'scale(1)',
-                  zIndex: activeIndex === index ? 10 : 1
-                }}
-                onMouseEnter={() => setActiveIndex(index)}
-                onMouseLeave={() => setActiveIndex(null)}
-                onClick={() => setOpenScreenshot(index)}
-                data-aos="fade-up"
-                data-aos-delay={index * 100}
-              >
-                <div className="absolute inset-0 bg-gradient-to-b from-transparent to-outflow-black/70"></div>
-                <img
-                  src={screenshot.src}
-                  alt={screenshot.alt}
-                  className="absolute inset-0 w-full h-full object-cover object-center rounded-2xl transition-all duration-700"
-                  style={{
-                    filter: activeIndex === index ? 'brightness(1)' : 'brightness(0.8)',
-                    transform: `scale(${activeIndex === index ? 1.05 : 1})`
-                  }}
-                />
-                <div className="absolute top-4 left-4 right-4 flex items-center">
-                  <div className="h-2.5 w-2.5 rounded-full bg-white mr-1.5"></div>
-                  <div className="h-2.5 w-2.5 rounded-full bg-white/50 mr-1.5"></div>
-                  <div className="h-2.5 w-2.5 rounded-full bg-white/30"></div>
+        <div className="relative overflow-hidden">
+          {/* Navigation Buttons (visible on lg screens) */}
+          <button
+            onClick={goToPrevious}
+            className="hidden lg:block absolute left-4 top-1/2 -translate-y-1/2 p-3 bg-outflow-accent/50 hover:bg-outflow-accent/70 rounded-full z-10 transition-colors"
+            aria-label="Previous screenshot"
+          >
+            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+            </svg>
+          </button>
+          <button
+            onClick={goToNext}
+            className="hidden lg:block absolute right-4 top-1/2 -translate-y-1/2 p-3 bg-outflow-accent/50 hover:bg-outflow-accent/70 rounded-full z-10 transition-colors"
+            aria-label="Next screenshot"
+          >
+            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </button>
+
+          {/* Carousel */}
+          <div
+            {...handlers}
+            className="relative overflow-hidden"
+          >
+            <div
+              className="flex transition-transform duration-700 ease-in-out"
+              style={{
+                transform: `translateX(-${activeIndex * (100 / screenshots.length)}%)`,
+                width: `${screenshots.length * 100}%`,
+              }}
+            >
+              {screenshots.map((screenshot, index) => (
+                <div
+                  key={screenshot.id}
+                  className="relative flex-shrink-0 w-[calc(100%/6)] max-w-[320px] h-[540px] mx-auto flex flex-col items-center"
+                >
+                  <img
+                    src={screenshot.src}
+                    alt={screenshot.alt}
+                    className="w-full h-[540px] object-contain"
+                    loading="lazy"
+                  />
+                  <p className="mt-4 text-white text-base text-center">{screenshot.caption}</p>
                 </div>
-                <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black to-transparent">
-                  <p className="text-base text-white font-medium">{screenshot.alt}</p>
-                  <p className="text-sm text-white/60 mt-1">Tap to expand</p>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
 
@@ -64,27 +107,12 @@ const ScreenshotsSection = () => {
               className={`w-2 h-2 rounded-full transition-all ${
                 activeIndex === index ? 'bg-outflow-accent w-8' : 'bg-white/30'
               }`}
-              onClick={() => setActiveIndex(index)}
+              onClick={() => goToSlide(index)}
+              aria-label={`Go to screenshot ${index + 1}`}
             />
           ))}
         </div>
       </div>
-
-      {/* Modal for expanded screenshots */}
-      <Dialog open={openScreenshot !== null} onOpenChange={() => setOpenScreenshot(null)}>
-        <DialogContent className="max-w-4xl bg-outflow-black border border-white/10">
-          {openScreenshot !== null && (
-            <div className="p-2">
-              <img
-                src={screenshots[openScreenshot].src}
-                alt={screenshots[openScreenshot].alt}
-                className="w-full rounded-lg shadow-2xl"
-              />
-              <p className="mt-4 text-center text-lg">{screenshots[openScreenshot].alt}</p>
-            </div>
-          )}
-        </DialogContent>
-      </Dialog>
     </section>
   );
 };
