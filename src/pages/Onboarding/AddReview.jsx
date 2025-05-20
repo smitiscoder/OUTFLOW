@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Star } from "lucide-react";
 import { getAuth } from "firebase/auth";
 import { getFirestore, collection, addDoc, serverTimestamp } from "firebase/firestore";
-import { db } from "../../components/firebase"; // Adjust path to your firebase.js (db only, auth initialized here)
+import { db } from "../../components/firebase"; // Adjust path to your firebase.js
 
 const Addreview = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -13,7 +13,7 @@ const Addreview = () => {
   const [review, setReview] = useState("");
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
-  const auth = getAuth(); // Initialize auth as in SearchMain
+  const auth = getAuth();
 
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), 100);
@@ -104,12 +104,12 @@ const Addreview = () => {
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 sm:mb-6 bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
               Rate Outflow
             </h2>
-            <div className="flex justify-start space-x-1 sm:space-x-2 mb-4">
+            <div className="flex justify-center space-x-1 sm:space-x-2 mb-4">
               {[1, 2, 3, 4, 5].map((star) => (
                 <Star
                   key={star}
-                  size={24} className="sm:w-8 sm:h-8"
-                  className={`cursor-pointer transition-colors ${
+                  size={24}
+                  className={`cursor-pointer transition-colors sm:w-8 sm:h-8 ${
                     (hoverRating || rating) >= star
                       ? "text-yellow-400 fill-yellow-400"
                       : "text-gray-600"
