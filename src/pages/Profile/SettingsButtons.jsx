@@ -42,7 +42,6 @@ export default function SettingsButtons({ user, budget, navigate, auth }) {
             <div>
               <div className="text-sm text-[#DFDFDF]">Set Budget</div>
               <div className="text-xs text-[#DFDFDF] text-opacity-60">
-                {budget ? `₹${budget.toLocaleString()}` : "Not set"}
               </div>
             </div>
           </div>

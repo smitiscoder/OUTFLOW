@@ -1,3 +1,4 @@
+// In src/pages/Onboarding/Onbording.jsx
 import React from 'react';
 import HeroSection from './HeroSection';
 import FeaturesSection from './FeaturesSection';
@@ -6,8 +7,6 @@ import ReviewsSection from './ReviewsSection';
 import CtaSection from './CtaSection';
 import Footer from './Footer';
 import StickyButtons from './StickyButtons';
-
-
 
 const Onbording = () => {
   React.useEffect(() => {
@@ -33,7 +32,7 @@ const Onbording = () => {
   return (
     <div className="min-h-screen bg-outflow-black text-white">
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 py-6 px-4 bg-gradient-to-b from-outflow-black to-transparent backdrop-blur-sm">
+      <header className="fixed top-0 left-0 right-0 z-50 py-6 px-4 bg-outflow-black/90">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center">
             <h1 className="text-2xl font-bold">OUTFLOW</h1>

@@ -6,6 +6,13 @@ import Loader from "./components/Loading"; // Adjust path if needed
 import Usermanualpage from "./pages/Onboarding/Usermanualpage";
 import Aboutus from "./pages/Onboarding/Aboutus";
 
+// Lazy-loaded Onboarding Pages
+const Termsofservice = lazy(() => import("./pages/Onboarding/Termsofservice"));
+const Privacypolicy = lazy(() => import("./pages/Onboarding/Privacypolicy"));
+const Sharepage = lazy(() => import("./pages/Onboarding/Share"));
+const Addreview = lazy(() => import("./pages/Onboarding/AddReview"));
+const ContactUs = lazy(() => import("./pages/Onboarding/ContactUs"));
+
 // Layout (Lazy-loaded)
 const MainLayout = lazy(() => import("./components/layout/MainLayout"));
 
@@ -79,8 +86,13 @@ function AppRoutes({ user, isAuthLoading }) {
               <Route path="notifications" element={<Notifications />} />
               <Route path="exportdata" element={<ExportData />} />
               <Route path="help" element={<HelpPage />} />
-              <Route path="usermanual" element={<Usermanualpage />}/>
-              <Route path="aboutus" element={<Aboutus />}/>
+              <Route path="usermanual" element={<Usermanualpage />} />
+              <Route path="aboutus" element={<Aboutus />} />
+              <Route path="terms" element={<Termsofservice />} />
+              <Route path="privacy" element={<Privacypolicy />} />
+              <Route path="share" element={<Sharepage />} />
+              <Route path="add-review" element={<Addreview />} />
+              <Route path="contact" element={<ContactUs />} />
             </>
           )}
         </Route>

@@ -5,6 +5,7 @@ import { useExpenses } from "./Context/ExpenseContext";
 // Components
 import SplashScreen from "./components/SplashScreen"; // New splash screen
 import Loader from "./components/Loading"; // Loading screen
+import ScrollToTop from "./components/ScrollToTop"; // Add this import
 
 // Styles
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
@@ -46,16 +47,18 @@ function App() {
   if (isAuthLoading) return <Loader />;
 
   return (
-    <div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF]"> {/* Consistent dark theme background */}
+    <div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF]">
       <Router>
+        <ScrollToTop /> {/* Add this component here */}
+
         {isOffline && (
           <div
             style={{
-              background: '#ffcc00',
-              padding: '10px',
-              textAlign: 'center',
-              color: '#333',
-              fontWeight: 'bold',
+              background: "#ffcc00",
+              padding: "10px",
+              textAlign: "center",
+              color: "#333",
+              fontWeight: "bold",
             }}
           >
             You are offline. Changes will sync when you reconnect.
@@ -81,5 +84,5 @@ function App() {
   );
 }
 
-
 export default App;
+

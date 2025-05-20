@@ -1,32 +1,65 @@
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Book, Users } from 'lucide-react';
-import { ROUTES } from '../../utils/constants';
+import React, { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  ArrowLeft,
+  Book,
+  Users,
+  FileText,
+  Shield,
+  Share2,
+  Star,
+} from "lucide-react";
+import { ROUTES } from "../../utils/constants";
 
 const HelpPage = () => {
   const navigate = useNavigate();
 
-  // Reset scroll position to top on page load
   useEffect(() => {
-    window.scrollTo(0, 0); // Scroll to top
-    // Disable browser scroll restoration
-    if ('scrollRestoration' in window.history) {
-      window.history.scrollRestoration = 'manual';
+    // Scroll to top manually
+    window.scrollTo(0, 0);
+
+    // Prevent automatic scroll restoration by browser
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
     }
-  }, []); // Empty dependency array ensures this runs only on mount
+  }, []);
 
   const helpOptions = [
     {
-      title: 'User Manual',
-      description: 'Learn how to use the app features',
+      title: "User Manual",
+      description: "Learn how to use the app features",
       icon: <Book size={20} className="text-[#DFDFDF]" />,
       route: ROUTES.USER_MANUAL,
     },
     {
-      title: 'About Us',
-      description: 'Learn about our mission and team',
+      title: "About Us",
+      description: "Learn about our mission and team",
       icon: <Users size={20} className="text-[#DFDFDF]" />,
       route: ROUTES.ABOUT_US,
+    },
+    {
+      title: "Terms of Service",
+      description: "Read our terms and conditions",
+      icon: <FileText size={20} className="text-[#DFDFDF]" />,
+      route: ROUTES.TERMS,
+    },
+    {
+      title: "Privacy Policy",
+      description: "Understand how we handle your data",
+      icon: <Shield size={20} className="text-[#DFDFDF]" />,
+      route: ROUTES.PRIVACY,
+    },
+    {
+      title: "Share OutFlow",
+      description: "Tell your friends about us!",
+      icon: <Share2 size={20} className="text-[#DFDFDF]" />,
+      route: ROUTES.SHARE,
+    },
+    {
+      title: "Add Review",
+      description: "Share your thoughts about the app",
+      icon: <Star size={20} className="text-[#DFDFDF]" />,
+      route: ROUTES.ADD_REVIEW,
     },
   ];
 
@@ -68,3 +101,4 @@ const HelpPage = () => {
 };
 
 export default HelpPage;
+
