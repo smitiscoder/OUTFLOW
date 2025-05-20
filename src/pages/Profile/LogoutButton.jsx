@@ -10,7 +10,7 @@ export default function LogoutButton({ auth }) {
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      navigate(ROUTES.LOGIN);
+      navigate(ROUTES.ONBOARDING); // Changed from ROUTES.LOGIN to ROUTES.ONBOARDING
     } catch (error) {
       console.error("Error signing out:", error);
     }

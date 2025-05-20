@@ -11,11 +11,13 @@ import {
   updateProfile,
   PhoneAuthProvider,
   RecaptchaVerifier,
+  setPersistence,
+  browserLocalPersistence,
 } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { getMessaging, isSupported as isMessagingSupported } from 'firebase/messaging';
 
-// Firebase configuration (hardcoded)
+// Firebase configuration
 const firebaseConfig = {
   apiKey: 'AIzaSyDIXQawm6JNyxwt1UnEH8rZhzYyYWhEWYg',
   authDomain: 'expensetracking-73767.firebaseapp.com',
@@ -30,7 +32,35 @@ const firebaseConfig = {
 console.log('Firebase Config:', firebaseConfig);
 
 // Initialize Firebase
-const app = initializeApp(firebaseConfig);
+let app;
+try {
+  app = initializeApp(firebaseConfig);
+  console.log('Firebase App initialized successfully');
+} catch (error) {
+  console.error('Firebase initialization failed:', error);
+}
+
+// Initialize Auth
+let auth;
+try {
+  auth = getAuth(app);
+  setPersistence(auth, browserLocalPersistence)
+    .then(() => console.log('Auth persistence set to local'))
+    .catch((error) => console.error('Error setting auth persistence:', error));
+  console.log('Firebase Auth initialized:', auth);
+} catch (error) {
+  console.error('Auth initialization failed:', error);
+}
+
+// Google Auth
+const googleProvider = new GoogleAuthProvider();
+googleProvider.addScope('profile');
+googleProvider.addScope('email');
+googleProvider.setCustomParameters({ prompt: 'select_account' });
+
+// Initialize Firestore
+const db = getFirestore(app);
+console.log('Firestore initialized:', db);
 
 // Initialize Analytics (only if supported and in browser environment)
 let analytics = null;
@@ -48,18 +78,6 @@ if (typeof window !== 'undefined') {
       console.error('Error checking Firebase Analytics support:', error);
     });
 }
-
-// Initialize Auth
-const auth = getAuth(app);
-
-// Google Auth
-const googleProvider = new GoogleAuthProvider();
-googleProvider.addScope('profile');
-googleProvider.addScope('email');
-googleProvider.setCustomParameters({ prompt: 'select_account' });
-
-// Initialize Firestore
-const db = getFirestore(app);
 
 // Initialize Messaging (only if supported and in browser environment)
 let messaging = null;

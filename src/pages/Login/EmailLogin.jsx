@@ -15,7 +15,6 @@ export default function EmailLogin() {
     setError('');
     setLoading(true);
 
-    // Basic validation
     if (!email.includes('@') || !email.includes('.')) {
       setError('Please enter a valid email address');
       setLoading(false);
@@ -29,8 +28,14 @@ export default function EmailLogin() {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      navigate('/dashboard');
+      const unsubscribe = auth.onAuthStateChanged((user) => {
+        if (user) {
+          navigate('/'); // Redirect to root (Home)
+          unsubscribe();
+        }
+      });
     } catch (err) {
+      console.error('Login error:', err.code, err.message);
       switch (err.code) {
         case 'auth/invalid-email':
           setError('Invalid email address');
@@ -52,11 +57,10 @@ export default function EmailLogin() {
 
   return (
     <div className="relative min-h-screen bg-[#0D0D0D] text-white flex flex-col justify-center items-center px-6 space-y-8 overflow-hidden">
-      <div className="absolute top-[-150px] left-1/2 transform -translate-x-1/2 w-[600px] h-[600px] bg-gradient-to-b from-purple-600 via-purple-800 to-transparent opacity-30 blur-[100px] z-0" />
+      <div className="absolute top-[-150px] left-1/2 transform -translate-x-1/2 w-[600px] h-[600px] bg-gradient-to-b from-[#9333EA] via-[#7B2CBF] to-transparent opacity-50 blur-[80px] z-0" />
       <div className="relative z-10 w-full max-w-sm space-y-8">
         <div className="text-center space-y-2">
-      
-          <h1 className="text-6xl font-bold tracking-wide">OUTFLOW</h1>
+          <h1 className="text-6xl font-bold tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">OUTFLOW</h1>
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           {error && (
@@ -69,7 +73,7 @@ export default function EmailLogin() {
               placeholder="Email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 rounded-full bg-[#1a1a1a] text-white border border-gray-700 focus:outline-none focus:border-purple-500 text-sm"
+              className="w-full pl-10 pr-4 py-3 rounded-full bg-[#1a1a1a] text-white border border-gray-700 focus:outline-none focus:border-[#9333EA] text-sm"
               required
             />
           </div>
@@ -80,7 +84,7 @@ export default function EmailLogin() {
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 rounded-full bg-[#1a1a1a] text-white border border-gray-700 focus:outline-none focus:border-purple-500 text-sm"
+              className="w-full pl-10 pr-4 py-3 rounded-full bg-[#1a1a1a] text-white border border-gray-700 focus:outline-none focus:border-[#9333EA] text-sm"
               required
             />
           </div>
@@ -97,7 +101,7 @@ export default function EmailLogin() {
             <div>
               <button
                 type="button"
-                className="text-gray-400 text-sm hover:text-purple-400 transition-colors"
+                className="text-gray-400 text-sm hover:text-[#9333EA] transition-colors"
                 onClick={() => navigate('/forgot-password')}
               >
                 Forgot Password?
@@ -107,7 +111,7 @@ export default function EmailLogin() {
               Don't have an account?{' '}
               <button
                 type="button"
-                className="text-purple-400 hover:text-purple-300 transition-colors"
+                className="text-[#9333EA] hover:text-[#7B2CBF] transition-colors"
                 onClick={() => navigate('/signup')}
               >
                 Create account
@@ -117,8 +121,8 @@ export default function EmailLogin() {
         </form>
         <div className="text-gray-500 text-xs mt-8 text-center mx-auto max-w-xs">
           By signing in, you agree to our{' '}
-          <span className="underline">Terms</span> and{' '}
-          <span className="underline">Privacy Policy</span>.
+          <span className="">Terms</span> and{' '}
+          <span className="">Privacy Policy</span>.
         </div>
       </div>
     </div>

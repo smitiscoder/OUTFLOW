@@ -6,7 +6,7 @@ export const ROUTES = {
   NOTIFICATIONS: "/notifications",
   HELP: "/help",
   USER_MANUAL: "/usermanual",
-  ABOUT_US: "/aboutus",  // Fixed the path to avoid duplication
+  ABOUT_US: "/aboutus",
   DASHBOARD: "/dashboard",
   ADD_EXPENSE: "/add-expense",
   EXPENSE_LIST: "/expenses",
@@ -17,10 +17,11 @@ export const ROUTES = {
   SIGNUP: "/signup",
   FORGOT_PASSWORD: "/forgot-password",
   RESET_PASSWORD: "/reset-password",
-  TERMS: "/terms", 
-  PRIVACY: "/privacy", 
-  SHARE: "/share", 
+  TERMS: "/terms",
+  PRIVACY: "/privacy",
+  SHARE: "/share",
   ADD_REVIEW: "/add-review",
-  CONTACT: "/contact"
+  CONTACT: "/contact",
+  ONBOARDING: "/onboarding" // Added onboarding route
 };
 
