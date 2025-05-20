@@ -35,7 +35,7 @@ const Footer = () => {
         <div>
           <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">About Outflow</h3>
           <p className="text-gray-400 text-sm sm:text-base mb-3 sm:mb-4">
-            Modern tools for modern financial workflows. Built with performance and usability in mind.
+            Designed for today’s finances. Fast, simple, and built for real life.
           </p>
           <div className="flex space-x-3 sm:space-x-4 text-gray-400">
             <a

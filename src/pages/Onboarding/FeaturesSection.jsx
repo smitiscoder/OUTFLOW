@@ -1,4 +1,3 @@
-// In src/pages/Onboarding/FeaturesSection.jsx
 import React, { useState } from "react";
 import {
   Sparkles,
@@ -11,33 +10,33 @@ import {
 
 const features = [
   {
-    title: "Easy to Use",
-    description: "An intuitive interface that lets you manage your finances without a learning curve.",
+    title: "Effortless Tracking",
+    description: "Quickly add and manage your expenses with a clean, clutter-free interface designed for all users.",
     icon: Sparkles,
   },
   {
-    title: "Real-Time Sync",
-    description: "Your data updates instantly across all your devices — no refresh needed.",
+    title: "Instant Cloud Sync",
+    description: "All your expense data stays updated in real-time across devices — no manual sync required.",
     icon: RefreshCw,
   },
   {
-    title: "Visual Insights",
-    description: "Get charts and trends that help you understand your financial habits at a glance.",
+    title: "Smart Visuals",
+    description: "Get easy-to-understand charts that break down your spending habits and trends instantly.",
     icon: BarChart2,
   },
   {
-    title: "Secure & Private",
-    description: "We use bank-grade encryption and never sell your data. Privacy is built in.",
+    title: "Secure by Design",
+    description: "We use end-to-end encryption and Firebase authentication to keep your data safe and private.",
     icon: Lock,
   },
   {
-    title: "Available Across Devices",
-    description: "Use the app on your phone, tablet, or desktop — your data stays in sync.",
+    title: "Works on Every Device",
+    description: "Track expenses anytime — on your mobile, tablet, or desktop — with same experience.",
     icon: Smartphone,
   },
   {
-    title: "No Ads",
-    description: "Enjoy a completely ad-free experience, focused solely on your finances.",
+    title: "Ad-Free Experience",
+    description: "Focus on your finances with zero distractions. OutFlow is built for users, not advertisers.",
     icon: Ban,
   },
 ];
@@ -88,7 +87,7 @@ const FeaturesSection = () => {
               onMouseLeave={() => setHoveredIndex(null)}
             >
               <div
-                className={`p-4 sm:p-6 md:p-8 bg-black/10 rounded-2xl transition-all duration-300 ease-in-out group ${
+                className={`p-4 sm:p-6 md:p-8 bg-black/10 rounded-2xl transition-all duration-300 ease-in-out group min-h-[200px] sm:min-h-[250px] md:min-h-[300px] ${
                   hoveredIndex === index
                     ? "border border-white shadow-2xl bg-white/5 -translate-y-2"
                     : "border border-transparent"

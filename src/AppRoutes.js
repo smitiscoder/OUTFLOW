@@ -62,6 +62,14 @@ function AppRoutes({ user, isAuthLoading }) {
   return (
     <Suspense fallback={<Loader />}>
       <Routes>
+        {/* Public Routes */}
+        <Route path="/contact" element={<ContactUs />} />
+        <Route path="/usermanual" element={<Usermanualpage />} />
+        <Route path="/aboutus" element={<Aboutus />} />
+        <Route path="/privacy" element={<Privacypolicy />} />
+        <Route path="/terms" element={<Termsofservice />} />
+
+        {/* Existing Public Routes */}
         <Route path="/onboarding" element={<OnBoardingWrapper />} />
         <Route path="/login" element={user ? <Navigate to="/" replace /> : <Login />} />
         <Route path="/phone" element={user ? <Navigate to="/" replace /> : <Phone />} />
@@ -72,7 +80,23 @@ function AppRoutes({ user, isAuthLoading }) {
         <Route path="/download" element={<Download />} />
         <Route path="/home" element={<Navigate to="/" replace />} />
 
-        <Route path="/" element={user ? (hasVisited ? <MainLayout /> : <Navigate to="/onboarding" replace />) : hasVisited ? (<Navigate to="/login" replace />) : (<Navigate to="/onboarding" replace />)}>
+        {/* Protected Routes */}
+        <Route
+          path="/"
+          element={
+            user ? (
+              hasVisited ? (
+                <MainLayout />
+              ) : (
+                <Navigate to="/onboarding" replace />
+              )
+            ) : hasVisited ? (
+              <Navigate to="/login" replace />
+            ) : (
+              <Navigate to="/onboarding" replace />
+            )
+          }
+        >
           {user && hasVisited && (
             <>
               <Route index element={<Home />} />
@@ -86,18 +110,25 @@ function AppRoutes({ user, isAuthLoading }) {
               <Route path="notifications" element={<Notifications />} />
               <Route path="exportdata" element={<ExportData />} />
               <Route path="help" element={<HelpPage />} />
-              <Route path="usermanual" element={<Usermanualpage />} />
-              <Route path="aboutus" element={<Aboutus />} />
-              <Route path="terms" element={<Termsofservice />} />
-              <Route path="privacy" element={<Privacypolicy />} />
               <Route path="share" element={<Sharepage />} />
               <Route path="add-review" element={<Addreview />} />
-              <Route path="contact" element={<ContactUs />} />
             </>
           )}
         </Route>
 
-        <Route path="*" element={user && hasVisited ? (<div className="text-center text-2xl p-10">404 - Page Not Found</div>) : hasVisited ? (<Navigate to="/login" replace />) : (<Navigate to="/onboarding" replace />)} />
+        {/* Catch-all Route */}
+        <Route
+          path="*"
+          element={
+            user && hasVisited ? (
+              <div className="text-center text-2xl p-10">404 - Page Not Found</div>
+            ) : hasVisited ? (
+              <Navigate to="/login" replace />
+            ) : (
+              <Navigate to="/onboarding" replace />
+            )
+          }
+        />
       </Routes>
     </Suspense>
   );
