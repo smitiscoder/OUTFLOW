@@ -22,6 +22,7 @@ export const ROUTES = {
   SHARE: "/share",
   ADD_REVIEW: "/add-review",
   CONTACT: "/contact",
-  ONBOARDING: "/onboarding" // Added onboarding route
+  ONBOARDING: "/onboarding",
+  REPORTBUG: "/reportbug"
 };
 

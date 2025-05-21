@@ -38,6 +38,7 @@ const SetBudget = lazy(() => import("./pages/Profile/SetBudget"));
 const Notifications = lazy(() => import("./pages/Profile/Notifications"));
 const ExportData = lazy(() => import("./pages/Profile/ExportData"));
 const HelpPage = lazy(() => import("./pages/Profile/Help"));
+const ReportBug = lazy(() => import("./pages/Onboarding/ReportBug"));
 
 function AppRoutes({ user, isAuthLoading }) {
   const location = useLocation();
@@ -112,6 +113,7 @@ function AppRoutes({ user, isAuthLoading }) {
               <Route path="help" element={<HelpPage />} />
               <Route path="share" element={<Sharepage />} />
               <Route path="add-review" element={<Addreview />} />
+              <Route path="reportbug" element={<ReportBug />} />
             </>
           )}
         </Route>

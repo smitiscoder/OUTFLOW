@@ -6,7 +6,7 @@ const Sharepage = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [copied, setCopied] = useState(false);
   const navigate = useNavigate();
-  const shareLink = "https://outfloww-shoppingsmit0-gmailcoms-projects.vercel.app/onboarding"; // Replace with your actual link
+  const shareLink = "https://outfloww.vercel.app/onboarding"; // Replace with your actual link
 
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), 100);

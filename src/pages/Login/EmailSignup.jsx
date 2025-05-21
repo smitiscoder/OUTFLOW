@@ -119,10 +119,22 @@ export default function EmailSignup() {
             </button>
           </div>
         </form>
+                {/* Terms and Privacy */}
         <div className="text-gray-500 text-xs mt-8 text-center mx-auto max-w-xs">
-          By signing up, you agree to our{' '}
-          <span className="">Terms</span> and{' '}
-          <span className="">Privacy Policy</span>.
+          By signing in, you agree to our{' '}
+          <span 
+            className="underline cursor-pointer hover:text-gray-300" 
+            onClick={() => navigate('/terms')}
+          >
+            Terms
+          </span>{' '}
+          and{' '}
+          <span 
+            className="underline cursor-pointer hover:text-gray-300" 
+            onClick={() => navigate('/privacy')}
+          >
+            Privacy Policy
+          </span>.
         </div>
       </div>
     </div>

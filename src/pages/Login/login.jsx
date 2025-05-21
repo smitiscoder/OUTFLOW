@@ -15,9 +15,11 @@ export default function Login() {
 
       {/* 🔒 Main Content */}
       <div className="relative z-10 w-full max-w-sm space-y-8">
-        {/* Logo */}
+        {/* Logo and Subtext */}
         <div className="text-center space-y-2">
           <h1 className="text-6xl font-bold tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">OUTFLOW</h1>
+          <p className="text-sm text-gray-400 mt-2">Get started with us</p>
+          <p className="text-xs text-gray-500">Complete a simple authentication process</p>
         </div>
 
         {/* Sign-in Buttons */}
@@ -38,8 +40,19 @@ export default function Login() {
         {/* Terms and Privacy */}
         <div className="text-gray-500 text-xs mt-8 text-center mx-auto max-w-xs">
           By signing in, you agree to our{' '}
-          <span className="">Terms</span> and{' '}
-          <span className="">Privacy Policy</span>.
+          <span 
+            className="underline cursor-pointer hover:text-gray-300" 
+            onClick={() => navigate('/terms')}
+          >
+            Terms
+          </span>{' '}
+          and{' '}
+          <span 
+            className="underline cursor-pointer hover:text-gray-300" 
+            onClick={() => navigate('/privacy')}
+          >
+            Privacy Policy
+          </span>.
         </div>
       </div>
     </div>

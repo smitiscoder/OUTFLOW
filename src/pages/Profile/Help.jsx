@@ -8,6 +8,7 @@ import {
   Shield,
   Share2,
   Star,
+  Bug,
 } from "lucide-react";
 import { ROUTES } from "../../utils/constants";
 
@@ -32,6 +33,24 @@ const HelpPage = () => {
       route: ROUTES.USER_MANUAL,
     },
     {
+      title: "Report a Bug",
+      description: "Let us know about any issues",
+      icon: <Bug size={20} className="text-[#DFDFDF]" />,
+      route: ROUTES.REPORTBUG, // Corrected from REPORTBUG to REPORT_BUG
+    },
+    {
+      title: "Add Review",
+      description: "Share your thoughts about the app",
+      icon: <Star size={20} className="text-[#DFDFDF]" />,
+      route: ROUTES.ADD_REVIEW,
+    },
+    {
+      title: "Share OutFlow",
+      description: "Tell your friends about us!",
+      icon: <Share2 size={20} className="text-[#DFDFDF]" />,
+      route: ROUTES.SHARE,
+    },
+    {
       title: "About Us",
       description: "Learn about our mission and team",
       icon: <Users size={20} className="text-[#DFDFDF]" />,
@@ -48,18 +67,6 @@ const HelpPage = () => {
       description: "Understand how we handle your data",
       icon: <Shield size={20} className="text-[#DFDFDF]" />,
       route: ROUTES.PRIVACY,
-    },
-    {
-      title: "Share OutFlow",
-      description: "Tell your friends about us!",
-      icon: <Share2 size={20} className="text-[#DFDFDF]" />,
-      route: ROUTES.SHARE,
-    },
-    {
-      title: "Add Review",
-      description: "Share your thoughts about the app",
-      icon: <Star size={20} className="text-[#DFDFDF]" />,
-      route: ROUTES.ADD_REVIEW,
     },
   ];
 
@@ -101,4 +108,3 @@ const HelpPage = () => {
 };
 
 export default HelpPage;
-

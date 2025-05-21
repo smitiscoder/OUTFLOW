@@ -119,10 +119,21 @@ export default function EmailLogin() {
             </div>
           </div>
         </form>
-        <div className="text-gray-500 text-xs mt-8 text-center mx-auto max-w-xs">
+          <div className="text-gray-500 text-xs mt-8 text-center mx-auto max-w-xs">
           By signing in, you agree to our{' '}
-          <span className="">Terms</span> and{' '}
-          <span className="">Privacy Policy</span>.
+          <span 
+            className="underline cursor-pointer hover:text-gray-300" 
+            onClick={() => navigate('/terms')}
+          >
+            Terms
+          </span>{' '}
+          and{' '}
+          <span 
+            className="underline cursor-pointer hover:text-gray-300" 
+            onClick={() => navigate('/privacy')}
+          >
+            Privacy Policy
+          </span>.
         </div>
       </div>
     </div>
