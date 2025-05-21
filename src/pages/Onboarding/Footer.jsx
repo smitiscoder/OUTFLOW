@@ -1,6 +1,6 @@
 // In src/pages/Onboarding/Footer.jsx
 import React from "react";
-import { FaTwitter, FaLinkedin, FaInstagram, FaFacebook } from "react-icons/fa";
+import { FaTwitter, FaLinkedin, FaInstagram } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { ROUTES } from "../../utils/constants";
 
@@ -39,7 +39,7 @@ const Footer = () => {
           </p>
           <div className="flex space-x-3 sm:space-x-4 text-gray-400">
             <a
-              href="https://twitter.com/outflowapp"
+              href="https://x.com/Smittnerurkar?t=yGtjW90Pd3HeYy2AuRp7xA&s=09"
               aria-label="Follow Outflow on Twitter"
               title="Outflow Twitter"
               target="_blank"
@@ -49,7 +49,7 @@ const Footer = () => {
               <FaTwitter className="w-5 h-5 sm:w-6 sm:h-6" />
             </a>
             <a
-              href="https://linkedin.com/company/outflowapp"
+              href="https://www.linkedin.com/posts/smitnerurkar_outflowapp-fromprojecttoproduct-pwa-activity-7330958939418750976-w9Dm?utm_source=share&utm_medium=member_desktop&rcm=ACoAAFX7XlYB8opadZH7-F38-SMlBUwC6RbBdKU"
               aria-label="Connect with Outflow on LinkedIn"
               title="Outflow LinkedIn"
               target="_blank"
@@ -59,7 +59,7 @@ const Footer = () => {
               <FaLinkedin className="w-5 h-5 sm:w-6 sm:h-6" />
             </a>
             <a
-              href="https://instagram.com/outflowapp"
+              href="https://www.instagram.com/smitnerurkar?igsh=MTk1OTUwaDB6aW5zdQ=="
               aria-label="Follow Outflow on Instagram"
               title="Outflow Instagram"
               target="_blank"
@@ -67,16 +67,6 @@ const Footer = () => {
               className="hover:text-white transition-colors"
             >
               <FaInstagram className="w-5 h-5 sm:w-6 sm:h-6" />
-            </a>
-            <a
-              href="https://facebook.com/outflowapp"
-              aria-label="Follow Outflow on Facebook"
-              title="Outflow Facebook"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-white transition-colors"
-            >
-              <FaFacebook className="w-5 h-5 sm:w-6 sm:h-6" />
             </a>
           </div>
         </div>
@@ -143,3 +133,4 @@ const Footer = () => {
 };
 
 export default Footer;
+
