@@ -39,7 +39,7 @@ const Footer = () => {
           </p>
           <div className="flex space-x-3 sm:space-x-4 text-gray-400">
             <a
-              href="https://x.com/Smittnerurkar?t=yGtjW90Pd3HeYy2AuRp7xA&s=09"
+              href="https://x.com/Smittnerurkar/status/1925196481902023004"
               aria-label="Follow Outflow on Twitter"
               title="Outflow Twitter"
               target="_blank"
@@ -59,7 +59,7 @@ const Footer = () => {
               <FaLinkedin className="w-5 h-5 sm:w-6 sm:h-6" />
             </a>
             <a
-              href="https://www.instagram.com/smitnerurkar?igsh=MTk1OTUwaDB6aW5zdQ=="
+              href="https://www.instagram.com/p/DJ9TSztqM0v/?igsh=cXJsN2o2Mnl6eGk1"
               aria-label="Follow Outflow on Instagram"
               title="Outflow Instagram"
               target="_blank"
