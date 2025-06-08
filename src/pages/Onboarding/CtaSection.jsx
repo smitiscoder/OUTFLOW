@@ -2,7 +2,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '../../components/ui/button';
-import { Download, Rocket } from 'lucide-react';
+import { Download, Rocket, ArrowRight } from 'lucide-react';
 
 const CtaSection = () => {
   const navigate = useNavigate();
@@ -16,42 +16,46 @@ const CtaSection = () => {
   };
 
   return (
-    <section id="get-started" className="section-padding bg-outflow-black relative py-12 sm:py-16 md:py-24 lg:py-32">
-      <div className="max-w-full sm:max-w-2xl md:max-w-3xl lg:max-w-4xl mx-auto text-center px-4 sm:px-6 lg:px-8">
-        <div className="glass-card p-6 sm:p-8 md:p-12 overflow-hidden relative">
-          {/* Gradient background effect */}
-          <div className="absolute -inset-[1px] bg-gradient-to-r from-outflow-accent via-purple-500 to-outflow-accent animate-gradient-shift bg-[length:200%_200%] blur-sm rounded-xl"></div>
-          <div className="bg-outflow-black rounded-lg p-6 sm:p-8 md:p-12 lg:p-16 relative z-10">
-            <span className="inline-block rounded-full bg-outflow-accent/20 px-3 sm:px-4 py-1 text-xs sm:text-sm font-medium text-outflow-accent-light mb-4 sm:mb-6">
-              Start Today
-            </span>
+    <section id="get-started" className="relative py-20 sm:py-24 md:py-32 overflow-hidden">
+      {/* Background with gradient and subtle pattern */}
+      <div className="absolute inset-0 bg-[#0D0D0D]">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0D0D0D] via-[#1A1A1A] to-[#0D0D0D] opacity-90"></div>
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
+      </div>
 
-            <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold mb-4 sm:mb-6 leading-tight">
-              Ready to Take Control of Your Finances?
-            </h2>
-            <p className="text-white/70 text-sm sm:text-base md:text-lg mb-6 sm:mb-8 md:mb-10 max-w-full sm:max-w-2xl mx-auto">
-              Join thousands of users who have transformed their financial habits with OUTFLOW. 
-              Start your journey to financial clarity today.
-            </p>
+      {/* Content */}
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-3xl mx-auto text-center">
+          {/* Title */}
+          <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-6">
+            <span className="block text-white">Ready to Take Control of</span>
+            <span className="block bg-clip-text text-transparent bg-gradient-to-r from-outflow-accent to-purple-400">Your Finances?</span>
+          </h2>
 
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 md:gap-5 justify-center">
-              <Button
-                onClick={handleGetStarted}
-                className="button-primary text-xs sm:text-sm md:text-base py-2.5 sm:py-3 md:py-3.5 px-4 sm:px-6 rounded-lg shadow-md shadow-outflow-accent/30 hover:shadow-outflow-accent/40 hover:-translate-y-0.5 transition-all duration-200 flex items-center"
-              >
-                <Rocket className="mr-2 w-3.5 sm:w-4 md:w-5" />
-                Get Started Now
-              </Button>
-              <Button
-                onClick={handleDownload}
-                variant="outline"
-                id="download"
-                className="button-secondary text-xs sm:text-sm md:text-base py-2.5 sm:py-3 md:py-3.5 px-4 sm:px-6 rounded-lg shadow-md shadow-white/10 hover:shadow-white/20 hover:-translate-y-0.5 transition-all duration-200 flex items-center"
-              >
-                <Download className="mr-2 w-3.5 sm:w-4 md:w-5" />
-                Download App
-              </Button>
-            </div>
+          {/* Description */}
+          <p className="text-lg sm:text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
+            Join thousands of users who have transformed their financial habits with OUTFLOW. 
+            Start your journey to financial clarity today.
+          </p>
+
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Button
+              onClick={handleGetStarted}
+              className="w-full sm:w-auto bg-outflow-accent hover:bg-outflow-accent/90 text-white px-8 py-6 text-lg rounded-xl shadow-lg shadow-outflow-accent/20 hover:shadow-outflow-accent/30 transition-all duration-300 group"
+            >
+              <Rocket className="mr-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+              Get Started Now
+              <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+            </Button>
+            <Button
+              onClick={handleDownload}
+              variant="outline"
+              className="w-full sm:w-auto border-2 border-white/20 hover:border-white/40 hover:bg-white/5 px-8 py-6 text-lg rounded-xl transition-all duration-300 group"
+            >
+              <Download className="mr-2 h-5 w-5 group-hover:translate-y-[-2px] transition-transform" />
+              Download App
+            </Button>
           </div>
         </div>
       </div>

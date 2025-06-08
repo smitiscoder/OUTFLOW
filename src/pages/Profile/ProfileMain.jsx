@@ -7,6 +7,7 @@ import SettingsButtons from "./SettingsButtons";
 import Avatar from "./Avatar";
 import { ROUTES } from "../../utils/constants";
 import { toast } from "react-hot-toast";
+import Loader from "../../components/Loading";
 
 export default function ProfileMain() {
   const [isEditing, setIsEditing] = useState(false);
@@ -106,14 +107,7 @@ export default function ProfileMain() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen bg-[#0D0D0D] flex items-center justify-center">
-        <div className="flex flex-col items-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-purple-500"></div>
-          <p className="text-[#DFDFDF] mt-2">Loading profile...</p>
-        </div>
-      </div>
-    );
+    return <Loader />;
   }
 
   return (

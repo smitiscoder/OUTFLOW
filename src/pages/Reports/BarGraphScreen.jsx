@@ -130,61 +130,107 @@ export default function BarGraphScreen() {
 
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF]">
-      <div className="absolute top-6 left-6 flex items-center space-x-2">
-        <button
-          onClick={() => navigate(-1)}
-          className="p-2 rounded-full hover:bg-[#1A1A1A]"
-        >
-          <ArrowLeft size={24} />
-        </button>
-        <h1 className="text-2xl font-bold">Stacked Bar Graph</h1>
+      {/* Fixed Header with Back Button */}
+      <div className="fixed top-0 left-0 right-0 bg-[#0D0D0D]/95 backdrop-blur-sm z-50 border-b border-[#1A1A1A]">
+        <div className="max-w-full sm:max-w-[640px] md:max-w-[768px] lg:max-w-[1024px] mx-auto px-4 sm:px-6 md:px-8">
+          <div className="h-16 sm:h-20 flex items-center">
+            <button
+              onClick={() => navigate(-1)}
+              className="p-2 rounded-full hover:bg-[#1A1A1A] transition-colors"
+              aria-label="Go back"
+            >
+              <ArrowLeft size={20} className="sm:w-6 sm:h-6" />
+            </button>
+            <h1 className="text-lg sm:text-xl md:text-2xl font-bold ml-2">Stacked Bar Graph</h1>
+          </div>
+        </div>
       </div>
 
-      <div className="container mx-auto px-4 pt-20 pb-20 max-w-3xl">
-        {/* Timeframe Selector */}
-        <div className="flex flex-wrap justify-center gap-2 mt-6 mb-8">
-          {timeframes.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => setTimeframe(item.id)}
-              className={`flex-1 min-w-[100px] px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                timeframe === item.id
-                  ? 'bg-gradient-to-r from-purple-600 to-purple-500 text-[#DFDFDF]'
-                  : 'bg-[#1A1A1A] text-[#DFDFDF] text-opacity-60 hover:bg-[#2A2A2A]'
-              }`}
-            >
-              {item.label}
-            </button>
-          ))}
-        </div>
-
-        {/* Combined Expenses and Savings Chart */}
-        <div className="bg-[#1A1A1A] rounded-xl p-6 shadow-lg">
-          <h2 className="text-lg font-semibold mb-6 text-center">Expenses vs. Savings</h2>
-          {chartData.length > 0 ? (
-            <ResponsiveContainer width="100%" height={400}>
-              <BarChart
-                data={chartData}
-                margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+      {/* Main Content with proper spacing for fixed header */}
+      <div className="pt-16 sm:pt-20 px-4 sm:px-6 md:px-8 pb-20">
+        <div className="max-w-full sm:max-w-[640px] md:max-w-[768px] lg:max-w-[1024px] mx-auto space-y-6 sm:space-y-8">
+          {/* Timeframe Selector */}
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
+            {timeframes.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => setTimeframe(item.id)}
+                className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-xs sm:text-sm transition-colors ${
+                  timeframe === item.id
+                    ? 'bg-purple-600 text-white'
+                    : 'bg-[#1A1A1A] text-[#DFDFDF] hover:bg-[#252525]'
+                }`}
               >
-                <CartesianGrid strokeDasharray="3 3" stroke="#333" />
-                <XAxis dataKey="name" stroke="#DFDFDF" />
-                <YAxis stroke="#DFDFDF" />
-                <Tooltip
-                  formatter={(value) => `₹${value.toLocaleString()}`}
-                  contentStyle={{ backgroundColor: '#1A1A1A', border: 'none' }}
-                  labelStyle={{ color: '#DFDFDF' }}
-                />
-                <Legend wrapperStyle={{ paddingTop: '20px' }} />
-                <Bar dataKey="expenses" stackId="a" fill="#8884d8" name="Expenses (₹)" />
-                <Bar dataKey="savings" stackId="a" fill="#82ca9d" name="Savings (₹)" />
-              </BarChart>
-            </ResponsiveContainer>
-          ) : (
-            <p className="text-center text-[#DFDFDF] text-opacity-60 py-10">
-              No data available for the selected timeframe
-            </p>
-          )}
+                {item.label}
+              </button>
+            ))}
+          </div>
+
+          {/* Chart Container */}
+          <div className="bg-[#1A1A1A] rounded-xl p-4 sm:p-6 shadow-lg">
+            <h2 className="text-base sm:text-lg md:text-xl font-semibold mb-4 sm:mb-6 text-center">
+              Expenses vs. Savings
+            </h2>
+            {chartData.length > 0 ? (
+              <div className="w-full h-[300px] sm:h-[350px] md:h-[400px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={chartData}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#333" />
+                    <XAxis 
+                      dataKey="name" 
+                      stroke="#DFDFDF"
+                      tick={{ fontSize: 12 }}
+                      tickMargin={10}
+                    />
+                    <YAxis 
+                      stroke="#DFDFDF"
+                      tick={{ fontSize: 12 }}
+                      tickFormatter={(value) => `₹${value.toLocaleString()}`}
+                    />
+                    <Tooltip
+                      formatter={(value) => `₹${value.toLocaleString()}`}
+                      contentStyle={{ 
+                        backgroundColor: '#1A1A1A', 
+                        border: 'none',
+                        borderRadius: '8px',
+                        padding: '8px 12px'
+                      }}
+                      labelStyle={{ color: '#DFDFDF' }}
+                    />
+                    <Legend 
+                      wrapperStyle={{ 
+                        paddingTop: '20px',
+                        fontSize: '12px'
+                      }} 
+                    />
+                    <Bar 
+                      dataKey="expenses" 
+                      stackId="a" 
+                      fill="#8884d8" 
+                      name="Expenses (₹)" 
+                      radius={[4, 4, 0, 0]}
+                    />
+                    <Bar 
+                      dataKey="savings" 
+                      stackId="a" 
+                      fill="#82ca9d" 
+                      name="Savings (₹)" 
+                      radius={[4, 4, 0, 0]}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            ) : (
+              <div className="text-center py-8 sm:py-12">
+                <p className="text-[#DFDFDF] text-opacity-60 text-sm sm:text-base">
+                  No data available for the selected timeframe
+                </p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

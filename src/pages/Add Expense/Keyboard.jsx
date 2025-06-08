@@ -69,7 +69,7 @@ const Keyboard = ({
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 w-full bg-[#0D0D0D] text-white px-3 pt-3 pb-20 rounded-t-2xl shadow-lg max-w-screen-sm mx-auto">
+    <div className="bg-[#0D0D0D] text-white px-3 pt-3 pb-6 rounded-t-2xl shadow-lg">
       <div className="flex justify-between items-center mb-2">
         <div className="text-sm text-gray-400">{displayCategory}</div>
         <div className="text-2xl">{expression || "0"}</div>
@@ -119,22 +119,19 @@ const Keyboard = ({
 
         <button
           onClick={handleSubmit}
-          disabled={!expression || loading}
-          className={`py-3 rounded-md flex justify-center items-center ${
-            expression && !loading ? "bg-gradient-to-r from-purple-600 to-purple-500" : "bg-[#333333]"
-          }`}
+          disabled={loading}
+          className="col-span-4 mt-2 py-3 bg-outflow-accent text-white font-medium rounded-md hover:bg-outflow-accent/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         >
-          <Check className="w-5 h-6" />
+          {loading ? (
+            <div className="flex items-center justify-center gap-2">
+              <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+              <span>Submitting...</span>
+            </div>
+          ) : (
+            'Submit'
+          )}
         </button>
       </div>
-
-      <button
-        onClick={handleCancel}
-        disabled={loading}
-        className="mt-2 w-full py-2 bg-[#1A1A1A] text-red-500 border border-red-500 rounded-md transition-colors"
-      >
-        Cancel
-      </button>
     </div>
   );
 };

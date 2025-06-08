@@ -73,20 +73,12 @@ const ExpenseCategories = () => {
     }
   };
 
-  // Close handler
-  const handleClose = () => {
-    window.history.back(); // Navigate back in browser history
-    // Alternatively, you could use: 
-    // - useNavigate() from react-router-dom: navigate(-1)
-    // - A custom onClose prop: onClose()
-  };
-
   return (
-    <div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF] pb-20 relative">
-      <div className="w-full max-w-screen-lg mx-auto px-4">
+    <div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF] flex flex-col">
+      <div className="flex-1 w-full max-w-screen-lg mx-auto px-4">
         {/* Close Button */}
         <button
-          onClick={handleClose}
+          onClick={() => window.history.back()}
           className="absolute top-4 left-4 p-2 rounded-full hover:bg-[#1A1A1A] transition-colors"
           aria-label="Close"
         >
@@ -95,8 +87,8 @@ const ExpenseCategories = () => {
 
         <h2 className="text-center text-2xl font-semibold mb-6 pt-6">SELECT CATEGORY</h2>
 
-        {/* Fixed 6x4 Grid (24 items max) */}
-        <div className="grid grid-cols-4 gap-3 mb-8">
+        {/* Grid of categories */}
+        <div className="grid grid-cols-4 gap-3 mb-4">
           {expensecategories.map(({ id, icon: Icon, label }) => (
             <button
               key={id}
@@ -114,17 +106,18 @@ const ExpenseCategories = () => {
             </button>
           ))}
         </div>
-
-        {selectedCategory && (
-          <div className="fixed bottom-0 left-0 right-0 bg-[#1A1A1A] p-4 rounded-t-2xl shadow-lg border-t border-[#DFDFDF]/10">
-            <Keyboard 
-              category={selectedCategory.label} 
-              onSubmit={handleSubmit} 
-              loading={loading} 
-            />
-          </div>
-        )}
       </div>
+
+      {/* Keyboard component */}
+      {selectedCategory && (
+        <div className="sticky bottom-0 left-0 right-0 bg-[#1A1A1A] border-t border-[#DFDFDF]/10">
+          <Keyboard 
+            category={selectedCategory.label} 
+            onSubmit={handleSubmit} 
+            loading={loading} 
+          />
+        </div>
+      )}
     </div>
   );
 };

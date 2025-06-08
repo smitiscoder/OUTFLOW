@@ -101,71 +101,80 @@ export default function SetBudget() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0D0D0D] text-white p-6">
-      {/* Added back button and title */}
-      <div className="flex items-center mb-6">
-        <button 
-          onClick={() => navigate(-1)}
-          className="p-2 rounded-full hover:bg-[#1A1A1A] mr-4"
-          aria-label="Go back"
-        >
-          <FiArrowLeft className="text-white text-xl" />
-        </button>
-        <h1 className="text-2xl font-bold">Set Budget</h1>
+    <div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF]">
+      {/* Fixed Header with Back Button */}
+      <div className="fixed top-0 left-0 right-0 bg-[#0D0D0D]/95 backdrop-blur-sm z-50 border-b border-[#1A1A1A]">
+        <div className="max-w-full sm:max-w-[640px] md:max-w-[768px] lg:max-w-[1024px] mx-auto px-4 sm:px-6 md:px-8">
+          <div className="h-16 sm:h-20 flex items-center">
+            <button
+              onClick={() => navigate(-1)}
+              className="p-2 rounded-full hover:bg-[#1A1A1A] transition-colors"
+              aria-label="Go back"
+            >
+              <FiArrowLeft size={20} className="sm:w-6 sm:h-6" />
+            </button>
+            <h1 className="text-lg sm:text-xl md:text-2xl font-bold ml-2">Set Budget</h1>
+          </div>
+        </div>
       </div>
 
-      <div className="flex justify-center items-center">
-        <div className="w-full max-w-md space-y-6">
-          <h2 className="text-2xl font-bold">Set Your Monthly Budget</h2>
-          <p className="text-gray-400">
-            {currentMonthName} {currentYear}
-          </p>
-          <input
-            type="number"
-            value={budget}
-            onChange={(e) => setBudget(e.target.value)}
-            placeholder="Enter budget amount"
-            className="w-full p-3 rounded bg-[#1A1A1A] border border-[#333333] text-white"
-          />
-          
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              id="applyToAll"
-              checked={applyToAllMonths}
-              onChange={(e) => setApplyToAllMonths(e.target.checked)}
-              className="mr-2"
-            />
-            <label htmlFor="applyToAll" className="text-sm text-gray-300">
-              Apply to all future months
-            </label>
+      {/* Main Content with proper spacing for fixed header */}
+      <div className="pt-16 sm:pt-20 px-4 sm:px-6 md:px-8 pb-20">
+        <div className="max-w-full sm:max-w-[640px] md:max-w-[768px] lg:max-w-[1024px] mx-auto">
+          <div className="flex justify-center items-center">
+            <div className="w-full max-w-md space-y-6">
+              <h2 className="text-2xl font-bold">Set Your Monthly Budget</h2>
+              <p className="text-gray-400">
+                {currentMonthName} {currentYear}
+              </p>
+              <input
+                type="number"
+                value={budget}
+                onChange={(e) => setBudget(e.target.value)}
+                placeholder="Enter budget amount"
+                className="w-full p-3 rounded bg-[#1A1A1A] border border-[#333333] text-white"
+              />
+              
+              <div className="flex items-center">
+                <input
+                  type="checkbox"
+                  id="applyToAll"
+                  checked={applyToAllMonths}
+                  onChange={(e) => setApplyToAllMonths(e.target.checked)}
+                  className="mr-2"
+                />
+                <label htmlFor="applyToAll" className="text-sm text-gray-300">
+                  Apply to all future months
+                </label>
+              </div>
+              
+              <button
+                onClick={handleSaveBudget}
+                disabled={loading || !budget}
+                className={`w-full py-2 rounded font-semibold ${
+                  loading || !budget
+                    ? "bg-gray-600 cursor-not-allowed"
+                    : "bg-purple-600 hover:bg-purple-500"
+                }`}
+              >
+                {loading ? "Saving..." : "Save Budget"}
+              </button>
+              
+              {currentBudget !== null && (
+                <button
+                  onClick={handleRemoveBudget}
+                  disabled={removeLoading}
+                  className={`w-full py-2 rounded font-semibold ${
+                    removeLoading
+                      ? "bg-gray-600 cursor-not-allowed"
+                      : "bg-red-600 hover:bg-red-500"
+                  }`}
+                >
+                  {removeLoading ? "Removing..." : "Remove Budget"}
+                </button>
+              )}
+            </div>
           </div>
-          
-          <button
-            onClick={handleSaveBudget}
-            disabled={loading || !budget}
-            className={`w-full py-2 rounded font-semibold ${
-              loading || !budget
-                ? "bg-gray-600 cursor-not-allowed"
-                : "bg-purple-600 hover:bg-purple-500"
-            }`}
-          >
-            {loading ? "Saving..." : "Save Budget"}
-          </button>
-          
-          {currentBudget !== null && (
-            <button
-              onClick={handleRemoveBudget}
-              disabled={removeLoading}
-              className={`w-full py-2 rounded font-semibold ${
-                removeLoading
-                  ? "bg-gray-600 cursor-not-allowed"
-                  : "bg-red-600 hover:bg-red-500"
-              }`}
-            >
-              {removeLoading ? "Removing..." : "Remove Budget"}
-            </button>
-          )}
         </div>
       </div>
     </div>

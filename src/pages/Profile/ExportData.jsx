@@ -144,42 +144,86 @@ export default function ExportData() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF] p-6 flex flex-col">
-      {/* Header */}
-      <div className="flex items-center mb-8">
-        <button
-          onClick={() => navigate(-1)}
-          className="p-2 rounded-full hover:bg-[#1A1A1A] mr-2"
-        >
-          <FaArrowLeft size={24} />
-        </button>
-        <h1 className="text-2xl font-bold">Export Data</h1>
+    <div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF]">
+      {/* Fixed Header with Back Button */}
+      <div className="fixed top-0 left-0 right-0 bg-[#0D0D0D]/95 backdrop-blur-sm z-50 border-b border-[#1A1A1A]">
+        <div className="max-w-full sm:max-w-[640px] md:max-w-[768px] lg:max-w-[1024px] mx-auto px-4 sm:px-6 md:px-8">
+          <div className="h-16 sm:h-20 flex items-center">
+            <button
+              onClick={() => navigate(-1)}
+              className="p-2 rounded-full hover:bg-[#1A1A1A] transition-colors"
+              aria-label="Go back"
+            >
+              <FaArrowLeft size={20} className="sm:w-6 sm:h-6" />
+            </button>
+            <h1 className="text-lg sm:text-xl md:text-2xl font-bold ml-2">Export Data</h1>
+          </div>
+        </div>
       </div>
 
-      {/* Content area */}
-      <div className="flex flex-col items-center justify-start space-y-8 flex-1 max-w-md mx-auto w-full">
-        <FaFilePdf size={64} className="text-red-500" />
-        
-        <div className="text-center space-y-2">
-          <h2 className="text-xl font-semibold">Export Your Expenses</h2>
-          <p className="text-[#DFDFDF] text-opacity-80">
-            Download a PDF report of all your expenses, organized by month
-          </p>
-        </div>
+      {/* Main Content with proper spacing for fixed header */}
+      <div className="pt-16 sm:pt-20 px-4 sm:px-6 md:px-8 pb-20">
+        <div className="max-w-full sm:max-w-[640px] md:max-w-[768px] lg:max-w-[1024px] mx-auto">
+          <div className="bg-[#1A1A1A] rounded-2xl p-6 sm:p-8 md:p-10 shadow-lg">
+            {/* Icon and Title */}
+            <div className="flex flex-col items-center text-center space-y-4 sm:space-y-6 mb-8 sm:mb-10">
+              <div className="bg-red-500/10 p-4 sm:p-5 rounded-full">
+                <FaFilePdf size={48} className="text-red-500 sm:w-16 sm:h-16" />
+              </div>
+              <div className="space-y-2 sm:space-y-3">
+                <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold bg-gradient-to-r from-white to-gray-400 bg-clip-text text-transparent">
+                  Export Your Expenses
+                </h2>
+                <p className="text-[#DFDFDF] text-opacity-80 text-sm sm:text-base max-w-md mx-auto">
+                  Download a detailed PDF report of all your expenses, organized by month with category-wise breakdown
+                </p>
+              </div>
+            </div>
 
-        <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 w-full">
-          <button
-            onClick={handleExport}
-            className="flex-1 bg-red-600 hover:bg-red-700 text-white font-medium py-3 px-6 rounded-lg transition-colors flex items-center justify-center space-x-2"
-          >
-            <span>Export PDF</span>
-          </button>
-          <button
-            onClick={() => navigate(-1)}
-            className="flex-1 bg-[#333333] hover:bg-[#444444] text-white font-medium py-3 px-6 rounded-lg transition-colors"
-          >
-            Cancel
-          </button>
+            {/* Export Options */}
+            <div className="space-y-6 sm:space-y-8">
+              {/* Export Button */}
+              <button
+                onClick={handleExport}
+                disabled={userExpenses.length === 0}
+                className={`w-full py-3 sm:py-4 px-6 rounded-xl font-medium transition-all transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center space-x-3 ${
+                  userExpenses.length === 0
+                    ? 'bg-gray-600 cursor-not-allowed'
+                    : 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg shadow-red-500/20'
+                }`}
+              >
+                <FaFilePdf size={20} className="sm:w-6 sm:h-6" />
+                <span className="text-sm sm:text-base">
+                  {userExpenses.length === 0 ? 'No Data to Export' : 'Export as PDF'}
+                </span>
+              </button>
+
+              {/* Info Box */}
+              <div className="rounded-xl p-4 sm:p-6">
+                <h3 className="text-sm sm:text-base font-medium mb-2 sm:mb-3 text-[#DFDFDF]">
+                  What's included in the export?
+                </h3>
+                <ul className="space-y-2 text-sm text-[#DFDFDF] text-opacity-80">
+                  <li className="flex items-center space-x-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                    <span>Monthly expense summaries</span>
+                  </li>
+                  <li className="flex items-center space-x-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                    <span>Category-wise breakdown</span>
+                  </li>
+                  <li className="flex items-center space-x-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                    <span>Detailed transaction history</span>
+                  </li>
+                  <li className="flex items-center space-x-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-500"></span>
+                    <span>Notes and additional information</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

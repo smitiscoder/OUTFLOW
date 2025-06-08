@@ -10,6 +10,7 @@ import BudgetInfo from './Budgetinfo';
 import ExpenseList from './ExpenseList';
 import { fetchBudget } from './DataFiltering';
 import Keyboard from './Keyboardhome';
+import Loader from '../../components/Loading';
 
 const HomeMain = () => {
   const { expenses, selectedDate, updateSelectedDate, setExpenses } = useExpenses();

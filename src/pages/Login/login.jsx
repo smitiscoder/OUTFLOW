@@ -1,60 +1,96 @@
 import React from 'react';
-import { FaEnvelope } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import ContinueWithGoogle from './ContinuewithGoogle';
 
-export default function Login() {
+const Login = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="relative min-h-screen bg-[#0D0D0D] text-white flex flex-col justify-center items-center px-6 space-y-8 overflow-hidden">
-      {/* 💡 Top Gradient Glow */}
-      <div
-        className="absolute top-[-150px] left-1/2 transform -translate-x-1/2 w-[600px] h-[600px] bg-gradient-to-b from-[#9333EA] via-[#7B2CBF] to-transparent opacity-50 blur-[80px] z-0"
-      />
-
-      {/* 🔒 Main Content */}
-      <div className="relative z-10 w-full max-w-sm space-y-8">
-        {/* Logo and Subtext */}
-        <div className="text-center space-y-2">
-          <h1 className="text-6xl font-bold tracking-wide bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">OUTFLOW</h1>
-          <p className="text-sm text-gray-400 mt-2">Get started with us</p>
-          <p className="text-xs text-gray-500">Complete a simple authentication process</p>
-        </div>
-
-        {/* Sign-in Buttons */}
-        <div className="space-y-4">
-          {/* Email and Password Login */}
-          <button
-            className="flex items-center justify-center gap-3 w-full py-3 px-4 rounded-full bg-white text-black font-medium text-sm shadow-md hover:bg-gray-100 transition-colors"
-            onClick={() => navigate('/email')}
+    <div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF] flex flex-col justify-center items-center px-6">
+      {/* Subtle background pattern */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0.03)_0%,rgba(0,0,0,0)_70%)] -z-10" />
+      
+      {/* Main content */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="w-full max-w-sm space-y-8"
+      >
+        {/* Title */}
+        <div className="text-center space-y-3">
+          <motion.h1 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="text-3xl font-bold text-[#DFDFDF]"
           >
-            <FaEnvelope size={18} />
-            Sign in with Email
-          </button>
-
-          {/* Google Login */}
-          <ContinueWithGoogle />
+            Welcome to OUTFLOW
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="text-[#A0A0A0] text-sm"
+          >
+            Track your expenses, manage your budget
+          </motion.p>
         </div>
+
+        {/* Login Options */}
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5 }}
+          className="space-y-4"
+        >
+          <ContinueWithGoogle />
+          
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-[#1A1A1A]"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-[#0D0D0D] text-[#A0A0A0]">or</span>
+            </div>
+          </div>
+
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => navigate('/email')}
+            className="w-full py-3 px-4 bg-[#1A1A1A] hover:bg-[#252525] text-[#DFDFDF] rounded-lg font-medium transition-colors flex items-center justify-center gap-2 shadow-lg"
+          >
+            Continue with Email
+          </motion.button>
+        </motion.div>
 
         {/* Terms and Privacy */}
-        <div className="text-gray-500 text-xs mt-8 text-center mx-auto max-w-xs">
-          By signing in, you agree to our{' '}
-          <span 
-            className="underline cursor-pointer hover:text-gray-300" 
+        <motion.p 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+          className="text-center text-xs text-[#A0A0A0] mt-8"
+        >
+          By continuing, you agree to our{' '}
+          <button 
             onClick={() => navigate('/terms')}
+            className="text-[#DFDFDF] hover:underline"
           >
-            Terms
-          </span>{' '}
-          and{' '}
-          <span 
-            className="underline cursor-pointer hover:text-gray-300" 
+            Terms of Service
+          </button>
+          {' '}and{' '}
+          <button 
             onClick={() => navigate('/privacy')}
+            className="text-[#DFDFDF] hover:underline"
           >
             Privacy Policy
-          </span>.
-        </div>
-      </div>
+          </button>
+        </motion.p>
+      </motion.div>
     </div>
   );
-}
+};
+
+export default Login;

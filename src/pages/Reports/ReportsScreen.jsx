@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { getAuth } from "firebase/auth";
 import { getFirestore, collection, query, where, onSnapshot } from "firebase/firestore";
-import { BarChart2, Repeat } from "lucide-react";
+import { BarChart2, Repeat, ArrowLeft } from "lucide-react";
 import Header from "../../components/Header";
 import TimeframeSelector from './TimeframeSelector';
 import SpendingPieChart from './SpendingPieChart';
@@ -161,21 +161,21 @@ export default function ReportsScreen() {
         <SummaryCard totalSpent={totalSpent} processedData={processedData} getDaysInTimeframe={getDaysInTimeframe} />
         
         <div className="flex gap-4 mt-6">
-        <button
-          onClick={() => navigate('/bar-graphs')}
-          className="flex-1 py-2 rounded-full text-sm font-semibold bg-purple-600 hover:bg-purple-700 transition-colors flex items-center justify-center gap-2"
-        >
-          <BarChart2 size={16} />
-          BarGraph
-        </button>
-        <button
-          onClick={() => navigate('/recurring-expenses')}
-          className="flex-1 py-2 rounded-full text-sm font-semibold bg-purple-600 hover:bg-purple-700 transition-colors flex items-center justify-center gap-2"
-        >
-          <Repeat size={16} />
-          Recurring
-        </button>
-      </div>
+          <button
+            onClick={() => navigate('/bar-graphs')}
+            className="flex-1 py-2 rounded-full text-sm font-semibold bg-purple-600 hover:bg-purple-700 transition-colors flex items-center justify-center gap-2"
+          >
+            <BarChart2 size={16} />
+            BarGraph
+          </button>
+          <button
+            onClick={() => navigate('/recurring-expenses')}
+            className="flex-1 py-2 rounded-full text-sm font-semibold bg-purple-600 hover:bg-purple-700 transition-colors flex items-center justify-center gap-2"
+          >
+            <Repeat size={16} />
+            Recurring
+          </button>
+        </div>
       </div>
     </div>
   );

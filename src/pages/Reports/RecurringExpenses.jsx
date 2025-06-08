@@ -149,87 +149,110 @@ export default function RecurringExpenses() {
 
   return (
     <div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF]">
-      <div className="container mx-auto px-4 pt-20 pb-20 max-w-lg">
-        {/* Header with Back Button */}
-        <div className="absolute top-6 left-6 flex items-center space-x-2">
-          <button
-            onClick={() => navigate(-1)}
-            className="p-2 rounded-full hover:bg-[#1A1A1A]"
-          >
-            <ArrowLeft size={24} />
-          </button>
-          <h1 className="text-2xl font-bold">Recurring Expenses</h1>
-        </div>
-
-        {recurringExpenses.length > 0 ? (
-          <div className="bg-[#1A1A1A] rounded-xl p-6 shadow-lg mt-8">
-            <ul className="space-y-4">
-              {recurringExpenses.map((expense, index) => (
-                <li
-                  key={index}
-                  className="flex flex-col bg-[#2A2A2A] rounded-lg p-4 hover:bg-[#3A3A3A] transition-colors"
-                >
-                  <div
-                    className="flex justify-between items-center cursor-pointer"
-                    onClick={() => handleExpenseClick(expense)}
-                  >
-                    <div>
-                      <span className="font-medium capitalize">
-                        {expense.description.toLowerCase()}
-                      </span>
-                      <span className="block text-xs text-[#DFDFDF] text-opacity-60">
-                        Category: {expense.category}
-                      </span>
-                    </div>
-                    <div className="text-right">
-                      <span className="font-medium">₹{expense.amount.toLocaleString()}</span>
-                      <span className="block text-sm text-[#DFDFDF] text-opacity-60">
-                        {expense.count} time{expense.count > 1 ? 's' : ''}
-                      </span>
-                    </div>
-                  </div>
-
-                  <span className="text-xs text-[#DFDFDF] text-opacity-60 mt-2">
-                    Last: {expense.lastDate}
-                  </span>
-
-                  {selectedExpense === expense && (
-                    <div className="mt-4 pl-4 border-l-2 border-[#DFDFDF] border-opacity-20">
-                      <h3 className="text-sm font-medium mb-3">Expense Records</h3>
-                      {expense.fullRecords.length > 0 ? (
-                        <ul className="space-y-3">
-                          {expense.fullRecords.map((record, idx) => (
-                            <li key={idx} className="bg-[#333333] rounded-lg p-3">
-                              <div className="flex justify-between">
-                                <span className="text-sm font-medium capitalize">
-                                  {record.note || record.description}
-                                </span>
-                                <span className="text-sm font-medium">
-                                  ₹{record.amount.toLocaleString()}
-                                </span>
-                              </div>
-                              <div className="flex justify-between mt-1">
-                                <span className="text-xs text-[#DFDFDF] text-opacity-60">
-                                  {record.timestamp}
-                                </span>
-                              </div>
-                            </li>
-                          ))}
-                        </ul>
-                      ) : (
-                        <p className="text-sm text-[#DFDFDF] text-opacity-60">No records found.</p>
-                      )}
-                    </div>
-                  )}
-                </li>
-              ))}
-            </ul>
+      {/* Fixed Header with Back Button */}
+      <div className="fixed top-0 left-0 right-0 bg-[#0D0D0D]/95 backdrop-blur-sm z-50 border-b border-[#1A1A1A]">
+        <div className="max-w-full sm:max-w-[640px] md:max-w-[768px] lg:max-w-[1024px] mx-auto px-4 sm:px-6 md:px-8">
+          <div className="h-16 sm:h-20 flex items-center">
+            <button
+              onClick={() => navigate(-1)}
+              className="p-2 rounded-full hover:bg-[#1A1A1A] transition-colors"
+              aria-label="Go back"
+            >
+              <ArrowLeft size={20} className="sm:w-6 sm:h-6" />
+            </button>
+            <h1 className="text-lg sm:text-xl md:text-2xl font-bold ml-2">Recurring Expenses</h1>
           </div>
-        ) : (
-          <p className="text-center text-[#DFDFDF] text-opacity-60 mt-12">
-            No recurring expenses found for the {timeframeUsed === '6months' ? 'last 6 months' : 'last 2 months'}.
-          </p>
-        )}
+        </div>
+      </div>
+
+      {/* Main Content with proper spacing for fixed header */}
+      <div className="pt-16 sm:pt-20 px-4 sm:px-6 md:px-8 pb-20">
+        <div className="max-w-full sm:max-w-[640px] md:max-w-[768px] lg:max-w-[1024px] mx-auto">
+          {recurringExpenses.length > 0 ? (
+            <div className="bg-[#1A1A1A] rounded-xl p-6 shadow-lg mt-8">
+              <div className="mb-6">
+                <h2 className="text-lg font-semibold text-[#DFDFDF]">Recurring Expenses</h2>
+                <p className="text-sm text-[#DFDFDF] text-opacity-60 mt-1">
+                  Based on {timeframeUsed === '6months' ? 'last 6 months' : 'last 2 months'} of data
+                </p>
+              </div>
+              <ul className="space-y-4">
+                {recurringExpenses.map((expense, index) => (
+                  <li
+                    key={index}
+                    className="flex flex-col bg-[#2A2A2A] rounded-lg p-4 border border-[#333333]"
+                  >
+                    <div
+                      className="flex justify-between items-center cursor-pointer"
+                      onClick={() => handleExpenseClick(expense)}
+                    >
+                      <div>
+                        <span className="font-medium capitalize text-[#DFDFDF]">
+                          {expense.description.toLowerCase() !== expense.category.toLowerCase() 
+                            ? expense.description.toLowerCase()
+                            : expense.category.toLowerCase()}
+                        </span>
+                        {expense.description.toLowerCase() !== expense.category.toLowerCase() && (
+                          <span className="block text-xs text-[#DFDFDF] text-opacity-60 mt-0.5">
+                            Category: {expense.category}
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-right">
+                        <span className="font-medium text-[#DFDFDF]">₹{expense.amount.toLocaleString()}</span>
+                        <span className="block text-sm text-[#DFDFDF] text-opacity-60 mt-0.5">
+                          {expense.count} time{expense.count > 1 ? 's' : ''}
+                        </span>
+                      </div>
+                    </div>
+
+                    <span className="text-xs text-[#DFDFDF] text-opacity-60 mt-2">
+                      Last: {expense.lastDate}
+                    </span>
+
+                    {selectedExpense === expense && (
+                      <div className="mt-4 pl-4 border-l-2 border-[#DFDFDF] border-opacity-20">
+                        <h3 className="text-sm font-medium mb-3 text-[#DFDFDF]">Expense Records</h3>
+                        {expense.fullRecords.length > 0 ? (
+                          <ul className="space-y-3">
+                            {expense.fullRecords.map((record, idx) => (
+                              <li key={idx} className="bg-[#333333] rounded-lg p-3 border border-[#404040]">
+                                <div className="flex justify-between">
+                                  <span className="text-sm font-medium capitalize text-[#DFDFDF]">
+                                    {record.note || record.description}
+                                  </span>
+                                  <span className="text-sm font-medium text-[#DFDFDF]">
+                                    ₹{record.amount.toLocaleString()}
+                                  </span>
+                                </div>
+                                <div className="flex justify-between mt-1">
+                                  <span className="text-xs text-[#DFDFDF] text-opacity-60">
+                                    {record.timestamp}
+                                  </span>
+                                </div>
+                              </li>
+                            ))}
+                          </ul>
+                        ) : (
+                          <p className="text-sm text-[#DFDFDF] text-opacity-60">No records found.</p>
+                        )}
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : (
+            <div className="text-center mt-12">
+              <p className="text-[#DFDFDF] text-opacity-60">
+                No recurring expenses found for the {timeframeUsed === '6months' ? 'last 6 months' : 'last 2 months'}.
+              </p>
+              <p className="text-sm text-[#DFDFDF] text-opacity-40 mt-2">
+                Add more expenses to see recurring patterns
+              </p>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

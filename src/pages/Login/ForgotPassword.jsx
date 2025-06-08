@@ -1,93 +1,151 @@
 import React, { useState } from 'react';
-import { FaEnvelope } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
-import { auth, sendPasswordResetEmail } from '../../components/firebase';
+import { motion } from 'framer-motion';
+import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
+import { ArrowLeft } from 'lucide-react';
 
-
-export default function ForgotPassword() {
+const ForgotPassword = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
-  const [message, setMessage] = useState('');
-  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const auth = getAuth();
 
-  const handleSubmit = async (e) => {
+  const handleResetPassword = async (e) => {
     e.preventDefault();
     setError('');
-    setMessage('');
-    setLoading(true);
-
-    if (!email.includes('@') || !email.includes('.')) {
-      setError('Please enter a valid email address');
-      setLoading(false);
-      return;
-    }
+    setSuccess(false);
+    setIsLoading(true);
 
     try {
       await sendPasswordResetEmail(auth, email);
-      setMessage('Password reset email sent! Check your inbox.');
-    } catch (err) {
-      switch (err.code) {
-        case 'auth/invalid-email':
-          setError('Invalid email address');
-          break;
-        case 'auth/user-not-found':
-          setError('No user found with this email');
-          break;
-        default:
-          setError('Failed to send reset email. Please try again.');
-      }
+      setSuccess(true);
+    } catch (error) {
+      setError(error.message);
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   };
 
   return (
-    <div className="relative min-h-screen bg-[#0f0f0f] text-white flex flex-col justify-center items-center px-6 space-y-8 overflow-hidden">
-      <div className="absolute top-[-150px] left-1/2 transform -translate-x-1/2 w-[600px] h-[600px] bg-gradient-to-b from-purple-600 via-purple-800 to-transparent opacity-30 blur-[100px] z-0" />
-      <div className="relative z-10 w-full max-w-sm space-y-8">
-        <div className="text-center space-y-2">
-          <h1 className="text-6xl font-bold tracking-wide">OUTFLOW</h1>
-        </div>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {error && (
-            <div className="text-red-500 text-sm text-center">{error}</div>
-          )}
-          {message && (
-            <div className="text-green-500 text-sm text-center">{message}</div>
-          )}
-          <div className="relative">
-            <FaEnvelope className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
-            <input
-              type="email"
-              placeholder="Enter your email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 rounded-full bg-[#1a1a1a] text-white border border-gray-700 focus:outline-none focus:border-purple-500 text-sm"
-              required
-            />
+    <div className="min-h-screen bg-[#0D0D0D] text-[#DFDFDF] flex flex-col px-6">
+      {/* Subtle background pattern */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0.03)_0%,rgba(0,0,0,0)_70%)] -z-10" />
+
+      {/* Back Button */}
+      <motion.button
+        initial={{ opacity: 0, x: -20 }}
+        animate={{ opacity: 1, x: 0 }}
+        transition={{ delay: 0.2 }}
+        onClick={() => navigate(-1)}
+        className="absolute top-6 left-6 p-2 rounded-full hover:bg-[#1A1A1A] transition-colors"
+        aria-label="Go back"
+      >
+        <ArrowLeft size={20} />
+      </motion.button>
+
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col justify-center">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="w-full max-w-sm mx-auto space-y-8"
+        >
+          {/* Title */}
+          <div className="text-center space-y-3">
+            <motion.h1
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3 }}
+              className="text-3xl font-bold text-[#DFDFDF]"
+            >
+              Reset Password
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="text-[#A0A0A0] text-sm"
+            >
+              Enter your email to receive a password reset link
+            </motion.p>
           </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className={`flex items-center justify-center gap-3 w-full py-3 px-4 rounded-full bg-white text-black font-medium text-sm shadow-md transition-colors ${
-              loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-100'
-            }`}
+
+          {/* Reset Form */}
+          <motion.form
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            onSubmit={handleResetPassword}
+            className="space-y-4"
           >
-            {loading ? 'Sending...' : 'Send Reset Link'}
-          </button>
-        </form>
-        <div className="text-center text-gray-400 text-sm">
-          Back to{' '}
-          <button
-            type="button"
-            className="text-purple-400 hover:text-purple-300 transition-colors"
-            onClick={() => navigate('/email')}
+            <div className="space-y-2">
+              <label htmlFor="email" className="block text-sm font-medium text-[#DFDFDF]">
+                Email
+              </label>
+              <input
+                id="email"
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-4 py-3 bg-[#1A1A1A] border border-[#252525] rounded-lg text-[#DFDFDF] placeholder-[#A0A0A0] focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors"
+                placeholder="Enter your email"
+                required
+              />
+            </div>
+
+            {error && (
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-sm text-red-500 text-center"
+              >
+                {error}
+              </motion.p>
+            )}
+
+            {success && (
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-sm text-green-500 text-center"
+              >
+                Password reset link has been sent to your email
+              </motion.p>
+            )}
+
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              type="submit"
+              disabled={isLoading || success}
+              className="w-full py-3 px-4 bg-[#1A1A1A] hover:bg-[#252525] text-[#DFDFDF] rounded-lg font-medium transition-colors flex items-center justify-center gap-2 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isLoading ? 'Sending...' : success ? 'Link Sent' : 'Send Reset Link'}
+            </motion.button>
+          </motion.form>
+
+          {/* Sign In Link */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6 }}
+            className="text-center text-sm text-[#A0A0A0]"
           >
-            Sign in
-          </button>
-        </div>
+            Remember your password?{' '}
+            <button
+              onClick={() => navigate('/email-login')}
+              className="text-[#DFDFDF] hover:underline"
+            >
+              Sign in
+            </button>
+          </motion.p>
+        </motion.div>
       </div>
     </div>
   );
-}
+};
+
+export default ForgotPassword;

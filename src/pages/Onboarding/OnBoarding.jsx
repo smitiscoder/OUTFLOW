@@ -8,7 +8,7 @@ import CtaSection from './CtaSection';
 import Footer from './Footer';
 import StickyButtons from './StickyButtons';
 
-const Onbording = () => {
+const OnBoarding = () => {
   React.useEffect(() => {
     document.title = "OUTFLOW | Expense Tracking Simplified";
 
@@ -28,14 +28,14 @@ const Onbording = () => {
     
     initializeAOS();
   }, []);
-  
+
   return (
-    <div className="min-h-screen bg-outflow-black text-white">
+    <div className="min-h-screen bg-[#0D0D0D] text-white">
       {/* Header */}
-      <header className="fixed top-0 left-0 right-0 z-50 py-6 px-4 bg-outflow-black/90">
+      <header className="fixed top-0 left-0 right-0 z-50 py-4 px-4 sm:px-6 bg-[#0D0D0D]/90">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <div className="flex items-center">
-            <h1 className="text-2xl font-bold">OUTFLOW</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold">OUTFLOW</h1>
           </div>
           <div className="flex space-x-1.5">
             <div className="w-2 h-2 rounded-full bg-outflow-accent animate-pulse"></div>
@@ -45,7 +45,7 @@ const Onbording = () => {
         </div>
       </header>
       
-      {/* Sticky buttons that appear after scrolling */}
+      {/* Sticky buttons */}
       <StickyButtons />
       
       {/* Main sections */}
@@ -63,4 +63,4 @@ const Onbording = () => {
   );
 };
 
-export default Onbording;
+export default OnBoarding;
