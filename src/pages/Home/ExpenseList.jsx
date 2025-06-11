@@ -77,7 +77,7 @@ const ExpenseList = ({ loading, selectedExpense, setSelectedExpense, setEditingE
 
                 <div className="flex items-center gap-2 flex-shrink-0">
                   <p className="text-sm sm:text-base text-[#DFDFDF] font-semibold whitespace-nowrap tabular-nums">
-                    ₹{formatNumber(expense.amount)}
+                    {formatNumber(expense.amount)}
                   </p>
                   {selectedExpense === expense.id && (
                     <div className="flex gap-1.5">
