@@ -94,13 +94,13 @@ const HomeMain = () => {
       <div className="container mx-auto px-4 max-w-md relative">
         {selectedExpense && (
           <div
-            className="fixed inset-0 bg-[#0D0D0D] z-10"
+            className="fixed inset-0 bg-black/30 backdrop-blur-sm z-10"
             onClick={cancelEdit}
           />
         )}
 
         <header className="py-4 flex items-center justify-between mt-6">
-          <h1 className="text-2xl font-bold">OUTFLOW</h1>
+          <h1 className="text-2xl font-bold">OutFlow</h1>
           <div className="flex items-center gap-4">
             <MonthYearCalendar
               selectedYear={selectedDate.year}
@@ -114,7 +114,9 @@ const HomeMain = () => {
         <BudgetInfo budget={budget} expenses={sanitizedExpenses} />
 
         {loading ? (
-          <div>Loading expenses...</div>
+          <div className="flex justify-center items-center py-8">
+            <div className="w-6 h-6 border-2 border-[#DFDFDF] border-t-transparent rounded-full animate-spin"></div>
+          </div>
         ) : expenses.length === 0 ? (
           <div>No expenses found for this month.</div>
         ) : (
@@ -127,8 +129,8 @@ const HomeMain = () => {
         )}
 
         {editingExpense && (
-          <div className="fixed bottom-0 left-0 right-0 bg-gray-800 p-4 z-20">
-            <h2 className="text-lg font-semibold mb-2">{editingExpense.category || 'Uncategorized'}</h2>
+          <div className="fixed bottom-0 left-0 right-0 bg-[#0D0D0D] p-4 z-20">
+            <h2 className="text-lg font-semibold mb-2 text-[#DFDFDF]">{editingExpense.category || 'Uncategorized'}</h2>
             <Keyboard
               initialAmount={editingExpense.amount?.toString() || ''}
               initialNote={editingExpense.note || editingExpense.description || ''}
@@ -145,9 +147,8 @@ const HomeMain = () => {
             />
           </div>
         )}
-
-        <BottomNav />
       </div>
+      <BottomNav />
     </div>
   );
 };

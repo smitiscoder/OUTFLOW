@@ -2,8 +2,8 @@ import React from 'react';
 import { useExpenses } from '../../Context/ExpenseContext';
 import { format } from 'date-fns';
 import { getIconForCategory } from './constants';
-import { handleDelete, handleExpenseSelect } from './HandleDeleteAndEdit';
-import { Trash2, SquarePen } from 'lucide-react';
+import { handleExpenseSelect, DeleteExpenseButton } from './HandleDeleteAndEdit';
+import { SquarePen } from 'lucide-react';
 
 const ExpenseList = ({ loading, selectedExpense, setSelectedExpense, setEditingExpense }) => {
   const { expenses } = useExpenses();
@@ -46,52 +46,51 @@ const ExpenseList = ({ loading, selectedExpense, setSelectedExpense, setEditingE
         <p className="text-center text-[#DFDFDF] text-opacity-40">Loading expenses...</p>
       ) : (
         Object.entries(groupedByDate).map(([dateStr, { total, items }]) => (
-          <div key={dateStr} className="mb-6">
-            <div className="flex justify-between items-center text-[#DFDFDF] text-opacity-60 text-sm mb-2">
-              <span>{dateStr}</span>
-              <span>Expenses: ₹{formatNumber(total)}</span>
+          <div key={dateStr} className="mb-4 sm:mb-6">
+            <div className="flex justify-between items-center text-[#DFDFDF] text-opacity-60 text-xs sm:text-sm mb-2.5 px-2">
+              <span className="font-medium">{dateStr}</span>
+              <span className="font-medium">₹{formatNumber(total)}</span>
             </div>
             {items.map((expense) => (
               <div
                 key={expense.id}
-                className={`flex items-center justify-between bg-[#1A1A1A] px-4 py-3 rounded-lg shadow mb-2 relative transition-all duration-200 ${
-                  selectedExpense === expense.id ? 'z-20 transform scale-105' : ''
+                className={`flex items-center justify-between bg-[#1A1A1A] px-3.5 sm:px-4 py-3 sm:py-3.5 rounded-lg shadow-sm mb-2.5 relative transition-all duration-200 ${
+                  selectedExpense === expense.id ? 'z-20 transform scale-[1.02] bg-[#222222]' : 'hover:bg-[#222222]'
                 }`}
                 onClick={() => handleExpenseSelect(expense.id, selectedExpense, setSelectedExpense)}
               >
-                <div className="flex items-center space-x-3">
-                  <div className="w-10 h-10 rounded-full bg-[#1A1A1A] flex items-center justify-center">
+                <div className="flex items-center gap-3 min-w-0 flex-1 pr-2">
+                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-[#252525] flex-shrink-0 flex items-center justify-center shadow-sm">
                     {getIconForCategory(expense.category)}
                   </div>
-                  <div>
-                    <p className="text-[#DFDFDF] font-medium capitalize">{expense.note || expense.category}</p>
+                  <div className="min-w-0 flex-1">
+                    <p className="text-sm sm:text-base text-[#DFDFDF] font-medium capitalize truncate leading-tight">
+                      {expense.note || expense.category}
+                    </p>
                     {expense.note && (
-                      <p className="text-[#DFDFDF] text-sm text-opacity-50 capitalize">{expense.category}</p>
+                      <p className="text-xs text-[#DFDFDF] text-opacity-60 capitalize truncate mt-0.5 leading-tight">
+                        {expense.category}
+                      </p>
                     )}
                   </div>
                 </div>
 
-                <div className="flex items-center">
-                  <p className="text-[#DFDFDF] font-semibold whitespace-nowrap mr-3">
-                    {formatNumber(expense.amount)}
+                <div className="flex items-center gap-2 flex-shrink-0">
+                  <p className="text-sm sm:text-base text-[#DFDFDF] font-semibold whitespace-nowrap tabular-nums">
+                    ₹{formatNumber(expense.amount)}
                   </p>
                   {selectedExpense === expense.id && (
-                    <div className="flex space-x-2">
+                    <div className="flex gap-1.5">
                       <button
-                        className="p-2 text-blue-500 hover:bg-blue-500 hover:bg-opacity-20 rounded-full transition-colors"
+                        className="p-1.5 sm:p-2 text-blue-400 hover:bg-blue-500/10 rounded-full transition-colors"
                         onClick={(e) => handleEdit(expense, e)}
                       >
-                        <SquarePen className="w-5 h-5" />
+                        <SquarePen className="w-4 h-4 sm:w-5 sm:h-5" />
                       </button>
-                      <button
-                        className="p-2 text-red-500 hover:bg-red-500 hover:bg-opacity-20 rounded-full transition-colors"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDelete(expense.id, setSelectedExpense);
-                        }}
-                      >
-                        <Trash2 className="w-5 h-5" />
-                      </button>
+                      <DeleteExpenseButton 
+                        expenseId={expense.id} 
+                        setSelectedExpense={setSelectedExpense} 
+                      />
                     </div>
                   )}
                 </div>

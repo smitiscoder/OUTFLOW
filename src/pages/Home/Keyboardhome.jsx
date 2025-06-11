@@ -139,8 +139,8 @@ const Keyboardhome = ({
           onClick={handleSubmit}
           disabled={!expression || loading}
           className={`py-3 rounded-md flex justify-center items-center ${
-            expression && !loading ? "bg-gradient-to-r from-purple-600 to-purple-500" : "bg-[#333333]"
-          }`}
+            expression && !loading ? "bg-[#1A1A1A] hover:bg-[#252525]" : "bg-[#333333]"
+          } transition-colors`}
         >
           <Check className="w-5 h-6" />
         </button>
@@ -149,7 +149,7 @@ const Keyboardhome = ({
       <button
         onClick={handleCancel}
         disabled={loading}
-        className="mt-2 w-full py-2 bg-[#1A1A1A] text-red-500 border border-red-500 rounded-md transition-colors"
+        className="mt-2 w-full py-2 bg-[#1A1A1A] hover:bg-[#252525] text-[#DFDFDF] rounded-md transition-colors"
       >
         Cancel
       </button>

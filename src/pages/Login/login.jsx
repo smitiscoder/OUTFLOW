@@ -62,7 +62,7 @@ const Login = () => {
             onClick={() => navigate('/email')}
             className="w-full py-3 px-4 bg-[#1A1A1A] hover:bg-[#252525] text-[#DFDFDF] rounded-lg font-medium transition-colors flex items-center justify-center gap-2 shadow-lg"
           >
-            Continue with Email
+            Sign in with Email
           </motion.button>
         </motion.div>
 

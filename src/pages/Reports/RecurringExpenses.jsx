@@ -166,91 +166,134 @@ export default function RecurringExpenses() {
       </div>
 
       {/* Main Content with proper spacing for fixed header */}
-      <div className="pt-16 sm:pt-20 px-4 sm:px-6 md:px-8 pb-20">
-        <div className="max-w-full sm:max-w-[640px] md:max-w-[768px] lg:max-w-[1024px] mx-auto">
+      <div className="pt-20 sm:pt-24 px-3 sm:px-4 md:px-6 pb-16">
+        <div className="max-w-full sm:max-w-[540px] md:max-w-[640px] mx-auto">
           {recurringExpenses.length > 0 ? (
-            <div className="bg-[#1A1A1A] rounded-xl p-6 shadow-lg mt-8">
-              <div className="mb-6">
-                <h2 className="text-lg font-semibold text-[#DFDFDF]">Recurring Expenses</h2>
-                <p className="text-sm text-[#DFDFDF] text-opacity-60 mt-1">
-                  Based on {timeframeUsed === '6months' ? 'last 6 months' : 'last 2 months'} of data
+            <div className="space-y-4">
+              {/* Header Section */}
+              <div className="text-center mb-6">
+                <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-400 to-purple-600">
+                  Smart Expense Detection
+                </h2>
+                <p className="text-xs text-[#DFDFDF]/60 mt-1">
+                  Based on {timeframeUsed === '6months' ? 'last 6 months' : 'last 2 months'} of spending patterns
                 </p>
               </div>
-              <ul className="space-y-4">
+
+              {/* Recurring Expenses List */}
+              <div className="space-y-3">
                 {recurringExpenses.map((expense, index) => (
-                  <li
+                  <div
                     key={index}
-                    className="flex flex-col bg-[#2A2A2A] rounded-lg p-4 border border-[#333333]"
+                    className="bg-[#0D0D0D] rounded-xl p-4 border border-[#333333]/30 hover:border-purple-500/30 transition-all duration-300"
                   >
-                    <div
-                      className="flex justify-between items-center cursor-pointer"
-                      onClick={() => handleExpenseClick(expense)}
-                    >
+                    <div className="flex justify-between items-start mb-2">
                       <div>
-                        <span className="font-medium capitalize text-[#DFDFDF]">
-                          {expense.description.toLowerCase() !== expense.category.toLowerCase() 
-                            ? expense.description.toLowerCase()
-                            : expense.category.toLowerCase()}
-                        </span>
-                        {expense.description.toLowerCase() !== expense.category.toLowerCase() && (
-                          <span className="block text-xs text-[#DFDFDF] text-opacity-60 mt-0.5">
-                            Category: {expense.category}
-                          </span>
-                        )}
+                        <h3 className="text-base font-semibold text-[#DFDFDF]">
+                          {expense.description}
+                        </h3>
+                        <p className="text-xs text-[#DFDFDF]/60 mt-0.5 capitalize">
+                          {expense.category}
+                        </p>
                       </div>
                       <div className="text-right">
-                        <span className="font-medium text-[#DFDFDF]">₹{expense.amount.toLocaleString()}</span>
-                        <span className="block text-sm text-[#DFDFDF] text-opacity-60 mt-0.5">
-                          {expense.count} time{expense.count > 1 ? 's' : ''}
-                        </span>
+                        <p className="text-base font-semibold text-[#DFDFDF]">
+                          ₹{expense.amount.toLocaleString()}
+                        </p>
+                        <p className="text-xs text-[#DFDFDF]/60 mt-0.5">
+                          {expense.count} times
+                        </p>
                       </div>
                     </div>
 
-                    <span className="text-xs text-[#DFDFDF] text-opacity-60 mt-2">
-                      Last: {expense.lastDate}
-                    </span>
+                    {/* Last Transaction */}
+                    <div className="flex items-center justify-between text-xs text-[#DFDFDF]/60 border-t border-[#333333]/30 pt-2 mt-2">
+                      <span>Last Transaction</span>
+                      <span>{expense.lastDate}</span>
+                    </div>
 
-                    {selectedExpense === expense && (
-                      <div className="mt-4 pl-4 border-l-2 border-[#DFDFDF] border-opacity-20">
-                        <h3 className="text-sm font-medium mb-3 text-[#DFDFDF]">Expense Records</h3>
-                        {expense.fullRecords.length > 0 ? (
-                          <ul className="space-y-3">
-                            {expense.fullRecords.map((record, idx) => (
-                              <li key={idx} className="bg-[#333333] rounded-lg p-3 border border-[#404040]">
-                                <div className="flex justify-between">
-                                  <span className="text-sm font-medium capitalize text-[#DFDFDF]">
-                                    {record.note || record.description}
-                                  </span>
-                                  <span className="text-sm font-medium text-[#DFDFDF]">
-                                    ₹{record.amount.toLocaleString()}
-                                  </span>
-                                </div>
-                                <div className="flex justify-between mt-1">
-                                  <span className="text-xs text-[#DFDFDF] text-opacity-60">
-                                    {record.timestamp}
-                                  </span>
-                                </div>
-                              </li>
-                            ))}
-                          </ul>
-                        ) : (
-                          <p className="text-sm text-[#DFDFDF] text-opacity-60">No records found.</p>
-                        )}
-                      </div>
-                    )}
-                  </li>
+                    {/* Transaction History Button */}
+                    <button
+                      onClick={() => setSelectedExpense(expense)}
+                      className="w-full mt-3 py-2 px-3 bg-purple-600/10 hover:bg-purple-600/20 text-xs font-medium rounded-lg transition-colors flex items-center justify-center gap-1.5 text-purple-400"
+                    >
+                      View Transaction History
+                    </button>
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
           ) : (
-            <div className="text-center mt-12">
-              <p className="text-[#DFDFDF] text-opacity-60">
-                No recurring expenses found for the {timeframeUsed === '6months' ? 'last 6 months' : 'last 2 months'}.
-              </p>
-              <p className="text-sm text-[#DFDFDF] text-opacity-40 mt-2">
-                Add more expenses to see recurring patterns
-              </p>
+            <div className="text-center mt-8">
+              <div className="bg-[#0D0D0D] rounded-xl p-6 border border-[#333333]/30">
+                <h3 className="text-lg font-semibold text-[#DFDFDF] mb-2">
+                  No Recurring Expenses Found
+                </h3>
+                <p className="text-sm text-[#DFDFDF]/60 mb-3">
+                  We haven't detected any recurring expenses for the {timeframeUsed === '6months' ? 'last 6 months' : 'last 2 months'}.
+                </p>
+                <p className="text-xs text-[#DFDFDF]/40">
+                  Add more expenses to help us identify your spending patterns
+                </p>
+              </div>
             </div>
+          )}
+
+          {/* Transaction History Modal */}
+          {selectedExpense && (
+            <>
+              <div
+                className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50"
+                onClick={() => setSelectedExpense(null)}
+              />
+              <div className="fixed inset-x-4 bottom-4 sm:inset-x-auto sm:left-1/2 sm:-translate-x-1/2 sm:bottom-6 sm:max-w-md w-[calc(100%-2rem)] sm:w-full bg-[#0D0D0D] rounded-2xl p-4 z-50 border border-[#333333]/30 shadow-lg">
+                <div className="flex justify-between items-center mb-4">
+                  <div>
+                    <h3 className="text-base font-semibold text-[#DFDFDF]">
+                      Transaction History
+                    </h3>
+                    <p className="text-xs text-[#DFDFDF]/60 mt-0.5">
+                      {selectedExpense.description}
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setSelectedExpense(null)}
+                    className="p-1.5 hover:bg-[#1A1A1A] rounded-full transition-colors"
+                  >
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
+                </div>
+                <div className="space-y-2 max-h-[60vh] overflow-y-auto pr-1 pb-2">
+                  {selectedExpense.fullRecords.map((record, index) => (
+                    <div
+                      key={index}
+                      className="flex justify-between items-center p-3 bg-[#1A1A1A]/30 rounded-xl border border-[#333333]/30"
+                    >
+                      <div className="flex-1 min-w-0 pr-2">
+                        <p className="text-sm font-medium text-[#DFDFDF] truncate">
+                          {record.description}
+                        </p>
+                        <p className="text-xs text-[#DFDFDF]/60 mt-0.5">
+                          {record.timestamp}
+                        </p>
+                      </div>
+                      <div className="text-right flex-shrink-0">
+                        <p className="text-sm font-semibold text-[#DFDFDF] whitespace-nowrap">
+                          ₹{record.amount.toLocaleString()}
+                        </p>
+                        {record.note && (
+                          <p className="text-xs text-[#DFDFDF]/60 mt-0.5 truncate max-w-[120px]">
+                            {record.note}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
           )}
         </div>
       </div>

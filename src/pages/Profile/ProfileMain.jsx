@@ -7,7 +7,7 @@ import SettingsButtons from "./SettingsButtons";
 import Avatar from "./Avatar";
 import { ROUTES } from "../../utils/constants";
 import { toast } from "react-hot-toast";
-import Loader from "../../components/Loading";
+import Loader from '../../components/Loading';
 
 export default function ProfileMain() {
   const [isEditing, setIsEditing] = useState(false);

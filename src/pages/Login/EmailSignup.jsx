@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Eye, EyeOff } from 'lucide-react';
 
 const EmailSignup = () => {
   const navigate = useNavigate();
@@ -11,6 +11,8 @@ const EmailSignup = () => {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const auth = getAuth();
 
   const handleSignup = async (e) => {
@@ -101,7 +103,7 @@ const EmailSignup = () => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 bg-[#1A1A1A] border border-[#252525] rounded-lg text-[#DFDFDF] placeholder-[#A0A0A0] focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors"
+                className="w-full px-4 py-3 bg-[#1A1A1A] border border-[#252525] rounded-lg text-[#DFDFDF] placeholder-[#A0A0A0] focus:outline-none focus:border-[#DFDFDF] transition-colors"
                 placeholder="Enter your email"
                 required
               />
@@ -111,30 +113,48 @@ const EmailSignup = () => {
               <label htmlFor="password" className="block text-sm font-medium text-[#DFDFDF]">
                 Password
               </label>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-[#1A1A1A] border border-[#252525] rounded-lg text-[#DFDFDF] placeholder-[#A0A0A0] focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors"
-                placeholder="Create a password"
-                required
-              />
+              <div className="relative">
+                <input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-4 py-3 bg-[#1A1A1A] border border-[#252525] rounded-lg text-[#DFDFDF] placeholder-[#A0A0A0] focus:outline-none focus:border-[#DFDFDF] transition-colors pr-12"
+                  placeholder="Create a password"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A0A0A0] hover:text-[#DFDFDF] transition-colors"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
             </div>
 
             <div className="space-y-2">
               <label htmlFor="confirmPassword" className="block text-sm font-medium text-[#DFDFDF]">
                 Confirm Password
               </label>
-              <input
-                id="confirmPassword"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-[#1A1A1A] border border-[#252525] rounded-lg text-[#DFDFDF] placeholder-[#A0A0A0] focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors"
-                placeholder="Confirm your password"
-                required
-              />
+              <div className="relative">
+                <input
+                  id="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  className="w-full px-4 py-3 bg-[#1A1A1A] border border-[#252525] rounded-lg text-[#DFDFDF] placeholder-[#A0A0A0] focus:outline-none focus:border-[#DFDFDF] transition-colors pr-12"
+                  placeholder="Confirm your password"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A0A0A0] hover:text-[#DFDFDF] transition-colors"
+                >
+                  {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
             </div>
 
             {error && (

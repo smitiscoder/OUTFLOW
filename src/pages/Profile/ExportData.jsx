@@ -162,9 +162,9 @@ export default function ExportData() {
       </div>
 
       {/* Main Content with proper spacing for fixed header */}
-      <div className="pt-16 sm:pt-20 px-4 sm:px-6 md:px-8 pb-20">
+      <div className="pt-24 sm:pt-28 px-4 sm:px-6 md:px-8 pb-20">
         <div className="max-w-full sm:max-w-[640px] md:max-w-[768px] lg:max-w-[1024px] mx-auto">
-          <div className="bg-[#1A1A1A] rounded-2xl p-6 sm:p-8 md:p-10 shadow-lg">
+          <div className="flex flex-col items-center">
             {/* Icon and Title */}
             <div className="flex flex-col items-center text-center space-y-4 sm:space-y-6 mb-8 sm:mb-10">
               <div className="bg-red-500/10 p-4 sm:p-5 rounded-full">
@@ -181,14 +181,14 @@ export default function ExportData() {
             </div>
 
             {/* Export Options */}
-            <div className="space-y-6 sm:space-y-8">
+            <div className="w-full max-w-md space-y-6">
               {/* Export Button */}
               <button
                 onClick={handleExport}
                 disabled={userExpenses.length === 0}
                 className={`w-full py-3 sm:py-4 px-6 rounded-xl font-medium transition-all transform hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center space-x-3 ${
                   userExpenses.length === 0
-                    ? 'bg-gray-600 cursor-not-allowed'
+                    ? 'bg-[#333333] cursor-not-allowed'
                     : 'bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white shadow-lg shadow-red-500/20'
                 }`}
               >
@@ -199,8 +199,8 @@ export default function ExportData() {
               </button>
 
               {/* Info Box */}
-              <div className="rounded-xl p-4 sm:p-6">
-                <h3 className="text-sm sm:text-base font-medium mb-2 sm:mb-3 text-[#DFDFDF]">
+              <div className="rounded-xl p-4 sm:p-6 border border-[#333333]">
+                <h3 className="text-sm sm:text-base font-medium mb-3 text-[#DFDFDF]">
                   What's included in the export?
                 </h3>
                 <ul className="space-y-2 text-sm text-[#DFDFDF] text-opacity-80">

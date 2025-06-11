@@ -168,19 +168,19 @@ const ReviewsSection = () => {
           className="w-full"
         >
           <Carousel 
-            className="w-full max-w-5xl mx-auto"
+            className="w-full max-w-5xl mx-auto focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
             onSelect={handleCarouselChange}
           >
             <CarouselContent>
               <AnimatePresence mode="wait">
                 {testimonials.map((testimonial, index) => (
-                  <CarouselItem key={testimonial.id} className="md:basis-1/2 lg:basis-1/3">
+                  <CarouselItem key={testimonial.id} className="md:basis-1/2 lg:basis-1/3 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0">
                     <motion.div 
                       variants={itemVariants}
                       initial="hidden"
                       animate={isVisible ? "visible" : "hidden"}
                       exit="exit"
-                      className="glass-card p-6 h-full transition-all duration-500 hover:shadow-outflow-accent/20 hover:shadow-2xl mx-2 relative group"
+                      className="glass-card p-6 h-full transition-all duration-500 hover:shadow-outflow-accent/20 hover:shadow-2xl mx-2 relative group focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
                       style={{
                         background: 'linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)',
                         backdropFilter: 'blur(10px)',
@@ -263,14 +263,16 @@ const ReviewsSection = () => {
               <motion.div
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
+                className="focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
               >
-                <CarouselPrevious className="relative bg-outflow-accent/20 border-outflow-accent/30 text-white hover:bg-outflow-accent/30 transition-all duration-300 hover:shadow-lg hover:shadow-outflow-accent/20" />
+                <CarouselPrevious className="relative bg-outflow-accent/20 border-outflow-accent/30 text-white hover:bg-outflow-accent/30 transition-all duration-300 hover:shadow-lg hover:shadow-outflow-accent/20 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0" />
               </motion.div>
               <motion.div
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.95 }}
+                className="focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0"
               >
-                <CarouselNext className="relative bg-outflow-accent/20 border-outflow-accent/30 text-white hover:bg-outflow-accent/30 transition-all duration-300 hover:shadow-lg hover:shadow-outflow-accent/20" />
+                <CarouselNext className="relative bg-outflow-accent/20 border-outflow-accent/30 text-white hover:bg-outflow-accent/30 transition-all duration-300 hover:shadow-lg hover:shadow-outflow-accent/20 focus:outline-none focus:ring-0 focus-visible:ring-0 focus-visible:ring-offset-0" />
               </motion.div>
             </div>
           </Carousel>

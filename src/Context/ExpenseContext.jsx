@@ -12,7 +12,6 @@ import {
   where,
 } from 'firebase/firestore';
 import { getAuth, onAuthStateChanged } from 'firebase/auth';
-import { toast } from 'react-toastify';
 
 const ExpenseContext = createContext();
 
@@ -40,13 +39,11 @@ export const ExpenseProvider = ({ children }) => {
       setCurrentUser(user);
       if (!user) {
         setExpenses([]);
-        toast.info('Please sign in to manage expenses.');
       } else {
         console.log('Authenticated user:', user.uid); // Debug: Confirm user ID
       }
     }, (error) => {
       console.error('Auth state change error:', error);
-      toast.error('Authentication error. Please try again.');
     });
     return () => unsubscribe();
   }, []);
@@ -103,13 +100,11 @@ export const ExpenseProvider = ({ children }) => {
           setIsLoading(false);
         } catch (error) {
           console.error('Error processing Firestore snapshot:', error);
-          toast.error('Failed to fetch expenses. Please try again.');
           setIsLoading(false);
         }
       },
       (error) => {
         console.error('Firestore snapshot error:', error);
-        toast.error('Error fetching expenses. Please check your connection.');
         setIsLoading(false);
       }
     );
@@ -120,7 +115,6 @@ export const ExpenseProvider = ({ children }) => {
   // Add new expense
   const addExpense = async (amount, category, note, date) => {
     if (!currentUser?.uid) {
-      toast.error('Please sign in to add an expense.');
       throw new Error('User not authenticated');
     }
 
@@ -139,11 +133,9 @@ export const ExpenseProvider = ({ children }) => {
       };
 
       const docRef = await addDoc(collection(db, 'expenses'), newExpense);
-      toast.success('Expense added successfully!');
       return docRef.id;
     } catch (error) {
       console.error('Error adding expense:', error);
-      toast.error('Failed to add expense. Please try again.');
       throw error;
     }
   };
@@ -151,7 +143,6 @@ export const ExpenseProvider = ({ children }) => {
   // Edit an expense
   const editExpense = async (id, updatedExpense) => {
     if (!currentUser?.uid) {
-      toast.error('Please sign in to edit an expense.');
       throw new Error('User not authenticated');
     }
 
@@ -161,10 +152,8 @@ export const ExpenseProvider = ({ children }) => {
         ...updatedExpense,
         updatedAt: serverTimestamp(),
       });
-      toast.success('Expense updated successfully!');
     } catch (error) {
       console.error('Error editing expense:', error);
-      toast.error('Failed to edit expense. Please try again.');
       throw error;
     }
   };
@@ -172,17 +161,14 @@ export const ExpenseProvider = ({ children }) => {
   // Delete an expense
   const deleteExpense = async (id) => {
     if (!currentUser?.uid) {
-      toast.error('Please sign in to delete an expense.');
       throw new Error('User not authenticated');
     }
 
     try {
       const expenseRef = doc(db, 'expenses', id);
       await deleteDoc(expenseRef);
-      toast.success('Expense deleted successfully!');
     } catch (error) {
       console.error('Error deleting expense:', error);
-      toast.error('Failed to delete expense. Please try again.');
       throw error;
     }
   };

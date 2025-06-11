@@ -162,17 +162,17 @@ export default function ReportsScreen() {
         
         <div className="flex gap-4 mt-6">
           <button
-            onClick={() => navigate('/bar-graphs')}
-            className="flex-1 py-2 rounded-full text-sm font-semibold bg-purple-600 hover:bg-purple-700 transition-colors flex items-center justify-center gap-2"
+            onClick={() => navigate('/savings-analysis')}
+            className="flex-1 py-2 px-3 rounded-full text-xs font-medium bg-purple-600 hover:bg-purple-700 transition-colors flex items-center justify-center gap-1.5 whitespace-nowrap"
           >
-            <BarChart2 size={16} />
-            BarGraph
+            <BarChart2 size={14} />
+            Savings Analysis
           </button>
           <button
             onClick={() => navigate('/recurring-expenses')}
-            className="flex-1 py-2 rounded-full text-sm font-semibold bg-purple-600 hover:bg-purple-700 transition-colors flex items-center justify-center gap-2"
+            className="flex-1 py-2 px-3 rounded-full text-xs font-medium bg-purple-600 hover:bg-purple-700 transition-colors flex items-center justify-center gap-1.5 whitespace-nowrap"
           >
-            <Repeat size={16} />
+            <Repeat size={14} />
             Recurring
           </button>
         </div>

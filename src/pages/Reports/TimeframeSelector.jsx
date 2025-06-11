@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function TimeframeSelector({ timeframes, setTimeframe, timeframe }) {
   return (
-    <div className="flex flex-wrap justify-between gap-2 mt-6 mb-6">
+    <div className="flex flex-wrap justify-between gap-2 mt-3 mb-4">
       {timeframes.map(item => (
         <button
           key={item.id}

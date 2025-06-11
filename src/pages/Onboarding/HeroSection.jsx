@@ -64,7 +64,7 @@ const HeroSection = () => {
           >
             <Button
               onClick={handleGetStarted}
-              className="btn-primary text-xs sm:text-sm md:text-base py-2.5 sm:py-3 md:py-3.5 px-4 sm:px-6 rounded-lg shadow-md shadow-white/30 hover:shadow-white/40 hover:-translate-y-0.5 transition-all duration-200 flex items-center border border-white/50 hover:border-white group"
+              className="btn-primary text-xs sm:text-sm md:text-base py-2.5 sm:py-3 md:py-3.5 px-4 sm:px-6 rounded-lg hover:-translate-y-0.5 transition-all duration-200 flex items-center border border-white/50 hover:border-white group bg-white text-[#0D0D0D] hover:bg-white/90"
             >
               Get Started
               <ArrowRight className="ml-2 w-3.5 sm:w-4 md:w-5 transition-transform duration-200 group-hover:translate-x-1" />

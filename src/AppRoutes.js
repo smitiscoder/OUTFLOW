@@ -30,7 +30,7 @@ const Download = lazy(() => import("./pages/Onboarding/Download"));
 const Home = lazy(() => import("./pages/Home/Homemain"));
 const Search = lazy(() => import("./pages/Search/SearchMain"));
 const Reports = lazy(() => import("./pages/Reports/ReportsScreen"));
-const BarGraphScreen = lazy(() => import("./pages/Reports/BarGraphScreen"));
+const SavingsAnalysis = lazy(() => import("./pages/Reports/SavingsAnalysis"));
 const RecurringExpenses = lazy(() => import("./pages/Reports/RecurringExpenses"));
 const ExpenseCategory = lazy(() => import("./pages/Add Expense/ExpenseCategory"));
 const ProfileMain = lazy(() => import("./pages/Profile/ProfileMain"));
@@ -102,7 +102,7 @@ function AppRoutes({ user, isAuthLoading }) {
             <>
               <Route index element={<Home />} />
               <Route path="reports" element={<Reports />} />
-              <Route path="bar-graphs" element={<BarGraphScreen />} />
+              <Route path="savings-analysis" element={<SavingsAnalysis />} />
               <Route path="recurring-expenses" element={<RecurringExpenses />} />
               <Route path="expensecategory" element={<ExpenseCategory />} />
               <Route path="search" element={<Search />} />

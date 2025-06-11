@@ -2,7 +2,6 @@ import React from "react";
 import { signInWithPopup } from "firebase/auth";
 import { auth, googleProvider, db } from "../../components/firebase";
 import { doc, getDoc, setDoc } from "firebase/firestore";
-import { toast } from "react-toastify";
 import { FcGoogle } from "react-icons/fc";
 
 export default function ContinueWithGoogle() {
@@ -37,11 +36,9 @@ export default function ContinueWithGoogle() {
         console.log("Creating new user document...");
         userData.createdAt = new Date();
         await setDoc(userDocRef, userData);
-        toast.success("Welcome! Your account has been created.");
       } else {
         console.log("Updating existing user document...");
         await setDoc(userDocRef, userData, { merge: true });
-        toast.success("Welcome back!");
       }
 
       console.log("Firestore operation completed successfully");
@@ -56,37 +53,33 @@ export default function ContinueWithGoogle() {
       });
       console.groupEnd();
 
-      // Handle specific error cases
+      // Handle specific error cases silently
       switch (error.code) {
         case 'auth/popup-closed-by-user':
           console.warn("User closed the sign-in popup");
-          return; // Silent failure for user-cancelled actions
-          
+          return;
         case 'auth/network-request-failed':
-          toast.error("Network error. Please check your internet connection.");
+          console.error("Network error during sign-in");
           break;
-          
         case 'auth/cancelled-popup-request':
-          toast.warning("Sign-in process cancelled");
+          console.warn("Sign-in process cancelled");
           break;
-          
         case 'firestore/permission-denied':
-          toast.error("Database permissions issue. Please try again later.");
           console.error("Firestore rules may need updating");
           break;
-          
         default:
-          toast.error(`Sign-in failed: ${error.message}`);
+          console.error(`Sign-in failed: ${error.message}`);
       }
     }
   };
- return (
+
+  return (
     <button
       onClick={handleGoogleSignIn}
       className="flex items-center justify-center gap-3 w-full py-3 rounded-full bg-[#1f1f1f] border border-gray-600 text-white font-medium text-sm"
     >
       <FcGoogle size={20} />
-      Sign in with Google
+      Continue with Google
     </button>
   );
 }

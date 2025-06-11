@@ -24,13 +24,6 @@ const Loader = () => {
               <span className="h-8 flex items-center text-[#9333EA] font-medium">analyze</span>
             </div>
           </div>
-
-          {/* Loading dots */}
-          <div className="flex space-x-1">
-            <div className="w-1.5 h-1.5 rounded-full bg-[#9333EA] animate-[bounce_1s_infinite_0ms]" />
-            <div className="w-1.5 h-1.5 rounded-full bg-[#9333EA] animate-[bounce_1s_infinite_200ms]" />
-            <div className="w-1.5 h-1.5 rounded-full bg-[#9333EA] animate-[bounce_1s_infinite_400ms]" />
-          </div>
         </div>
       </div>
     </div>
@@ -47,10 +40,5 @@ export default Loader;
   40%, 60% { transform: translateY(-80px); }
   60%, 80% { transform: translateY(-120px); }
   80%, 100% { transform: translateY(-160px); }
-}
-
-@keyframes bounce {
-  0%, 100% { transform: scale(1); opacity: 0.5; }
-  50% { transform: scale(1.2); opacity: 1; }
 }
 */

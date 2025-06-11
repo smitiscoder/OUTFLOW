@@ -59,7 +59,7 @@ const Usermanualpage = () => {
                     <li>
                       <strong>Google Sign-in</strong>:
                       <ul className="ml-4 sm:ml-6 list-disc">
-                        <li>On the login screen, click the "Sign in with Google" button.</li>
+                        <li>On the login screen, click the "Continue with Google" button.</li>
                         <li>Select your Google account and confirm permissions.</li>
                         <li>You'll be redirected to the Home page.</li>
                       </ul>

@@ -4,13 +4,12 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const navIconStyle =
-  'inline-flex items-center justify-center p-2 text-[#DFDFDF] hover:bg-white/10 rounded-md transition';
+  'inline-flex items-center justify-center p-2 text-[#DFDFDF] transition';
 
 const BottomNavbar = () => {
   return (
-    <div className="fixed bottom-0 left-0 right-0 py-2 z-50 bg-[#0D0D0D]">
-      <div className="relative flex items-center justify-around max-w-md mx-auto bg-[#0D0D0D] shadow-lg border-t border-white/5 px-4 py-2 rounded-t-3xl">
-
+    <div className="fixed bottom-0 left-0 right-0 py-2 z-50 bg-[#0D0D0D] border-t border-white/5">
+      <div className="relative flex items-center justify-around max-w-md mx-auto px-4 py-2">
         {/* Home */}
         <Link to="/" className={navIconStyle}>
           <Home className="w-6 h-6" />

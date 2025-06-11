@@ -79,7 +79,7 @@ const HelpPage = () => {
       </div>
 
       {/* Main Content with proper spacing for fixed header */}
-      <div className="pt-16 sm:pt-20 px-4 sm:px-6 md:px-8 pb-20">
+      <div className="pt-24 sm:pt-28 px-4 sm:px-6 md:px-8 pb-20">
         <div className="max-w-full sm:max-w-[640px] md:max-w-[768px] lg:max-w-[1024px] mx-auto">
           {/* Help Options */}
           <div className="space-y-3 max-w-2xl mx-auto w-full">

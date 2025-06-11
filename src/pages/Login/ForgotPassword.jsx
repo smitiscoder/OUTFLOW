@@ -90,7 +90,7 @@ const ForgotPassword = () => {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-3 bg-[#1A1A1A] border border-[#252525] rounded-lg text-[#DFDFDF] placeholder-[#A0A0A0] focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors"
+                className="w-full px-4 py-3 bg-[#1A1A1A] border border-[#252525] rounded-lg text-[#DFDFDF] placeholder-[#A0A0A0] focus:outline-none focus:border-[#DFDFDF] transition-colors"
                 placeholder="Enter your email"
                 required
               />
