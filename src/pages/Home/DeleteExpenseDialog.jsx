@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const ConfirmationDialog = ({ isOpen, onClose, onConfirm, title, message }) => {
+const DeleteExpenseDialog = ({ isOpen, onClose, onConfirm }) => {
   if (!isOpen) return null;
 
   return (
@@ -25,8 +25,10 @@ const ConfirmationDialog = ({ isOpen, onClose, onConfirm, title, message }) => {
             className="fixed inset-0 z-50 flex items-center justify-center p-4"
           >
             <div className="w-full max-w-[320px] sm:max-w-[400px] bg-[#1A1A1A] rounded-lg shadow-xl p-4 sm:p-6">
-              <h3 className="text-base sm:text-lg font-semibold text-[#DFDFDF] mb-2">{title}</h3>
-              <p className="text-sm sm:text-base text-[#A0A0A0] mb-4 sm:mb-6">{message}</p>
+              <h3 className="text-base sm:text-lg font-semibold text-[#DFDFDF] mb-2">Delete Expense</h3>
+              <p className="text-sm sm:text-base text-[#A0A0A0] mb-4 sm:mb-6">
+                Are you sure you want to delete this expense? This action cannot be undone.
+              </p>
               
               <div className="flex flex-col sm:flex-row justify-end gap-2 sm:gap-3">
                 <button
@@ -53,4 +55,4 @@ const ConfirmationDialog = ({ isOpen, onClose, onConfirm, title, message }) => {
   );
 };
 
-export default ConfirmationDialog; 
+export default DeleteExpenseDialog; 

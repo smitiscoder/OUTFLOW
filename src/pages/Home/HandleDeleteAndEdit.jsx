@@ -1,7 +1,7 @@
 // HandleDeleteAndEdit.js
 import { getFirestore, doc, deleteDoc } from 'firebase/firestore';
 import { useState } from 'react';
-import ConfirmationDialog from '../../components/ConfirmationDialog';
+import DeleteExpenseDialog from './DeleteExpenseDialog';
 import { Trash2 } from 'lucide-react';
 
 export const handleExpenseSelect = (expenseId, selectedExpense, setSelectedExpense) => {
@@ -36,12 +36,10 @@ export const DeleteExpenseButton = ({ expenseId, setSelectedExpense }) => {
         <Trash2 className="w-5 h-5" />
       </button>
 
-      <ConfirmationDialog
+      <DeleteExpenseDialog
         isOpen={isDeleteDialogOpen}
         onClose={() => setIsDeleteDialogOpen(false)}
         onConfirm={handleDelete}
-        title="Delete Expense"
-        message="Are you sure you want to delete this expense? This action cannot be undone."
       />
     </>
   );

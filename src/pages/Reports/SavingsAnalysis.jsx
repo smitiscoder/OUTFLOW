@@ -216,14 +216,14 @@ export default function SavingsAnalysis() {
         <div className="max-w-full sm:max-w-[640px] md:max-w-[768px] lg:max-w-[1024px] mx-auto space-y-6">
           {/* Summary Cards */}
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-[#1A1A1A] rounded-xl p-4 border border-[#333333]/30">
+            <div className="bg-[#1A1A1A] rounded-xl p-4">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm text-[#DFDFDF]/70">Total Expenses</span>
                 <TrendingDown size={16} className="text-red-400" />
               </div>
               <p className="text-xl font-semibold">₹{summary.totalExpenses.toLocaleString()}</p>
             </div>
-            <div className="bg-[#1A1A1A] rounded-xl p-4 border border-[#333333]/30">
+            <div className="bg-[#1A1A1A] rounded-xl p-4">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-sm text-[#DFDFDF]/70">Total Savings</span>
                 <TrendingUp size={16} className="text-green-400" />
@@ -233,7 +233,7 @@ export default function SavingsAnalysis() {
           </div>
 
           {/* Savings Rate Card */}
-          <div className="bg-[#1A1A1A] rounded-xl p-4 border border-[#333333]/30">
+          <div className="bg-[#1A1A1A] rounded-xl p-4">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm text-[#DFDFDF]/70">Average Savings Rate</span>
               {summary.trend === 'up' && <TrendingUp size={16} className="text-green-400" />}
